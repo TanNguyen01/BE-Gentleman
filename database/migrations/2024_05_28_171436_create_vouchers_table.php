@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('vouchers', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->string('avatar')->nullable();
-            $table->integer('role_id');
+            $table->string('voucher_code');
+            $table->decimal('discount_amount', 10, 2);
+            $table->date('expiration_date');
+            $table->decimal('minimum_purchase', 10, 2);
+            $table->integer('usage_limit');
             $table->boolean('status');
-            $table->string('number');
+            $table->string('description');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('vouchers');
     }
 };
