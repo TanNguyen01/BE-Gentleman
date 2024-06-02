@@ -12,7 +12,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('variants', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id'); 
             $table->integer('product_id');
             $table->integer('attribute_id');
             $table->decimal('price', 10, 2);
@@ -22,6 +22,9 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->timestamps();
         });
+
+        DB::statement('ALTER TABLE variants AUTO_INCREMENT = 0;');
+
     }
 
     /**

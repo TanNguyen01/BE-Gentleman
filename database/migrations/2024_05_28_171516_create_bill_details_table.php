@@ -12,7 +12,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('bill_details', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id'); 
             $table->string('product_name');
             $table->string('attribute_name');
             $table->decimal('price', 10, 2);
@@ -20,6 +20,9 @@ return new class extends Migration
             $table->integer('bill_id');
             $table->timestamps();
         });
+
+        DB::statement('ALTER TABLE bill_details AUTO_INCREMENT = 0;');
+
     }
 
     /**
