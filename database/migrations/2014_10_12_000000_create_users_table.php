@@ -17,9 +17,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('avatar')->nullable();
-            $table->integer('role_id');
+            $table->integer('role');
             $table->boolean('status');
-            $table->string('number');
             $table->timestamps();
         });
     }

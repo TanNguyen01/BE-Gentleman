@@ -9,6 +9,9 @@ class Category extends Model
 {
     use HasFactory;
 
+     const Enable = 0;
+     const Disable = 1;
+
     protected $fillable = [
         'name',
         'quantity',

@@ -3,49 +3,59 @@
 namespace App\Services;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class UserService
 {
      public function getAllUsers(){
-         return User::query()->get();
+         return User::all();
      }
 
      public function getUserById($id){
-         $user = User::find($id);
-         if(!$user){
-             return response()->json([
-                 'code'=>401,
-                'error'=>'Khong tim thay nguoi dung'
-             ]);
-         }else{
-             return response()->json([
-                'code'=>200,
-                'message'=>'Xem nguoi dung thanh cong',
-                'data'=>$user
-             ]);
-         }
+        return User::find($id);
      }
 
      public function createUser($data){
+         $this->uploadImageIfExists($data);
          return User::create($data);
      }
 
      public function updateUser($id,$data){
-         $user = User::findOrFail($id);
+         $user = User::find($id);
 
-         $user->update($data);
-
+         if($user){
+             $this->uploadImageIfExists($data, $user);
+             $user->update($data);
+         }
          return $user;
      }
 
      public function deleteUser($id){
-         $user = User::findOrFail($id);
+       //  $user = User::find($id);
 
-         $user->delete();
+      // if($user){
+        //   if($user->image){
+            //   Storage::disk('images_user')->delete($user->image);
+         //  }
+         //  $user->delete();
+     //  }
 
-         return $user;
+       //  return $user;
      }
 
+protected function uploadImageIfExists(&$data, $user = null){
+      if(isset($data['avatar']) && $data['avatar']->isValid()){
+           $avatarName = Str::random(12). "." . $data['avatar']->getCilentOriginalExtension();
+           $data['avatar']->storeAs('', $avatarName, 'avatar_user');
 
+           if($user && $user->image){
+               Storage::disk('avatar_user')->delete($user->image);
+           }
+
+           $data['avatar'] = $avatarName;
+
+    }
+}
 
 }
