@@ -9,9 +9,7 @@ class RolesSeeder extends Seeder
 {
     public function run()
     {
-        Role::insertOrIgnore([
-            ['id' => 0, 'name' => 'user'],
-            ['id' => 1, 'name' => 'admin'],
-        ]);
+        Role::factory()->user()->create();
+        Role::factory()->admin()->create();
     }
 }

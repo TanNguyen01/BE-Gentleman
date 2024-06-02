@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
+
+        DB::statement('ALTER TABLE password_reset_tokens AUTO_INCREMENT = 0;');
+
     }
 
     /**

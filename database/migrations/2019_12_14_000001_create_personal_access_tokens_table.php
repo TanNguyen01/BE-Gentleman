@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('personal_access_tokens', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id'); 
             $table->morphs('tokenable');
             $table->string('name');
             $table->string('token', 64)->unique();
@@ -21,6 +21,7 @@ return new class extends Migration
             $table->timestamp('expires_at')->nullable();
             $table->timestamps();
         });
+        DB::statement('ALTER TABLE personal_access_tokens AUTO_INCREMENT = 0;');
     }
 
     /**

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id'); 
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('number');
             $table->timestamps();
         });
+        DB::statement('ALTER TABLE users AUTO_INCREMENT = 0;');
     }
 
     /**
