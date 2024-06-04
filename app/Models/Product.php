@@ -14,6 +14,20 @@ class Product extends Model
         'brand'
     ];
 
+    public function toArray()
+    {
+        $data = [
+            'id' => $this->id,
+            'category_id' => $this->category ? [
+                'id' => $this->category->id,
+                'name' => $this->category->name,
+                'status' => $this->category->status
+            ] : null,
+            'brand' => $this->brand
+        ];
+
+        return $data;
+    }
     public function category()
     {
         return $this->belongsTo(Category::class);
