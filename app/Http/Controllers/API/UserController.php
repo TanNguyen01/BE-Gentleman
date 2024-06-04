@@ -25,7 +25,6 @@ class UserController extends Controller
     {
         $users = $this->userService->getAllUsers();
         return $this->responseSuccess('Lay danh sach nguoi dung thanh cong',['data'=>$users]);
-
     }
 
     /**
