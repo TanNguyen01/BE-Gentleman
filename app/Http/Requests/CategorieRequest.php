@@ -28,11 +28,10 @@ class CategorieRequest extends FormRequest
     public function rules(): array
     {
         return [
-              "name" => "required|string",
-              "quantity" => "required|integer",
+              "name" => "required|string|unique:categories,name",
+              "quantity" => "integer",
               "status"=> [
-                    "required",
-                     Rule::in([
+                    Rule::in([
                         Category::Enable,
                         Category::Disable,
                     ])
@@ -43,9 +42,10 @@ class CategorieRequest extends FormRequest
     public function messages(): array{
 
         return [
+            "name.unique" => "Danh muc da ton tai",
             "name.required" => "Nhap ten danh muc",
-            "quantity.required" => "Nhap so luong",
-            "status.required" => "Nhap trang thai danh muc",
+            "quantity.integer" => "Nhap dung dang so",
+
         ];
     }
 
