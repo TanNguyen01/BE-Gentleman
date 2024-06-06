@@ -4,39 +4,55 @@ namespace App\Services;
 
 use App\Models\Variant;
 use App\Traits\APIResponse;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
-class  VariantService
+class VariantService extends AbstractServices
 {
-
     use APIResponse;
-    public function getAllVariants()
+
+
+    public function __construct(Variant $variant)
     {
-        return Variant::query()->get();
+        Parent::__construct($variant);
     }
 
-
-    public function getVariantById($id)
+    public function getVariant()
     {
-        $variant = Variant::find($id);
-        if ($variant) {
-            $variant->load('product', 'attribute');
-            return $variant->toArray();
-        } else {
-            return null;
+        return $this->getAll();
+    }
+
+    public function showVariant($id)
+    {
+        return $this->find($id);
+    }
+
+    public function storeVariant(array $data)
+    {
+        if (isset($data['image']) && $data['image'] instanceof UploadedFile) {
+            $data['image_path'] = $this->uploadFile($data['image'], 'variants');
         }
+        $variant = $this->postCreate($data);
+        return $variant;
     }
 
-    public function createVariant($data)
+    public function updateVariant($id, array $data): ?Variant
     {
-        return Variant::create($data);
+        $variant = $this->model->find($id);
+        if ($variant) {
+            if (isset($data['file']) && $data['file'] instanceof UploadedFile) {
+                $data['file_path'] = $this->uploadFile($data['file'], 'variants');
+                // Xóa file cũ nếu cần thiết
+                if ($variant->file_path) {
+                    Storage::delete($variant->file_path);
+                }
+            }
+            $variant->update($data);
+        }
+        return $variant;
     }
-
-    public function updateVariant($id, $data)
+    public function destroyVariant($id)
     {
-        return Variant::find($id);
-    }
-    public function deleteVariant($id)
-    {
-        return Variant::find($id);
+        return $this->delete($id);
     }
 }

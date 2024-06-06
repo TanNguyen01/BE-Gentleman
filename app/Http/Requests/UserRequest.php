@@ -45,15 +45,15 @@ class UserRequest extends FormRequest
                     ])
                 ]
             ];
-        }else{
+        } else {
             return [
                 'email' => 'nullable|email|unique:users,email',
                 'name' => 'nullable|string',
                 'password' => 'nullable|string',
                 'role' => 'nullable|integer|in:0,1',
                 'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
-                'address' => 'nullable|string',
-                'phone' => 'nullable|string',
+                'address' => 'nullable',
+                'phone' => 'nullable',
                 'status' => [
                     "required",
                     Rule::in([
@@ -65,7 +65,8 @@ class UserRequest extends FormRequest
         }
     }
 
-    public function messages(): array{
+    public function messages(): array
+    {
 
         return [
             'email.unique' => 'Email da ton tai',
@@ -76,11 +77,6 @@ class UserRequest extends FormRequest
             'name.required' => 'Ten khong duoc de trong',
             'name.string' => 'Ten khong hop le',
             'avatar.mimes' => 'Anh phai co dinh dang jpg,png,gif,svg',
-            'phone.required' => 'Sdt khong duoc de trong',
-            'phone.string' => 'Sdt khong hop le',
-            'address.required' => 'Dia chi khong duoc de trong',
-            'address.string' => 'Dia chi ko hop le',
-
 
         ];
     }
@@ -93,9 +89,8 @@ class UserRequest extends FormRequest
             [
                 'error' => $errors,
                 'status_code' => 402,
-            ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY));
+            ],
+            JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+        ));
     }
-
 }
-
-

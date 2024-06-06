@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\AttributeController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\VariantController;
+use App\Http\Controllers\API\VoucherController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +30,9 @@ Route::apiResource('variants', VariantController::class);
 
 //Attribute
 Route::apiResource('attributes', AttributeController::class);
+
+//Voucher
+Route::apiResource('voucher', VoucherController::class);
 
 //Category
 Route::get('list_category', [\App\Http\Controllers\API\CategoryController::class, 'index'])->name('list.category');
