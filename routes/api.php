@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AttributeController;
+use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\VariantController;
 use Illuminate\Http\Request;
@@ -31,18 +32,16 @@ Route::apiResource('variants', VariantController::class);
 Route::apiResource('attributes', AttributeController::class);
 
 //Category
-Route::get('list_category', [\App\Http\Controllers\API\CategoryController::class, 'index'])->name('list.category');
-Route::get('category/{id}', [\App\Http\Controllers\API\CategoryController::class, 'show'])->name('show.category');
-Route::post('category_post', [\App\Http\Controllers\API\CategoryController::class, 'store'])->name('store.category');
-Route::post('category_update/{id}', [\App\Http\Controllers\API\CategoryController::class, 'update'])->name('update.category');
-Route::delete('category_delete/{id}', [\App\Http\Controllers\API\CategoryController::class, 'destroy'])->name('destroy.category');
+
+  Route::apiResource('categories', CategoryController::class);
+
+
 
 //User
 
-Route::get('list_user', [\App\Http\Controllers\API\UserController::class, 'index'])->name('list.user');
-Route::get('user/{id}', [\App\Http\Controllers\API\UserController::class, 'show'])->name('show.user');
-Route::post('user_post', [\App\Http\Controllers\API\UserController::class, 'store'])->name('store.user');
-Route::post('user_update/{id}', [\App\Http\Controllers\API\UserController::class, 'update'])->name('update.user');
+Route::apiResource('products', ProductController::class);
+
+
 
 
 Route::post('register', [\App\Http\Controllers\API\AuthController::class, 'register'])->name('register');
