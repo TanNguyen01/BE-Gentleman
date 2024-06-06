@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AttributeController;
+use App\Http\Controllers\API\BillController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\VariantController;
 use Illuminate\Http\Request;
@@ -30,6 +31,9 @@ Route::apiResource('variants', VariantController::class);
 //Attribute
 Route::apiResource('attributes', AttributeController::class);
 
+//Bill
+Route::apiResource('bills', BillController::class);
+
 //Category
 Route::get('list_category', [\App\Http\Controllers\API\CategoryController::class, 'index'])->name('list.category');
 Route::get('category/{id}', [\App\Http\Controllers\API\CategoryController::class, 'show'])->name('show.category');
@@ -51,9 +55,9 @@ Route::post('login', [\App\Http\Controllers\API\AuthController::class, 'login'])
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
 
-    Route::get('/profile', function (Request $request) {
-        return auth()->users();
-    });
+    // Route::get('/profile', function (Request $request) {
+    //     return auth()->users();
+    // });
 
     Route::get('logout', [\App\Http\Controllers\API\AuthController::class, 'logout'])->name('logout');
 });
