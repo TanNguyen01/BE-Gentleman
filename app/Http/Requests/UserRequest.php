@@ -36,7 +36,7 @@ class UserRequest extends FormRequest
                 'role' => 'nullable|integer',
                 'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
                 'address' => 'nullable|string',
-                'phone' => 'nullable|string',
+                'number' => 'nullable|string',
                 'status' => [
                     "required",
                     Rule::in([

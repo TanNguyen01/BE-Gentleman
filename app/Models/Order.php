@@ -14,7 +14,6 @@ class Order extends Model
         'total_amount',
         'status',
         'order_date',
-        'voucher_id',
     ];
 
     public function user()

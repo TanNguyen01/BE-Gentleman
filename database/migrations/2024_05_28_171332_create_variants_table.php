@@ -22,10 +22,10 @@ return new class extends Migration
             $table->boolean('status');
             $table->text('description')->nullable();
             $table->string('image')->nullable();
+            $table->integer('voucher_id')->nullable();
             $table->timestamps();
         });
 
-        DB::statement('ALTER TABLE variants AUTO_INCREMENT = 0;');
     }
 
     /**

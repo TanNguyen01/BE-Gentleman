@@ -23,6 +23,7 @@ class OrderDetailFactory extends Factory
             'order_id' => \App\Models\Order::factory(),
             'status' => $this->faker->randomElement(['pending', 'shipped', 'delivered']),
             'quantity' => $this->faker->numberBetween(1, 100),
+            'voucher_id' => \App\Models\Voucher::factory(),
         ];
     }
 }
