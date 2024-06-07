@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Requests\OrderRequest;
 use App\Traits\APIResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Services\OrderService;
 
@@ -28,7 +28,7 @@ class OrderController extends OrderService
         ]);
     }
 
-    public function store(Request $request)
+    public function store(OrderRequest $request)
     {
         $request = $request->all();
         $data = $this->orderService->storeOrder($request);
@@ -62,7 +62,7 @@ class OrderController extends OrderService
     /**
      * Show the form for editing the specified resource.
      */
-    public function update(Request $request, string $id)
+    public function update(OrderRequest $request, string $id)
     {
         $data = $this->orderService->updateOrder($id,$request);
         if(!$data){

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Requests\BillRequest;
 use App\Traits\APIResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Services\BillService;
 
@@ -28,7 +28,7 @@ class BillController extends BillService
         ]);
     }
 
-    public function store(Request $request)
+    public function store(BillRequest $request)
     {
         $request = $request->all();
         $data = $this->billService->storeBill($request);
@@ -62,7 +62,7 @@ class BillController extends BillService
     /**
      * Show the form for editing the specified resource.
      */
-    public function update(Request $request, string $id)
+    public function update(BillRequest $request, string $id)
     {
         $data = $this->billService->updateBill($id,$request);
         if(!$data){
