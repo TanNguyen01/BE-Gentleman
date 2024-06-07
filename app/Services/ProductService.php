@@ -5,31 +5,37 @@ namespace App\Services;
 use App\Models\Product;
 use App\Traits\APIResponse;
 
-class ProductService
+class ProductService extends AbstractServices
 {
     use APIResponse;
-    public function getAllProducts()
+
+    public function __construct(Product $product)
     {
-        return Product::query()->get();
+        Parent::__construct($product);
     }
 
-    public function getProductById($id)
+    public function getProducts()
+    {
+        return $this->eloquentGetAll();
+    }
+
+    public function showProduct($id)
     {
         return Product::with('category')->find($id)->toArray();
     }
 
-    public function createProduct($data)
+    public function storeProduct($data)
     {
-        return Product::create($data);
+        return $this->eloquentPostCreate($data);
     }
 
     public function updateProduct($id, $data)
     {
-        return Product::find($id);
+        return $this->eloquentUpdate($id, $data);
     }
 
-    public function deleteProduct($id)
+    public function destroyProduct($id)
     {
-        return Product::find($id);
+        return $this->multiDelete($id);
     }
 }

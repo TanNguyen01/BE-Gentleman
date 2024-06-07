@@ -45,7 +45,7 @@ class UserRequest extends FormRequest
                     ])
                 ]
             ];
-        }else{
+        } else {
             return [
                 'email' => 'nullable|email|unique:users,email',
                 'name' => 'nullable|string',
@@ -65,7 +65,8 @@ class UserRequest extends FormRequest
         }
     }
 
-    public function messages(): array{
+    public function messages(): array
+    {
 
         return [
             'email.unique' => 'Email da ton tai',
@@ -91,9 +92,8 @@ class UserRequest extends FormRequest
             [
                 'error' => $errors,
                 'status_code' => 402,
-            ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY));
+            ],
+            JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+        ));
     }
-
 }
-
-

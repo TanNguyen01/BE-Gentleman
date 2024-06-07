@@ -7,7 +7,9 @@ use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\OrderDetailController;
 use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VariantController;
+use App\Http\Controllers\API\VoucherController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -54,9 +56,7 @@ Route::apiResource('categories', CategoryController::class);
 
 //User
 
-Route::apiResource('products', ProductController::class);
-
-
+Route::apiResource('users', UserController::class);
 
 
 Route::post('register', [\App\Http\Controllers\API\AuthController::class, 'register'])->name('register');

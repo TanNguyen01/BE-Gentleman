@@ -22,7 +22,7 @@ class AttributeController extends Controller
 
     public function index()
     {
-        $attribute = $this->attributeService->getAllAttribute();
+        $attribute = $this->attributeService->getAttributes();
         return $this->responseSuccess(
             __('Lấy danh sách thành công!'),
             [
@@ -34,7 +34,7 @@ class AttributeController extends Controller
     public function store(AttributesRequest $request)
     {
         $data = $request->all();
-        $attribute = $this->attributeService->createAttribute($data);
+        $attribute = $this->attributeService->storeAttribute($data);
         return $this->responseCreated(
             __('Tao thuoc tinh thanh cong!'),
             [
@@ -43,9 +43,9 @@ class AttributeController extends Controller
         );
     }
 
-    public function show(String $id)
+    public function show(int $id)
     {
-        $attribute = $this->attributeService->getAttributeById($id);
+        $attribute = $this->attributeService->showAttribute($id);
         if (!$attribute) {
             return
                 $this->responseNotFound(
@@ -90,14 +90,13 @@ class AttributeController extends Controller
 
     public function destroy(string $id)
     {
-        $attribute = $this->attributeService->deleteAttribute($id);
+        $attribute = $this->attributeService->destroyAttribute($id);
         if (!$attribute) {
             return $this->responseNotFound(
                 Response::HTTP_NOT_FOUND,
                 __('khong tim thay bien the!')
             );
         } else {
-            $attribute->delete();
             return $this->responseDeleted(null, Response::HTTP_NO_CONTENT);
         }
     }
