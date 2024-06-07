@@ -9,13 +9,13 @@ use Illuminate\Support\Str;
 class UserService extends AbstractServices
 {
     private $user;
-    function __construct(User $model)
+    function __construct(User $user)
     {
-        parent::__construct($model);
+        parent::__construct($user);
     }
     public function getAllUsers()
     {
-        return $this->user->getAll();
+        return $this->getAll();
     }
 
     public function getUserById($id)

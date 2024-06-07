@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AttributeController;
 use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VariantController;
 use App\Http\Controllers\API\VoucherController;
 use Illuminate\Http\Request;
@@ -43,10 +44,7 @@ Route::delete('category_delete/{id}', [\App\Http\Controllers\API\CategoryControl
 
 //User
 
-Route::get('list_user', [\App\Http\Controllers\API\UserController::class, 'index'])->name('list.user');
-Route::get('user/{id}', [\App\Http\Controllers\API\UserController::class, 'show'])->name('show.user');
-Route::post('user_post', [\App\Http\Controllers\API\UserController::class, 'store'])->name('store.user');
-Route::post('user_update/{id}', [\App\Http\Controllers\API\UserController::class, 'update'])->name('update.user');
+Route::apiResource('users', UserController::class);
 
 
 Route::post('register', [\App\Http\Controllers\API\AuthController::class, 'register'])->name('register');
@@ -56,7 +54,7 @@ Route::post('login', [\App\Http\Controllers\API\AuthController::class, 'login'])
 Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::get('/profile', function (Request $request) {
-        return auth()->users();
+        return auth()->user();
     });
 
     Route::get('logout', [\App\Http\Controllers\API\AuthController::class, 'logout'])->name('logout');
