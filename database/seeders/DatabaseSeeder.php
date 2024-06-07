@@ -22,7 +22,6 @@ class DatabaseSeeder extends Seeder
         \App\Models\Bill::truncate();
         \App\Models\BillDetail::truncate();
         \App\Models\Voucher::truncate();
-        \App\Models\Address::truncate();
         // --------------------------
         \App\Models\Attribute::factory()->count(5)->create();
         \App\Models\Category::factory()->count(5)->create();
@@ -34,9 +33,6 @@ class DatabaseSeeder extends Seeder
         \App\Models\Bill::factory()->count(20)->create();
         \App\Models\BillDetail::factory()->count(40)->create();
         \App\Models\Voucher::factory()->count(10)->create();
-        \App\Models\Address::factory()->count(20)->create();
-        \App\Models\Role::factory()->user()->create();
-        \App\Models\Role::factory()->admin()->create();
         \App\Models\User::factory()->admin()->create();
     }
 }

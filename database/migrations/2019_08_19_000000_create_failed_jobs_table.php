@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('failed_jobs', function (Blueprint $table) {
-            $table->increments('id'); 
+            $table->increments('id');
             $table->string('uuid')->unique();
             $table->text('connection');
             $table->text('queue');
@@ -20,7 +20,6 @@ return new class extends Migration
             $table->longText('exception');
             $table->timestamp('failed_at')->useCurrent();
         });
-        DB::statement('ALTER TABLE failed_jobs AUTO_INCREMENT = 0;');
     }
 
     /**
