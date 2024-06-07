@@ -19,12 +19,12 @@ class VariantService extends AbstractServices
 
     public function getVariant()
     {
-        return $this->getAll();
+        return $this->eloquentGetAll();
     }
 
     public function showVariant($id)
     {
-        return $this->find($id);
+        return $this->eloquentFind($id);
     }
 
     public function storeVariant(array $data)
@@ -32,7 +32,7 @@ class VariantService extends AbstractServices
         if (isset($data['image']) && $data['image'] instanceof UploadedFile) {
             $data['image_path'] = $this->uploadFile($data['image'], 'variants');
         }
-        $variant = $this->postCreate($data);
+        $variant = $this->eloquentPostCreate($data);
         return $variant;
     }
 
@@ -53,6 +53,6 @@ class VariantService extends AbstractServices
     }
     public function destroyVariant($id)
     {
-        return $this->delete($id);
+        return $this->multiDelete($id);
     }
 }

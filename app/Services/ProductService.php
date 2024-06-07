@@ -16,7 +16,7 @@ class ProductService extends AbstractServices
 
     public function getProducts()
     {
-        return $this->getAll();
+        return $this->eloquentGetAll();
     }
 
     public function showProduct($id)
@@ -26,16 +26,16 @@ class ProductService extends AbstractServices
 
     public function storeProduct($data)
     {
-        return $this->postCreate($data);
+        return $this->eloquentPostCreate($data);
     }
 
     public function updateProduct($id, $data)
     {
-        return $this->update($id, $data);
+        return $this->eloquentUpdate($id, $data);
     }
 
     public function destroyProduct($id)
     {
-        return $this->delete($id);
+        return $this->multiDelete($id);
     }
 }

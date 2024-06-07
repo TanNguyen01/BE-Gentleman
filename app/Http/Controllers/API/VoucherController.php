@@ -21,7 +21,7 @@ class VoucherController extends Controller
 
     public function index()
     {
-        $voucher = $this->voucherService->getAll();
+        $voucher = $this->voucherService->getAllVoucher();
         return $this->responseSuccess(
             __('lay danh sach thanh cong'),
             ['data' => $voucher]
@@ -31,7 +31,7 @@ class VoucherController extends Controller
     public function store(VouchersRequest $request)
     {
         $data = $request->all();
-        $voucher = $this->voucherService->postCreate($data);
+        $voucher = $this->voucherService->storeVoucher($data);
         return $this->responseSuccess(
             __('them thanh cong'),
             ['data' => $voucher]
@@ -40,7 +40,7 @@ class VoucherController extends Controller
 
     public function show(int $id)
     {
-        $voucher = $this->voucherService->find($id);
+        $voucher = $this->voucherService->showVoucher($id);
         if (!$voucher) {
             return $this->responseNotFound(
                 Response::HTTP_NOT_FOUND,
@@ -57,7 +57,7 @@ class VoucherController extends Controller
     public function update(VouchersRequest $request, int $id)
     {
         $data = $request->all();
-        $voucher = $this->voucherService->update($id, $data);
+        $voucher = $this->voucherService->updateVoucher($id, $data);
         if (!$voucher) {
             return $this->responseNotFound(
                 Response::HTTP_NOT_FOUND,
@@ -73,7 +73,7 @@ class VoucherController extends Controller
 
     public function destroy(int $id)
     {
-        $voucher = $this->voucherService->delete($id);
+        $voucher = $this->voucherService->destroyVoucher($id);
         return $this->responseSuccess(
             __('xoa thanh cong'),
             ['data' => $voucher]

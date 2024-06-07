@@ -15,7 +15,7 @@ class UserService extends AbstractServices
     }
     public function getAllUsers()
     {
-        return $this->getAll();
+        return $this->eloquentGetAll();
     }
 
     public function getUserById($id)
