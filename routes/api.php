@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AttributeController;
+use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VariantController;
@@ -36,11 +37,10 @@ Route::apiResource('attributes', AttributeController::class);
 Route::apiResource('voucher', VoucherController::class);
 
 //Category
-Route::get('list_category', [\App\Http\Controllers\API\CategoryController::class, 'index'])->name('list.category');
-Route::get('category/{id}', [\App\Http\Controllers\API\CategoryController::class, 'show'])->name('show.category');
-Route::post('category_post', [\App\Http\Controllers\API\CategoryController::class, 'store'])->name('store.category');
-Route::post('category_update/{id}', [\App\Http\Controllers\API\CategoryController::class, 'update'])->name('update.category');
-Route::delete('category_delete/{id}', [\App\Http\Controllers\API\CategoryController::class, 'destroy'])->name('destroy.category');
+
+  Route::apiResource('categories', CategoryController::class);
+
+
 
 //User
 
