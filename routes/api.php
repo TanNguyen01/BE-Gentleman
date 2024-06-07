@@ -1,7 +1,11 @@
 <?php
 
 use App\Http\Controllers\API\AttributeController;
+use App\Http\Controllers\API\BillController;
+use App\Http\Controllers\API\BillDetailController;
 use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\OrderController;
+use App\Http\Controllers\API\OrderDetailController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\VariantController;
 use Illuminate\Http\Request;
@@ -31,9 +35,20 @@ Route::apiResource('variants', VariantController::class);
 //Attribute
 Route::apiResource('attributes', AttributeController::class);
 
-//Category
+//Bill
+Route::apiResource('bills', BillController::class);
 
-  Route::apiResource('categories', CategoryController::class);
+//BillDetail
+Route::apiResource('bill-details', BillDetailController::class);
+
+//Order
+Route::apiResource('orders', OrderController::class);
+
+//OrderDetail
+Route::apiResource('order-details', OrderDetailController::class);
+
+//Category
+Route::apiResource('categories', CategoryController::class);
 
 
 
@@ -50,9 +65,9 @@ Route::post('login', [\App\Http\Controllers\API\AuthController::class, 'login'])
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
 
-    Route::get('/profile', function (Request $request) {
-        return auth()->users();
-    });
+    // Route::get('/profile', function (Request $request) {
+    //     return auth()->users();
+    // });
 
     Route::get('logout', [\App\Http\Controllers\API\AuthController::class, 'logout'])->name('logout');
 });
