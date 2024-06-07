@@ -112,6 +112,21 @@ abstract class AbstractServices
         }
         return $success;
     }
+    
+    public function search(array $criteria): Collection
+    {
+        $query = $this->model->query();
 
+        foreach ($criteria as $column => $value) {
+            if (is_array($value)) {
+                // N?u giá tr? là m?t m?ng, s? d?ng whereIn
+                $query->whereIn($column, $value);
+            } else {
+                // N?u không, s? d?ng where
+                $query->where($column, 'like', '%' . $value . '%');
+            }
+        }
 
+        return $query->get();
+    }
 }
