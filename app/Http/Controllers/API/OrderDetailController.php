@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Requests\OrderDetailRequest;
 use App\Traits\APIResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Services\OrderDetailService;
 
@@ -28,7 +28,7 @@ class OrderDetailController extends OrderDetailService
         ]);
     }
 
-    public function store(Request $request)
+    public function store(OrderDetailRequest $request)
     {
         $request = $request->all();
         $data = $this->orderDetailService->storeOrderDetail($request);
@@ -62,7 +62,7 @@ class OrderDetailController extends OrderDetailService
     /**
      * Show the form for editing the specified resource.
      */
-    public function update(Request $request, string $id)
+    public function update(OrderDetailRequest $request, string $id)
     {
         $data = $this->orderDetailService->updateOrderDetail($id,$request);
         if(!$data){

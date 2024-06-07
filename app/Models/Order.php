@@ -15,8 +15,6 @@ class Order extends Model
         'status',
         'order_date',
         'voucher_id',
-        'recipient_address',
-        'recipient_phone',
     ];
 
     public function user()
