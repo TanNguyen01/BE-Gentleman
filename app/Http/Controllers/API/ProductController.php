@@ -33,8 +33,9 @@ class ProductController extends Controller
 
     public function store(ProductsRequest $request)
     {
-        $data = $request->all();
-        $product = $this->productService->storeProduct($data);
+        $productData = $request->all();
+        $variantsData = $request->input('variants', []);
+        $product = $this->productService->storeProductWithVariants($productData, $variantsData);
         return $this->responseCreated(
             __('Tao san pham thanh cong!'),
             [
