@@ -52,7 +52,8 @@ Route::apiResource('order-details', OrderDetailController::class);
 //Category
 Route::apiResource('categories', CategoryController::class);
 
-
+//Voucher
+Route::apiResource('voucher', VoucherController::class);
 
 //User
 
