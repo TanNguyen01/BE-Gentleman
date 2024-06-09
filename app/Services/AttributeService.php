@@ -15,7 +15,7 @@ class AttributeService extends AbstractServices
     }
     public function getAttributes()
     {
-        return $this->getAll();
+        return Attribute::all();
     }
 
     public function showAttribute($id)

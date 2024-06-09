@@ -22,11 +22,11 @@ class AttributeController extends Controller
 
     public function index()
     {
-        $attribute = $this->attributeService->getAttributes();
+        $attributes = $this->attributeService->getAttributes();
         return $this->responseSuccess(
             __('Lấy danh sách thành công!'),
             [
-                'data' => $attribute,
+                'attributes' => $attributes,
             ]
         );
     }

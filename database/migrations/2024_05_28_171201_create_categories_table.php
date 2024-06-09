@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->integer('quantity');
-            $table->boolean('status');
+            $table->integer('quantity')->nullable();
+            $table->boolean('status')->default(1);
             $table->timestamps();
         });
 

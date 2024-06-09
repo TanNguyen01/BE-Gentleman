@@ -33,7 +33,6 @@ class VariantsRequest extends FormRequest
             'price' => 'required|numeric|min:0',
             'price_promotional' => 'nullable|numeric|min:0',
             'quantity' => 'required|integer|min:0',
-            'status' => 'required|in:active,inactive',
             'image' => 'nullable|url|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
@@ -54,8 +53,6 @@ class VariantsRequest extends FormRequest
             'quantity.required' => 'Quantity is required.',
             'quantity.integer' => 'Quantity must be an integer.',
             'quantity.min' => 'Quantity must be at least :min.',
-            'status.required' => 'Status is required.',
-            'status.in' => 'Status must be either active or inactive.',
             'image.image' => 'The file must be an image.',
             'image.mimes' => 'Only JPEG, PNG, JPG, and GIF files are allowed.',
             'image.max' => 'Maximum file size allowed is :max KB.',

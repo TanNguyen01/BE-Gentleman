@@ -29,23 +29,13 @@ class CategorieRequest extends FormRequest
     {
         return [
               "name" => "required|string",
-              "quantity" => "required|integer",
-              "status"=> [
-                    "required",
-                     Rule::in([
-                        Category::Enable,
-                        Category::Disable,
-                    ])
-              ]
         ];
     }
 
     public function messages(): array{
 
         return [
-            "name.required" => "Nhap ten danh muc",
-            "quantity.required" => "Nhap so luong",
-            "status.required" => "Nhap trang thai danh muc",
+            "name.required" => "Nhập tên danh mục",
         ];
     }
 
