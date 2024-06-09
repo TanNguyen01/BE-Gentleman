@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 
+
 class AuthController extends Controller
 {
     public function register(Request $request)
@@ -19,22 +20,23 @@ class AuthController extends Controller
             'name' => 'required|string',
             'email' => 'required|string|email|max:225|unique:users',
             'password' => 'required|string',
-            'address'=> 'required|string',
-            'phone'=>'required|string',
-            'role' => 'nullable|integer|in:0,1',
+            'address'=> 'nullable|string',
+             'phone'=>'nullable|string',
+             'role' => 'nullable|integer|in:0,1',
 
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors());
         } else {
+
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'address'=>$request->address,
                 'phone'=>$request->phone,
-                //'role'=>
+                'role'=> $request->role,
             ]);
 
             $token = $user->createToken('auth_token')->plainTextToken;

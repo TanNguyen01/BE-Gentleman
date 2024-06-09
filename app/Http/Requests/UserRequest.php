@@ -38,7 +38,6 @@ class UserRequest extends FormRequest
                 'address' => 'nullable|string',
                 'phone' => 'nullable|string',
                 'status' => [
-                    "required",
                     Rule::in([
                         User::Enable,
                         User::Disable,
