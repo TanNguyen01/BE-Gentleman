@@ -19,7 +19,6 @@ class Variant extends Model
         'price',
         'price_promotional',
         'quantity',
-        'description',
         'image',
     ];
 

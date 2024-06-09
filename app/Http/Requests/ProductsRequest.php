@@ -30,6 +30,7 @@ class ProductsRequest extends FormRequest
         return [
             "name" => "required|string",
             "category_id" => "required|integer",
+            'description' => 'nullable|string',
         ];
     }
 
@@ -39,6 +40,7 @@ class ProductsRequest extends FormRequest
         return [
             "name.required" => "Nhap ten san pham",
             "category_id.required" => "Nhap id category",
+
         ];
     }
 

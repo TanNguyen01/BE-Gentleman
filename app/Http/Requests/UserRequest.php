@@ -38,7 +38,6 @@ class UserRequest extends FormRequest
                 'address' => 'nullable|string',
                 'number' => 'nullable|string',
                 'status' => [
-                    "required",
                     Rule::in([
                         User::Enable,
                         User::Disable,
@@ -53,7 +52,7 @@ class UserRequest extends FormRequest
                 'role' => 'nullable|integer|in:0,1',
                 'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
                 'address' => 'nullable|string',
-                'phone' => 'nullable|string',
+                'number' => 'nullable|string',
                 'status' => [
 
                     Rule::in([
@@ -77,7 +76,7 @@ class UserRequest extends FormRequest
             'name.required' => 'Ten khong duoc de trong',
             'name.string' => 'Ten khong hop le',
             'avatar.mimes' => 'Anh phai co dinh dang jpg,png,gif,svg',
-            'phone.string' => 'Sdt khong hop le',
+            'number.string' => 'Sdt khong hop le',
             'address.string' => 'Dia chi ko hop le',
 
 

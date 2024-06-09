@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->integer('category_id');
             $table->string('brand');
+            $table->text('description')->nullable();
             $table->timestamps();
         });
 

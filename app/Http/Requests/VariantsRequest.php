@@ -33,7 +33,6 @@ class VariantsRequest extends FormRequest
             'price' => 'required|numeric|min:0',
             'price_promotional' => 'nullable|numeric|min:0',
             'quantity' => 'required|integer|min:0',
-            'description' => 'nullable|string',
             'image' => 'nullable|url|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }

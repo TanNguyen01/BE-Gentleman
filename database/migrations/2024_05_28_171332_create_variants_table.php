@@ -19,7 +19,6 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->decimal('price_promotional', 10, 2)->nullable();
             $table->integer('quantity');
-            $table->text('description')->nullable();
             $table->string('image')->nullable();
             $table->integer('voucher_id')->nullable();
             $table->timestamps();
