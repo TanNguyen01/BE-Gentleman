@@ -22,11 +22,11 @@ class ProductController extends Controller
 
     public function index()
     {
-        $product = $this->productService->getProducts();
+        $products = $this->productService->getProducts();
         return $this->responseSuccess(
             __('Lấy danh sách thành công!'),
             [
-                'data' => $product,
+                'products' => $products,
             ]
         );
     }
@@ -39,7 +39,7 @@ class ProductController extends Controller
         return $this->responseCreated(
             __('Tao san pham thanh cong!'),
             [
-                'data' => $product
+                'product' => $product
             ]
         );
     }
@@ -51,16 +51,14 @@ class ProductController extends Controller
             return
                 $this->responseNotFound(
                     Response::HTTP_NOT_FOUND,
-                    __('khong tim thay san pham!'),
-                    [
-                        'data' => $product,
-                    ]
+                    __('khong tim thay san pham!')
+
                 );
         } else {
             return $this->responseSuccess(
                 __('lay san pham thanh cong!'),
                 [
-                    'data' => $product,
+                    'product' => $product,
                 ]
             );
         }
@@ -73,17 +71,14 @@ class ProductController extends Controller
         if (!$product) {
             return $this->responseNotFound(
                 Response::HTTP_NOT_FOUND,
-                __('khong tim thay san pham !'),
-                [
-                    'data' => $product
-                ]
+                __('khong tim thay san pham !')
             );
         } else {
             $product->update($data);
             return $this->responseSuccess(
                 __('sua thanh cong'),
                 [
-                    'data' => $product
+                    'product' => $product
                 ]
             );
         }

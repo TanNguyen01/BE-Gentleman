@@ -19,7 +19,6 @@ class Variant extends Model
         'price',
         'price_promotional',
         'quantity',
-        'status',
         'description',
         'image',
     ];
@@ -41,7 +40,6 @@ class Variant extends Model
             'price' => $this->price,
             'price_promotional' => $this->price_promotional,
             'quantity' => $this->quantity,
-            'status' => $this->status,
             'description' => $this->description,
             'image' => $this->image,
         ];

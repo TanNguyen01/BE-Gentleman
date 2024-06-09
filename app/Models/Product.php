@@ -31,7 +31,6 @@ class Product extends Model
                     "price" => $variant->price,
                     "price_promotional" => $variant->price_promotional,
                     "quantity" => $variant->quantity,
-                    "status" => $variant->status,
                     "description" => $variant->description,
                     "image" => $variant->image,
                 ];

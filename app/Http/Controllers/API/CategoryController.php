@@ -25,12 +25,12 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $category = $this->categoryService->getAllCategory();
+        $categories = $this->categoryService->getAllCategory();
 
         return $this->responseSuccess(
             __(' lay danh sach danh muc thanh cong'),
             [
-                'data' => $category,
+                'categories' => $categories,
             ]
         );
     }
@@ -54,7 +54,7 @@ class CategoryController extends Controller
         return $this->responseCreated(__
         ('tao danh muc thanh cong'),
         [
-            'data' => $category,
+            'category' => $category,
         ]);
     }
 
@@ -72,7 +72,7 @@ class CategoryController extends Controller
             return $this->responseSuccess(
                 __('hien thi danh muc thanh cong'),
               [
-                  'data' => $category,
+                  'category' => $category,
               ]
             );
         }
@@ -100,9 +100,9 @@ class CategoryController extends Controller
         }else{
             $category->update($data);
             return $this->responseSuccess(
-                __('cap nhat danh muc thanh cong'),
+                __('Cập nhập danh mục thành công'),
                 [
-                    'data' => $category,
+                    'category' => $category,
                 ]
             );
         }
@@ -121,7 +121,10 @@ class CategoryController extends Controller
             );
         }else{
             $category->delete();
-            return $this->responseDeleted(null, Response::HTTP_NO_CONTENT);
+            return $this->responseSuccess(__('Xóa danh mục thành công!'),
+                [
+                    'category' => $category,
+                ]);
         }
     }
 }
