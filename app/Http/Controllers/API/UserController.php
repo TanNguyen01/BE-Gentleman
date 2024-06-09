@@ -7,6 +7,7 @@ use App\Http\Requests\UserRequest;
 use App\Services\UserService;
 use App\Traits\APIResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
@@ -15,8 +16,9 @@ class UserController extends Controller
 
     protected $userService;
 
-    public function __construct(UserService $userService){
-       $this->userService = $userService;
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
     }
     /**
      * Display a listing of the resource.
@@ -24,7 +26,7 @@ class UserController extends Controller
     public function index()
     {
         $users = $this->userService->getAllUsers();
-        return $this->responseSuccess('Lay danh sach nguoi dung thanh cong',['data'=>$users]);
+        return $this->responseSuccess('Lay danh sach nguoi dung thanh cong', ['data' => $users]);
     }
 
     /**
@@ -46,7 +48,7 @@ class UserController extends Controller
         return $this->responseCreated(
             'them thanh cong',
             [
-                'data'=>$user,
+                'data' => $user,
             ]
         );
     }
@@ -57,7 +59,7 @@ class UserController extends Controller
     public function show(string $id)
     {
         $user = $this->userService->getUserById($id);
-        if(!$user){
+        if (!$user) {
             return $this->responseNotFound(
                 'Khong tim thay nguoi dung nay',
                 Response::HTTP_NOT_FOUND
@@ -65,9 +67,8 @@ class UserController extends Controller
         }
         return $this->responseSuccess(
             'Xem thong tin nguoi dung thanh cong',
-            ['data'=>$user]
+            ['data' => $user]
         );
-
     }
 
     /**
@@ -84,7 +85,7 @@ class UserController extends Controller
     public function update(UserRequest $request, string $id)
     {
         $user = $this->userService->updateUser($id, $request->all());
-        if(!$user){
+        if (!$user) {
             return $this->responseNotFound(
                 Response::HTTP_NOT_FOUND,
                 'Khong tim thay nguoi dung'
@@ -93,7 +94,7 @@ class UserController extends Controller
         }
         return $this->responseSuccess(
             'Cap nhay thanh cong',
-            ['data'=>$user]
+            ['data' => $user]
         );
     }
 
@@ -102,13 +103,13 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-      //  $user = $this->userService->deleteUser($id);
-      //  if(!$user){
-         //   return $this->responseNotFound(
-          //     Response::HTTP_NOT_FOUND,
-           //    'Khong tim thay nguoi dung'
-         //   );
-      //  }
-      //  return $this->responseDeleted(null, Response::HTTP_NO_CONTENT);
+        //  $user = $this->userService->deleteUser($id);
+        //  if(!$user){
+        //   return $this->responseNotFound(
+        //     Response::HTTP_NOT_FOUND,
+        //    'Khong tim thay nguoi dung'
+        //   );
+        //  }
+        //  return $this->responseDeleted(null, Response::HTTP_NO_CONTENT);
     }
 }

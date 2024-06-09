@@ -18,12 +18,12 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('avatar')->nullable();
-            $table->integer('role_id');
-            $table->boolean('status');
-            $table->string('number');
+            $table->integer('role_id')->default(1);
+            $table->integer('status')->default(1);
+            $table->string('number')->nullable();
+            $table->string('address')->nullable();
             $table->timestamps();
         });
-        DB::statement('ALTER TABLE users AUTO_INCREMENT = 0;');
     }
 
     /**

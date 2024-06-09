@@ -5,31 +5,36 @@ namespace App\Services;
 use App\Models\Attribute;
 use App\Traits\APIResponse;
 
-class AttributeService
+class AttributeService extends AbstractServices
 {
     use APIResponse;
-    public function getAllAttribute()
+
+    public function __construct(Attribute $attribute)
     {
-        return Attribute::query()->get();
+        parent::__construct($attribute);
+    }
+    public function getAttributes()
+    {
+        return $this->getAll();
     }
 
-    public function getAttributeById($id)
+    public function showAttribute($id)
     {
-        return Attribute::find($id);
+        return $this->find($id);
     }
 
-    public function createAttribute($data)
+    public function storeAttribute($data)
     {
-        return Attribute::create($data);
+        return $this->postCreate($data);
     }
 
     public function updateAttribute($id, $data)
     {
-        return Attribute::find($id);
+        return $this->update($id, $data);
     }
 
-    public function deleteAttribute($id)
+    public function destroyAttribute($id)
     {
-        return Attribute::find($id);
+        return $this->delete($id);
     }
 }

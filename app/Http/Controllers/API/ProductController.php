@@ -22,7 +22,7 @@ class ProductController extends Controller
 
     public function index()
     {
-        $product = $this->productService->getAllProducts();
+        $product = $this->productService->getProducts();
         return $this->responseSuccess(
             __('Lấy danh sách thành công!'),
             [
@@ -33,8 +33,9 @@ class ProductController extends Controller
 
     public function store(ProductsRequest $request)
     {
-        $data = $request->all();
-        $product = $this->productService->createProduct($data);
+        $productData = $request->all();
+        $variantsData = $request->input('variants', []);
+        $product = $this->productService->storeProductWithVariants($productData, $variantsData);
         return $this->responseCreated(
             __('Tao san pham thanh cong!'),
             [
@@ -43,9 +44,9 @@ class ProductController extends Controller
         );
     }
 
-    public function show(String $id)
+    public function show(int $id)
     {
-        $product = $this->productService->getProductById($id);
+        $product = $this->productService->showProduct($id);
         if (!$product) {
             return
                 $this->responseNotFound(
@@ -90,14 +91,13 @@ class ProductController extends Controller
 
     public function destroy(string $id)
     {
-        $product = $this->productService->deleteProduct($id);
+        $product = $this->productService->destroyProduct($id);
         if (!$product) {
             return $this->responseNotFound(
                 Response::HTTP_NOT_FOUND,
                 __('khong tim thay bien the!')
             );
         } else {
-            $product->delete();
             return $this->responseDeleted(null, Response::HTTP_NO_CONTENT);
         }
     }

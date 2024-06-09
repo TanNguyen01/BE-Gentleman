@@ -3,33 +3,57 @@
 namespace App\Services;
 
 use App\Models\Product;
+use App\Models\Variant;
 use App\Traits\APIResponse;
+use Illuminate\Support\Facades\DB;
 
-class ProductService
+class ProductService extends AbstractServices
 {
     use APIResponse;
-    public function getAllProducts()
+
+    public function __construct(Product $product)
     {
-        return Product::query()->get();
+        Parent::__construct($product);
     }
 
-    public function getProductById($id)
+    public function getProducts()
+    {
+        return $this->eloquentGetAll();
+    }
+
+    public function showProduct($id)
     {
         return Product::with('category')->find($id)->toArray();
     }
 
-    public function createProduct($data)
+    public function storeProductWithVariants(array $productData, array $variantsData)
     {
-        return Product::create($data);
+        DB::beginTransaction();
+        try {
+            // Tạo sản phẩm
+            $product = $this->eloquentPostCreate($productData);
+
+            // Lưu các biến thể
+            foreach ($variantsData as $variantData) {
+                $variantData['product_id'] = $product->id;
+                Variant::create($variantData);
+            }
+
+            DB::commit();
+            return $product;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public function updateProduct($id, $data)
     {
-        return Product::find($id);
+        return $this->eloquentUpdate($id, $data);
     }
 
-    public function deleteProduct($id)
+    public function destroyProduct($id)
     {
-        return Product::find($id);
+        return $this->eloquentDelete($id);
     }
 }

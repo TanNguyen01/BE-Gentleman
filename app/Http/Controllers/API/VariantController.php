@@ -22,7 +22,7 @@ class VariantController extends Controller
 
     public function index()
     {
-        $variant = $this->variantService->getAllVariants();
+        $variant = $this->variantService->getVariant();
         return $this->responseSuccess(
             __('Lấy danh sách thành công!'),
             [
@@ -34,7 +34,7 @@ class VariantController extends Controller
     public function store(VariantsRequest $request)
     {
         $data = $request->all();
-        $variant = $this->variantService->createVariant($data);
+        $variant = $this->variantService->storeVariant($data);
         return $this->responseCreated(
             __('Tao danh muc thanh cong!'),
             [
@@ -45,7 +45,7 @@ class VariantController extends Controller
 
     public function show(String $id)
     {
-        $variant = $this->variantService->getVariantById($id);
+        $variant = $this->variantService->showVariant($id);
         if (!$variant) {
             return
                 $this->responseNotFound(
@@ -90,14 +90,13 @@ class VariantController extends Controller
 
     public function destroy(string $id)
     {
-        $variant = $this->variantService->deleteVariant($id);
+        $variant = $this->variantService->destroyVariant($id);
         if (!$variant) {
             return $this->responseNotFound(
                 Response::HTTP_NOT_FOUND,
                 __('khong tim thay bien the!')
             );
         } else {
-            $variant->delete();
             return $this->responseDeleted(null, Response::HTTP_NO_CONTENT);
         }
     }

@@ -26,7 +26,7 @@ class VariantFactory extends Factory
             'price_promotional' => $this->faker->randomFloat(2, 1, 100),
             'quantity' => $this->faker->numberBetween(1, 100),
             'status' => $this->faker->randomElement([0, 1]),
-            'description' => $this->faker->sentence,
+
             'image' => $this->faker->imageUrl(),
         ];
     }

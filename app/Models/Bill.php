@@ -13,7 +13,6 @@ class Bill extends Model
         'user_id',
         'recipient_phone',
         'recipient_address',
-        'voucher',
         'total_amount',
         'bill_date',
     ];

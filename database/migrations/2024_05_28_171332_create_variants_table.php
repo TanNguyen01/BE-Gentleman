@@ -20,12 +20,11 @@ return new class extends Migration
             $table->decimal('price_promotional', 10, 2)->nullable();
             $table->integer('quantity');
             $table->boolean('status');
-            $table->text('description')->nullable();
             $table->string('image')->nullable();
+            $table->integer('voucher_id')->nullable();
             $table->timestamps();
         });
 
-        DB::statement('ALTER TABLE variants AUTO_INCREMENT = 0;');
     }
 
     /**
