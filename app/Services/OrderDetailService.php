@@ -15,7 +15,7 @@ class OrderDetailService extends AbstractServices {
     }
 
     public function storeOrderDetail($data){
-        return $this->eloquentPostCreate($data);
+        return $this->eloquentMutiInsert($data);
     }
 
     public function showOrderDetail($id){

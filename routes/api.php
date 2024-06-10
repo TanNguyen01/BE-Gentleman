@@ -9,7 +9,6 @@ use App\Http\Controllers\API\OrderDetailController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VariantController;
-use App\Http\Controllers\API\VoucherController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

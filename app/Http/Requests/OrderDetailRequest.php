@@ -3,6 +3,10 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 
 class OrderDetailRequest extends FormRequest
 {
@@ -26,24 +30,38 @@ class OrderDetailRequest extends FormRequest
             'order_id' => 'required|integer|exists:orders,id', // Ki?m tra order_id có t?n t?i trong b?ng orders không
             'status' => 'required|string|in:pending,shipped,delivered,canceled', // Tr?ng thái là b?t bu?c và ph?i là m?t trong các giá tr?: pending, shipped, delivered, canceled
             'quantity' => 'required|integer|min:1', // S? lý?ng là b?t bu?c, ph?i là s? nguyên và không nh? hõn 1
+            'voucher_id' => 'nullable|integer|exists:vouchers,id'
         ];
     }
 
     public function messages()
     {
         return [
-            'variant_id.required' => 'Variant ID là b?t bu?c.',
-            'variant_id.integer' => 'Variant ID ph?i là s? nguyên.',
-            'variant_id.exists' => 'Variant ID không t?n t?i.',
-            'order_id.required' => 'Order ID là b?t bu?c.',
-            'order_id.integer' => 'Order ID ph?i là s? nguyên.',
-            'order_id.exists' => 'Order ID không t?n t?i.',
-            'status.required' => 'Tr?ng thái ðõn hàng là b?t bu?c.',
-            'status.string' => 'Tr?ng thái ðõn hàng ph?i là chu?i k? t?.',
-            'status.in' => 'Tr?ng thái ðõn hàng không h?p l?.',
-            'quantity.required' => 'S? lý?ng là b?t bu?c.',
-            'quantity.integer' => 'S? lý?ng ph?i là s? nguyên.',
-            'quantity.min' => 'S? lý?ng không ðý?c nh? hõn 1.',
+            'variant_id.required' => 'Variant ID la bat buoc.',
+            'variant_id.integer' => 'Variant ID phai la so nguyen.',
+            'variant_id.exists' => 'Variant ID khong ton tai.',
+            'order_id.required' => 'Order ID la bat buoc.',
+            'order_id.integer' => 'Order ID phai la so nguyen.',
+            'order_id.exists' => 'Order ID khong ton tai.',
+            'status.required' => 'Trang thai don hang la bat buoc.',
+            'status.string' => 'Trang thai don hang phai la chuoi ky tu.',
+            'status.in' => 'Trang thai don hang khong hop le.',
+            'quantity.required' => 'So luong la bat buoc.',
+            'quantity.integer' => 'So luong phai la so nguyen.',
+            'quantity.min' => 'So luong khong duoc nho hon 1.',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+
+        $errors = (new ValidationException($validator))->errors();
+        throw new HttpResponseException(response()->json(
+            [
+                'error' => $errors,
+                'status_code' => 402,
+            ],
+            JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+        ));
     }
 }

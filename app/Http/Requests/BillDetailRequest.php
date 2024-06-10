@@ -3,6 +3,10 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 
 class BillDetailRequest extends FormRequest
 {
@@ -27,27 +31,41 @@ class BillDetailRequest extends FormRequest
             'price' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:1',
             'bill_id' => 'required|integer|exists:bills,id',
+            'voucher' => 'nullable|string|max:50',
         ];
     }
 
     public function messages()
     {
         return [
-            'product_name.required' => 'Tên s?n ph?m là b?t bu?c.',
-            'product_name.string' => 'Tên s?n ph?m ph?i là chu?i k? t?.',
-            'product_name.max' => 'Tên s?n ph?m không ðý?c vý?t quá 255 k? t?.',
-            'attribute_name.required' => 'Tên thu?c tính là b?t bu?c.',
-            'attribute_name.string' => 'Tên thu?c tính ph?i là chu?i k? t?.',
-            'attribute_name.max' => 'Tên thu?c tính không ðý?c vý?t quá 255 k? t?.',
-            'price.required' => 'Giá là b?t bu?c.',
-            'price.numeric' => 'Giá ph?i là s?.',
-            'price.min' => 'Giá không ðý?c nh? hõn 0.',
-            'quantity.required' => 'S? lý?ng là b?t bu?c.',
-            'quantity.integer' => 'S? lý?ng ph?i là s? nguyên.',
-            'quantity.min' => 'S? lý?ng không ðý?c nh? hõn 1.',
-            'bill_id.required' => 'Bill ID là b?t bu?c.',
-            'bill_id.integer' => 'Bill ID ph?i là s? nguyên.',
-            'bill_id.exists' => 'Bill ID không t?n t?i.',
+            'product_name.required' => 'Ten san pham la bat buoc.',
+            'product_name.string' => 'Ten san pham phai la chuoi ky tu.',
+            'product_name.max' => 'Ten san pham khong duoc vuot qua 255 ky tu.',
+            'attribute_name.required' => 'Ten thuoc tinh la bat buoc.',
+            'attribute_name.string' => 'Ten thuoc tinh phai la chuoi ky tu.',
+            'attribute_name.max' => 'Ten thuoc tinh khong duoc vuot qua 255 ky tu.',
+            'price.required' => 'Gia la bat buoc.',
+            'price.numeric' => 'Gia phai la so.',
+            'price.min' => 'Gia khong duoc nho hon 0.',
+            'quantity.required' => 'So luong la bat buoc.',
+            'quantity.integer' => 'So luong phai la so nguyen.',
+            'quantity.min' => 'So luong khong duoc nho hon 1.',
+            'bill_id.required' => 'Bill ID la bat buoc.',
+            'bill_id.integer' => 'Bill ID phai la so nguyen.',
+            'bill_id.exists' => 'Bill ID khong ton tai.',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+
+        $errors = (new ValidationException($validator))->errors();
+        throw new HttpResponseException(response()->json(
+            [
+                'error' => $errors,
+                'status_code' => 402,
+            ],
+            JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+        ));
     }
 }
