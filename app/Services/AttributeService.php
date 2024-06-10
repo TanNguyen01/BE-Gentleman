@@ -20,21 +20,21 @@ class AttributeService extends AbstractServices
 
     public function showAttribute($id)
     {
-        return $this->find($id);
+        return $this->eloquentFind($id);
     }
 
     public function storeAttribute($data)
     {
-        return $this->postCreate($data);
+        return $this->eloquentPostCreate($data);
     }
 
     public function updateAttribute($id, $data)
     {
-        return $this->update($id, $data);
+        return $this->updateAttribute($id, $data);
     }
 
     public function destroyAttribute($id)
     {
-        return $this->delete($id);
+        return $this->multiDelete($id);
     }
 }

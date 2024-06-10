@@ -33,12 +33,12 @@ class AttributeController extends Controller
 
     public function store(AttributesRequest $request)
     {
-        $data = $request->all();
-        $attribute = $this->attributeService->storeAttribute($data);
+        $attributes = $request->all();
+        $attribute = $this->attributeService->storeAttribute($attributes);
         return $this->responseCreated(
             __('Tao thuoc tinh thanh cong!'),
             [
-                'data' => $attribute
+                'attributes' => $attribute
             ]
         );
     }
@@ -52,14 +52,14 @@ class AttributeController extends Controller
                     Response::HTTP_NOT_FOUND,
                     __('khong tim thay thuoc tinh!'),
                     [
-                        'data' => $attribute,
+                        'attributes' => $attribute,
                     ]
                 );
         } else {
             return $this->responseSuccess(
                 __('lay bien the thanh cong!'),
                 [
-                    'data' => $attribute,
+                    'attributes' => $attribute,
                 ]
             );
         }
@@ -67,22 +67,22 @@ class AttributeController extends Controller
 
     public function update(AttributesRequest $request, $id)
     {
-        $data = $request->all();
-        $attribute = $this->attributeService->updateAttribute($id, $data);
+        $attributes = $request->all();
+        $attribute = $this->attributeService->updateAttribute($id, $attributes);
         if (!$attribute) {
             return $this->responseNotFound(
                 Response::HTTP_NOT_FOUND,
                 __('khong tim thay thuoc tinh!'),
                 [
-                    'data' => $attribute
+                    'attributes' => $attribute
                 ]
             );
         } else {
-            $attribute->update($data);
+            $attribute->update($attributes);
             return $this->responseSuccess(
                 __('sua thanh cong'),
                 [
-                    'data' => $attribute
+                    'attributes' => $attribute
                 ]
             );
         }

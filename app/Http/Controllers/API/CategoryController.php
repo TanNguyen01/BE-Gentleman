@@ -16,8 +16,9 @@ class CategoryController extends Controller
 
     protected $categoryService;
 
-    public function __construct(CategoryService $categoryService){
-         $this->categoryService = $categoryService;
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
     }
 
     /**
@@ -51,11 +52,12 @@ class CategoryController extends Controller
         $data = $request->all();
         $category = $this->categoryService->createCategory($data);
 
-        return $this->responseCreated(__
-        ('tao danh muc thanh cong'),
-        [
-            'category' => $category,
-        ]);
+        return $this->responseCreated(
+            __('tao danh muc thanh cong'),
+            [
+                'category' => $category,
+            ]
+        );
     }
 
     /**
@@ -67,13 +69,14 @@ class CategoryController extends Controller
         if (!$category) {
             return $this->responseNotFound(
                 Response::HTTP_NOT_FOUND,
-                __('khong tim thay danh muc'));
-        }else{
+                __('khong tim thay danh muc')
+            );
+        } else {
             return $this->responseSuccess(
                 __('hien thi danh muc thanh cong'),
-              [
-                  'category' => $category,
-              ]
+                [
+                    'category' => $category,
+                ]
             );
         }
     }
@@ -92,12 +95,13 @@ class CategoryController extends Controller
     public function update(CategorieRequest $request, string $id)
     {
         $data = $request->all();
-        $category = $this->categoryService->updateCategory($id,$data);
-        if(!$category){
-            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
-            __('khong tim thay danh muc'),
+        $category = $this->categoryService->updateCategory($id, $data);
+        if (!$category) {
+            return $this->responseNotFound(
+                Response::HTTP_NOT_FOUND,
+                __('khong tim thay danh muc'),
             );
-        }else{
+        } else {
             $category->update($data);
             return $this->responseSuccess(
                 __('Cập nhập danh mục thành công'),
@@ -114,17 +118,19 @@ class CategoryController extends Controller
     public function destroy(string $id)
     {
         $category = $this->categoryService->deleteCategory($id);
-        if(!$category){
+        if (!$category) {
             return $this->responseNotFound(
                 Response::HTTP_NOT_FOUND,
                 __('khong tim thay danh muc'),
             );
-        }else{
+        } else {
             $category->delete();
-            return $this->responseSuccess(__('Xóa danh mục thành công!'),
+            return $this->responseSuccess(
+                __('Xóa danh mục thành công!'),
                 [
                     'category' => $category,
-                ]);
+                ]
+            );
         }
     }
 }

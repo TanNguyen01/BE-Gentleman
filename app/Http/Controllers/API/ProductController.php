@@ -26,7 +26,7 @@ class ProductController extends Controller
         return $this->responseSuccess(
             __('Lấy danh sách thành công!'),
             [
-                'products' => $products,
+                'product' => $products,
             ]
         );
     }

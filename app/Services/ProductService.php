@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Attribute;
 use App\Models\Product;
 use App\Models\Variant;
 use App\Traits\APIResponse;
@@ -23,22 +24,28 @@ class ProductService extends AbstractServices
 
     public function showProduct($id)
     {
-        return Product::with('category')->find($id)->toArray();
+        return Product::with('category', 'variants.attribute')->find($id)->toArray();
     }
 
     public function storeProductWithVariants(array $productData, array $variantsData)
     {
         DB::beginTransaction();
         try {
-            // Tạo sản phẩm
+
             $product = $this->eloquentPostCreate($productData);
 
-            // Lưu các biến thể
             foreach ($variantsData as $variantData) {
+
+                if (isset($variantData['attribute_id'])) {
+
+                    $attributeData = $variantData['attribute_id'];
+                    $attribute = Attribute::create($attributeData);
+                    $variantData['attribute_id'] = $attribute->id;
+                }
+
                 $variantData['product_id'] = $product->id;
                 Variant::create($variantData);
             }
-
             DB::commit();
             return $product;
         } catch (\Exception $e) {
