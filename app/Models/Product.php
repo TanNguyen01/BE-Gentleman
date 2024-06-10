@@ -28,7 +28,11 @@ class Product extends Model
             'brand' => $this->brand,
             'variants' => $this->variants->map(function ($variant) {
                 return [
-                    "attribute_id" => $variant->attribute_id,
+                    "attribute_id" => $variant->attribute ? [
+                        'id' => $variant->attribute->id,
+                        "name" => $variant->attribute->name,
+                        "value" => $variant->attribute->value,
+                    ] : null,
                     "price" => $variant->price,
                     "price_promotional" => $variant->price_promotional,
                     "quantity" => $variant->quantity,
@@ -37,6 +41,7 @@ class Product extends Model
                 ];
             })->toArray(),
         ];
+
 
         return $data;
     }

@@ -23,7 +23,6 @@ return new class extends Migration
             $table->integer('voucher_id')->nullable();
             $table->timestamps();
         });
-
     }
 
     /**
