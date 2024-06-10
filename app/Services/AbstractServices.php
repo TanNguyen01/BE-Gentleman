@@ -61,11 +61,11 @@ abstract class AbstractServices
  // them nhieu ban ghi
      public function eloquentMutiInsert(array $data): bool
      {
-         //  $data = [
-         //         ['name' => 'John', 'email' => 'john@example.com'],
-         //         ['name' => 'Jane', 'email' => 'jane@example.com'],
-         //         ['name' => 'Alice', 'email' => 'alice@example.com'],
-         //     ];
+        //   $data = [
+        //          ['name' => 'John', 'email' => 'john@example.com'],
+        //          ['name' => 'Jane', 'email' => 'jane@example.com'],
+        //          ['name' => 'Alice', 'email' => 'alice@example.com'],
+        //      ];
          return $this->model->insert($data);
      }
 
@@ -112,7 +112,7 @@ abstract class AbstractServices
         }
         return $success;
     }
-    
+
     public function search(array $criteria): Collection
     {
         $query = $this->model->query();
