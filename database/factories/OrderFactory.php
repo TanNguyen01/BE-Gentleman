@@ -24,9 +24,6 @@ class OrderFactory extends Factory
             'total_amount' => $this->faker->randomFloat(2, 10, 1000),
             'status' => $this->faker->randomElement(['pending', 'completed', 'canceled']),
             'order_date' => $this->faker->date(),
-            'voucher_id' => \App\Models\Voucher::factory(),
-            'recipient_address' => $this->faker->address,
-            'recipient_phone' => $this->faker->phoneNumber,
         ];
     }
 }

@@ -12,15 +12,15 @@ return new class extends Migration
     public function up()
     {
         Schema::create('bills', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->integer('user_id')->constrained('users');
             $table->string('Recipient_phone');
             $table->string('Recipient_address');
             $table->decimal('total_amount', 10, 2);
             $table->dateTime('bill_date');
-            $table->string('voucher');
             $table->timestamps();
         });
+
     }
 
     /**

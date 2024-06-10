@@ -10,7 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
-class CategorieRequest extends FormRequest
+class ProductsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,23 +28,18 @@ class CategorieRequest extends FormRequest
     public function rules(): array
     {
         return [
-              "name" => "required|string|unique:categories,name",
-              "quantity" => "integer",
-              "status"=> [
-                    Rule::in([
-                        Category::Enable,
-                        Category::Disable,
-                    ])
-              ]
+            "name" => "required|string",
+            "category_id" => "required|integer",
+            'description' => 'nullable|string',
         ];
     }
 
-    public function messages(): array{
+    public function messages(): array
+    {
 
         return [
-            "name.unique" => "Danh muc da ton tai",
-            "name.required" => "Nhap ten danh muc",
-
+            "name.required" => "Nhap ten san pham",
+            "category_id.required" => "Nhap id category",
 
         ];
     }
@@ -57,8 +52,8 @@ class CategorieRequest extends FormRequest
             [
                 'error' => $errors,
                 'status_code' => 402,
-            ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY));
+            ],
+            JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+        ));
     }
-
-
 }

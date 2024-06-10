@@ -12,7 +12,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('vouchers', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('voucher_code');
             $table->decimal('discount_amount', 10, 2);
             $table->date('expiration_date');
@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('description');
             $table->timestamps();
         });
+
     }
 
     /**

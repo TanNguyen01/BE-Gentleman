@@ -3,32 +3,48 @@
 namespace App\Services;
 
 
- use App\Models\Category;
- use App\Traits\APIResponse;
+use App\Models\Category;
+use App\Models\Product;
+use App\Traits\APIResponse;
 
- class CategoryService {
+class CategoryService
+{
 
-       use APIResponse;
-       public function getAllCategory(){
+     use APIResponse;
+     public function getAllCategory()
+     {
 
-              return Category::query()->get();
-       }
+          $categories = Category::all();
 
-       public function getCategoryById($id){
+          foreach ($categories as $category) {
 
-            return Category::find($id);
-       }
+               $productCount = Product::where('category_id', $category->id)->count();
 
-       public function createCategory($data){
-            return Category::create($data);
-       }
+               $category->update(['quantity' => $productCount]);
+          }
 
-       public function updateCategory($id,$data){
-             return Category::find($id);
-       }
+          return $categories;
+     }
 
-       public function deleteCategory($id){
+     public function getCategoryById($id)
+     {
 
-            return Category::find($id);
-       }
- }
+          return Category::find($id);
+     }
+
+     public function createCategory($data)
+     {
+          return Category::create($data);
+     }
+
+     public function updateCategory($id, $data)
+     {
+          return Category::find($id);
+     }
+
+     public function deleteCategory($id)
+     {
+
+          return Category::find($id);
+     }
+}

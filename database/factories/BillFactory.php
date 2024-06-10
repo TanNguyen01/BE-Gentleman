@@ -23,7 +23,6 @@ class BillFactory extends Factory
             'user_id' => \App\Models\User::factory(),
             'recipient_phone' => $this->faker->phoneNumber,
             'recipient_address' => $this->faker->address,
-            'voucher' => $this->faker->word,
             'total_amount' => $this->faker->randomFloat(2, 10, 1000),
             'bill_date' => $this->faker->date(),
         ];

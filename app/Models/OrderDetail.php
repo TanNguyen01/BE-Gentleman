@@ -14,6 +14,7 @@ class OrderDetail extends Model
         'order_id',
         'status',
         'quantity',
+        'voucher_id',
     ];
     public function order()
     {
