@@ -15,36 +15,6 @@ class Product extends Model
         'description'
     ];
 
-    public function toArray()
-    {
-        $data = [
-            'id' => $this->id,
-            'name' => $this->name,
-            'category_id' => $this->category ? [
-                'id' => $this->category->id,
-                'name' => $this->category->name,
-                'status' => $this->category->status
-            ] : null,
-            'brand' => $this->brand,
-            'variants' => $this->variants->map(function ($variant) {
-                return [
-                    "attribute_id" => $variant->attribute ? [
-                        'id' => $variant->attribute->id,
-                        "name" => $variant->attribute->name,
-                        "value" => $variant->attribute->value,
-                    ] : null,
-                    "price" => $variant->price,
-                    "price_promotional" => $variant->price_promotional,
-                    "quantity" => $variant->quantity,
-                    "description" => $variant->description,
-                    "image" => $variant->image,
-                ];
-            })->toArray(),
-        ];
-
-
-        return $data;
-    }
     public function category()
     {
         return $this->belongsTo(Category::class);

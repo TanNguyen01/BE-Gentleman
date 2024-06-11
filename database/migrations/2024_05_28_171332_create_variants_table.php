@@ -13,9 +13,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('variants', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('product_id');
-            $table->integer('attribute_id');
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('product_id');
             $table->decimal('price', 10, 2);
             $table->decimal('price_promotional', 10, 2)->nullable();
             $table->integer('quantity');
