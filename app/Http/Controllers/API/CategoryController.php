@@ -24,7 +24,7 @@ class CategoryController extends Controller
         try {
             $categories = $this->categoryService->getAllCategories();
             return $this->successResponse([
-                'categories' => CategoryResource::collection($categories),
+                'categories' => $categories,
             ], 'Get All Categories');
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);

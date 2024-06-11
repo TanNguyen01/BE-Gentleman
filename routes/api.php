@@ -28,15 +28,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-//Product
-Route::apiResource('products', ProductController::class);
-
-//Variant
-Route::apiResource('variants', VariantController::class);
-
-//Attribute
-Route::apiResource('attributes', AttributeController::class);
-
+Route::apiResource("categories", \App\Http\Controllers\API\CategoryController::class);
+Route::get('categories/{id}/total-products', [\App\Http\Controllers\API\CategoryController::class, 'totalProducts']);
+Route::apiResource("products", \App\Http\Controllers\API\ProductController::class);
+Route::apiResource("variants", \App\Http\Controllers\API\VariantController::class);
+Route::apiResource("attributes", \App\Http\Controllers\API\AttributeController::class);
+Route::apiResource("attribute-values", \App\Http\Controllers\API\AttributeValueController::class);
 //Bill
 Route::apiResource('bills', BillController::class);
 Route::get('bills-with-billDetail/{id}', [BillController::class,'billWithBillDetail']);
@@ -50,9 +47,6 @@ Route::get('order-with-orderDetail/{id}', [OrderController::class,'orderWithOrde
 
 //OrderDetail
 Route::apiResource('order-details', OrderDetailController::class);
-
-//Category
-Route::apiResource('categories', CategoryController::class);
 
 //Voucher
 // Route::apiResource('voucher', VoucherController::class);
