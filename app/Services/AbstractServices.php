@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 
 abstract class AbstractServices
 {
@@ -54,8 +55,19 @@ abstract class AbstractServices
 // xoa nheu ban ghi
      public function eloquentMultiDelete(array $ids): int
      {
-         // $ids => [id,id]
-         return $this->model->destroy($ids);
+        DB::beginTransaction();
+
+        try {
+            foreach ($ids as $id) {
+                $this->model->destroy($id);
+            }
+            DB::commit();
+            return true;
+        }
+        catch (\Exception $e) {
+            DB::rollBack();
+            return false;
+        }
      }
 
  // them nhieu ban ghi
@@ -66,7 +78,20 @@ abstract class AbstractServices
         //          ['name' => 'Jane', 'email' => 'jane@example.com'],
         //          ['name' => 'Alice', 'email' => 'alice@example.com'],
         //      ];
-         return $this->model->insert($data);
+
+        DB::beginTransaction();
+
+        try {
+            foreach ($data['data'] as $value) {
+                $this->model->insert($value);
+            }
+            DB::commit();
+            return true;
+        }
+        catch (\Exception $e) {
+            DB::rollBack();
+            return false;
+        }
      }
 
 // lay du lieu theo quan he

@@ -22,11 +22,8 @@ class BillService extends AbstractServices {
         return $this->eloquentFind($id);
     }
 
-    public function updateBill($id, $data){
-        return $this->eloquentUpdate($id,$data);
-    }
-
-    public function destroyBill($id){
-        return $this->eloquentDelete($id);
-    }
+   public function eloquentBillWithBillDetail($id){
+        $relations = ['billDetails'];
+        return $this->eloquentWithRelations($id,$relations);
+   }
 }

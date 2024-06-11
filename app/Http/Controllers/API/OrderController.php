@@ -94,4 +94,21 @@ class OrderController extends OrderService
             return $this->responseDeleted(null, Response::HTTP_NO_CONTENT);
         }
     }
+
+    public function orderWithOrderDetail($id){
+        $data = $this->orderService->eloquentOrderWithOrderDetail($id);
+        if (!$data) {
+            return $this->responseNotFound(
+                Response::HTTP_NOT_FOUND,
+                __('khong thay bill detail')
+            );
+        } else {
+            return $this->responseSuccess(
+                __('hien thi danh muc thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
+        }
+    }
 }
