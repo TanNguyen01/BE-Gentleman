@@ -9,6 +9,7 @@ use App\Http\Controllers\API\OrderDetailController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VariantController;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,12 +39,14 @@ Route::apiResource('attributes', AttributeController::class);
 
 //Bill
 Route::apiResource('bills', BillController::class);
+Route::get('bills-with-billDetail/{id}', [BillController::class,'billWithBillDetail']);
 
 //BillDetail
 Route::apiResource('bill-details', BillDetailController::class);
 
 //Order
 Route::apiResource('orders', OrderController::class);
+Route::get('order-with-orderDetail/{id}', [OrderController::class,'orderWithOrderDetail']);
 
 //OrderDetail
 Route::apiResource('order-details', OrderDetailController::class);
@@ -52,7 +55,7 @@ Route::apiResource('order-details', OrderDetailController::class);
 Route::apiResource('categories', CategoryController::class);
 
 //Voucher
-Route::apiResource('voucher', VoucherController::class);
+// Route::apiResource('voucher', VoucherController::class);
 
 //User
 

@@ -22,19 +22,20 @@ class BillController extends BillService
     public function index()
     {
         $data = $this->billService->getAllBill();
-        return $this->responseCreated(__
-        ('tao danh muc thanh cong'),
-        [
-            'data' => $data,
-        ]);
+        return $this->responseCreated(
+            __('tao danh muc thanh cong'),
+            [
+                'data' => $data,
+            ]
+        );
     }
 
     public function store(BillRequest $request)
     {
         $request = $request->validated();
         $data = $this->billService->storeBill($request);
-        return $this->responseCreated(__
-            ('tao danh muc thanh cong'),
+        return $this->responseCreated(
+            __('tao danh muc thanh cong'),
             [
                 'data' => $data,
             ]
@@ -46,34 +47,15 @@ class BillController extends BillService
      */
     public function show(string $id)
     {
-       $data = $this->billService->showBill($id);
-       if (!$data) {
-        return $this->responseNotFound(
-            Response::HTTP_NOT_FOUND,
-            __('khong tim thay danh muc'));
-        }else{
-        return $this->responseSuccess(
-            __('hien thi danh muc thanh cong'),
-          [
-              'data' => $data,
-          ]
-        );
-    }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function update(BillRequest $request, string $id)
-    {
-        $data = $this->billService->updateBill($id,$request);
-        if(!$data){
-            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
-            __('khong tim thay danh muc'),
+        $data = $this->billService->showBill($id);
+        if (!$data) {
+            return $this->responseNotFound(
+                Response::HTTP_NOT_FOUND,
+                __('khong tim thay danh muc')
             );
-        }else{
+        } else {
             return $this->responseSuccess(
-                __('cap nhat danh muc thanh cong'),
+                __('hien thi danh muc thanh cong'),
                 [
                     'data' => $data,
                 ]
@@ -81,19 +63,20 @@ class BillController extends BillService
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        $data = $this->billService->destroyBill($id);
-        if(!$data){
+    public function billWithBillDetail($id){
+        $data = $this->billService->eloquentBillWithBillDetail($id);
+        if (!$data) {
             return $this->responseNotFound(
                 Response::HTTP_NOT_FOUND,
-                __('khong tim thay danh muc'),
+                __('khong thay bill detail')
             );
-        }else{
-            return $this->responseDeleted(null, Response::HTTP_NO_CONTENT);
+        } else {
+            return $this->responseSuccess(
+                __('hien thi danh muc thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
         }
     }
 }
