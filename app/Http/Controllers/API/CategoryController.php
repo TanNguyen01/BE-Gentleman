@@ -3,16 +3,14 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CategorieRequest;
+use App\Http\Resources\CategoryResource;
 use App\Services\CategoryService;
-use App\Traits\APIResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use App\Traits\ApiResponseTrait;
 
 class CategoryController extends Controller
 {
-
-    use APIResponse;
+    use ApiResponseTrait;
 
     protected $categoryService;
 
@@ -21,116 +19,68 @@ class CategoryController extends Controller
         $this->categoryService = $categoryService;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $categories = $this->categoryService->getAllCategory();
-
-        return $this->responseSuccess(
-            __(' lay danh sach danh muc thanh cong'),
-            [
-                'categories' => $categories,
-            ]
-        );
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(CategorieRequest $request)
-    {
-        $data = $request->all();
-        $category = $this->categoryService->createCategory($data);
-
-        return $this->responseCreated(
-            __('tao danh muc thanh cong'),
-            [
-                'category' => $category,
-            ]
-        );
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        $category = $this->categoryService->getCategoryById($id);
-        if (!$category) {
-            return $this->responseNotFound(
-                Response::HTTP_NOT_FOUND,
-                __('khong tim thay danh muc')
-            );
-        } else {
-            return $this->responseSuccess(
-                __('hien thi danh muc thanh cong'),
-                [
-                    'category' => $category,
-                ]
-            );
+        try {
+            $categories = $this->categoryService->getAllCategories();
+            return $this->successResponse([
+                'categories' => CategoryResource::collection($categories),
+            ], 'Get All Categories');
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 500);
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function store(Request $request)
     {
-        //
-    }
+        try {
+            $data = $request->validate([
+                'name' => 'required|string|unique:categories',
+            ]);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(CategorieRequest $request, string $id)
-    {
-        $data = $request->all();
-        $category = $this->categoryService->updateCategory($id, $data);
-        if (!$category) {
-            return $this->responseNotFound(
-                Response::HTTP_NOT_FOUND,
-                __('khong tim thay danh muc'),
-            );
-        } else {
-            $category->update($data);
-            return $this->responseSuccess(
-                __('Cập nhập danh mục thành công'),
-                [
-                    'category' => $category,
-                ]
-            );
+            $category = $this->categoryService->createCategory($data);
+            return $this->successResponse(new CategoryResource($category), 201);
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 400);
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function show($id)
     {
-        $category = $this->categoryService->deleteCategory($id);
-        if (!$category) {
-            return $this->responseNotFound(
-                Response::HTTP_NOT_FOUND,
-                __('khong tim thay danh muc'),
-            );
-        } else {
-            $category->delete();
-            return $this->responseSuccess(
-                __('Xóa danh mục thành công!'),
-                [
-                    'category' => $category,
-                ]
-            );
+        try {
+            $category = $this->categoryService->getCategoryById($id);
+            return $this->successResponse(new CategoryResource($category));
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 404);
         }
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $data = $request->validate([
+                'name' => 'required|string',
+            ]);
+
+            $category = $this->categoryService->updateCategory($id, $data);
+            return $this->successResponse(new CategoryResource($category));
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 400);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $this->categoryService->deleteCategory($id);
+            return $this->successResponse('Category deleted successfully');
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 400);
+        }
+    }
+    public function totalProducts($id)
+    {
+        $totalQuantity = $this->categoryService->getTotalProductQuantityInCategory($id);
+        return response()->json(['total_quantity' => $totalQuantity]);
     }
 }

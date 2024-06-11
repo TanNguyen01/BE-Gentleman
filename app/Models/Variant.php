@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,26 +8,16 @@ class Variant extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'product_id',
-        'price',
-        'price_promotional',
-        'quantity',
-        'image',
-    ];
+    protected $fillable = ['product_id', 'price', 'quantity'];
 
     public function product()
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function attributes()
+    public function attributeValues()
     {
-        return $this->belongsToMany(Attribute::class, 'custom_attribute_variant_table', 'variant_id', 'attribute_id');
-    }
-
-    public function orderDetails()
-    {
-        return $this->hasMany(OrderDetail::class);
+        return $this->belongsToMany(AttributeValue::class, 'variant_attribute_value')
+            ->withTimestamps();
     }
 }

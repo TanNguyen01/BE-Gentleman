@@ -21,8 +21,6 @@ class CategoryFactory extends Factory
     {
         return [
             'name' => $this->faker->word,
-            'quantity' => $this->faker->numberBetween(1, 100),
-            'status' => $this->faker->randomElement([0, 1]),
         ];
     }
 }

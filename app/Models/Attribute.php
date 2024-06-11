@@ -9,12 +9,10 @@ class Attribute extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'value',
-    ];
-    public function variants()
+    protected $fillable = ['name', 'type'];
+
+    public function attributeValues()
     {
-        return $this->belongsToMany(Variant::class, 'custom_attribute_variant_table', 'attribute_id', 'variant_id');
+        return $this->hasMany(AttributeValue::class);
     }
 }

@@ -1,64 +1,35 @@
 <?php
-
 namespace App\Services;
 
 use App\Models\Variant;
-use App\Traits\APIResponse;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 
-class VariantService extends AbstractServices
+class VariantService
 {
-    use APIResponse;
-
-
-    public function __construct(Variant $variant)
+    public function getAllVariants()
     {
-        Parent::__construct($variant);
+        return Variant::all();
     }
 
-    public function getVariant()
+    public function getVariantById($id)
     {
-        return $this->eloquentGetAll();
+        return Variant::findOrFail($id);
     }
 
-    public function showVariant($id)
+    public function createVariant($data)
     {
-        // Lấy thông tin biến thể cùng với các thuộc tính của nó
-        $variant = Variant::with('attributes')->find($id);
+        return Variant::create($data);
+    }
 
-
-
-        // Trả về kết quả
+    public function updateVariant($id, $data)
+    {
+        $variant = Variant::findOrFail($id);
+        $variant->update($data);
         return $variant;
     }
 
-    public function storeVariant(array $data)
+    public function deleteVariant($id)
     {
-        if (isset($data['image']) && $data['image'] instanceof UploadedFile) {
-            $data['image_path'] = $this->uploadFile($data['image'], 'variants');
-        }
-        $variant = $this->eloquentPostCreate($data);
-        return $variant;
-    }
-
-    public function updateVariant($id, array $data): ?Variant
-    {
-        $variant = $this->model->find($id);
-        if ($variant) {
-            if (isset($data['file']) && $data['file'] instanceof UploadedFile) {
-                $data['file_path'] = $this->uploadFile($data['file'], 'variants');
-                // Xóa file cũ nếu cần thiết
-                if ($variant->file_path) {
-                    Storage::delete($variant->file_path);
-                }
-            }
-            $variant->update($data);
-        }
-        return $variant;
-    }
-    public function destroyVariant($id)
-    {
-        return $this->multiDelete($id);
+        $variant = Variant::findOrFail($id);
+        $variant->delete();
     }
 }

@@ -3,17 +3,16 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AttributesRequest;
+use App\Http\Resources\AttributeResource;
 use App\Services\AttributeService;
-use App\Traits\APIResponse;
-use Illuminate\Http\Response;
+use App\Traits\ApiResponseTrait;
+use Illuminate\Http\Request;
 
 class AttributeController extends Controller
 {
-    use APIResponse;
+    use ApiResponseTrait;
 
     protected $attributeService;
-
 
     public function __construct(AttributeService $attributeService)
     {
@@ -22,82 +21,61 @@ class AttributeController extends Controller
 
     public function index()
     {
-        $attributes = $this->attributeService->getAttributes();
-        return $this->responseSuccess(
-            __('Lấy danh sách thành công!'),
-            [
-                'attributes' => $attributes,
-            ]
-        );
-    }
-
-    public function store(AttributesRequest $request)
-    {
-        $attributes = $request->all();
-        $attribute = $this->attributeService->storeAttribute($attributes);
-        return $this->responseCreated(
-            __('Tao thuoc tinh thanh cong!'),
-            [
-                'attributes' => $attribute
-            ]
-        );
-    }
-
-    public function show(int $id)
-    {
-        $attribute = $this->attributeService->showAttribute($id);
-        if (!$attribute) {
-            return
-                $this->responseNotFound(
-                    Response::HTTP_NOT_FOUND,
-                    __('khong tim thay thuoc tinh!'),
-                    [
-                        'attributes' => $attribute,
-                    ]
-                );
-        } else {
-            return $this->responseSuccess(
-                __('lay bien the thanh cong!'),
-                [
-                    'attributes' => $attribute,
-                ]
-            );
+        try {
+            $attributes = $this->attributeService->getAllAttributes();
+            return $this->successResponse(['attributes' => AttributeResource::collection($attributes)],"Get attributes successfully");
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 500);
         }
     }
 
-    public function update(AttributesRequest $request, $id)
+    public function store(Request $request)
     {
-        $attributes = $request->all();
-        $attribute = $this->attributeService->updateAttribute($id, $attributes);
-        if (!$attribute) {
-            return $this->responseNotFound(
-                Response::HTTP_NOT_FOUND,
-                __('khong tim thay thuoc tinh!'),
-                [
-                    'attributes' => $attribute
-                ]
-            );
-        } else {
-            $attribute->update($attributes);
-            return $this->responseSuccess(
-                __('sua thanh cong'),
-                [
-                    'attributes' => $attribute
-                ]
-            );
+        try {
+            $data = $request->validate([
+                'name' => 'required|string|unique:attributes,name',
+                'type' => 'required|string',
+            ]);
+
+            $attribute = $this->attributeService->createAttribute($data);
+            return $this->successResponse(new AttributeResource($attribute), 201);
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 400);
         }
     }
 
-    public function destroy(string $id)
+    public function show($id)
     {
-        $attribute = $this->attributeService->destroyAttribute($id);
-        if (!$attribute) {
-            return $this->responseNotFound(
-                Response::HTTP_NOT_FOUND,
-                __('khong tim thay bien the!')
-            );
-        } else {
-            return $this->responseDeleted(null, Response::HTTP_NO_CONTENT);
+        try {
+            $attribute = $this->attributeService->getAttributeById($id);
+            return $this->successResponse(["attributes" => new AttributeResource($attribute)],"Get attribute successfully");
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 404);
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $data = $request->validate([
+                'name' => 'string|unique:attributes,name,' . $id,
+                'type' => 'string',
+            ]);
+
+            $attribute = $this->attributeService->updateAttribute($id, $data);
+            return $this->successResponse(new AttributeResource($attribute));
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 400);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $this->attributeService->deleteAttribute($id);
+            return $this->successResponse('Attribute deleted successfully');
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 400);
         }
     }
 }
