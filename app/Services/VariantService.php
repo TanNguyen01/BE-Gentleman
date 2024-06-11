@@ -24,7 +24,13 @@ class VariantService extends AbstractServices
 
     public function showVariant($id)
     {
-        return $this->eloquentFind($id);
+        // Lấy thông tin biến thể cùng với các thuộc tính của nó
+        $variant = Variant::with('attributes')->find($id);
+
+
+
+        // Trả về kết quả
+        return $variant;
     }
 
     public function storeVariant(array $data)

@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,17 +12,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\Attribute::truncate();
-        \App\Models\Category::truncate();
-        \App\Models\Product::truncate();
-        \App\Models\Variant::truncate();
-        \App\Models\User::truncate();
-        \App\Models\Order::truncate();
-        \App\Models\OrderDetail::truncate();
-        \App\Models\Bill::truncate();
-        \App\Models\BillDetail::truncate();
-        \App\Models\Voucher::truncate();
-        // --------------------------
+        // Disable foreign key checks
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+        // Clear existing data using DELETE instead of TRUNCATE
+        \App\Models\Attribute::query()->delete();
+        \App\Models\Category::query()->delete();
+        \App\Models\Product::query()->delete();
+        \App\Models\Variant::query()->delete();
+        \App\Models\User::query()->delete();
+        \App\Models\Order::query()->delete();
+        \App\Models\OrderDetail::query()->delete();
+        \App\Models\Bill::query()->delete();
+        \App\Models\BillDetail::query()->delete();
+        \App\Models\Voucher::query()->delete();
+        DB::table('custom_attribute_variant_table')->delete();
+
+        // Enable foreign key checks
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        // Seed new data
         \App\Models\Attribute::factory()->count(5)->create();
         \App\Models\Category::factory()->count(5)->create();
         \App\Models\Product::factory()->count(20)->create();

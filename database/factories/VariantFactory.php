@@ -21,7 +21,7 @@ class VariantFactory extends Factory
     {
         return [
             'product_id' => \App\Models\Product::factory(),
-            'attribute_id' => \App\Models\Attribute::factory(),
+            //'attribute_id' => \App\Models\Attribute::factory(),
             'price' => $this->faker->randomFloat(2, 1, 100),
             'price_promotional' => $this->faker->randomFloat(2, 1, 100),
             'quantity' => $this->faker->numberBetween(1, 100),
