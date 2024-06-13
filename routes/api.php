@@ -7,6 +7,7 @@ use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\OrderDetailController;
 use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\SaleController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VariantController;
 use App\Models\Order;
@@ -36,20 +37,23 @@ Route::apiResource("attributes", \App\Http\Controllers\API\AttributeController::
 Route::apiResource("attribute-values", \App\Http\Controllers\API\AttributeValueController::class);
 //Bill
 Route::apiResource('bills', BillController::class);
-Route::get('bills-with-billDetail/{id}', [BillController::class,'billWithBillDetail']);
+Route::get('bills-with-billDetail/{id}', [BillController::class, 'billWithBillDetail']);
 
 //BillDetail
 Route::apiResource('bill-details', BillDetailController::class);
 
 //Order
 Route::apiResource('orders', OrderController::class);
-Route::get('order-with-orderDetail/{id}', [OrderController::class,'orderWithOrderDetail']);
+Route::get('order-with-orderDetail/{id}', [OrderController::class, 'orderWithOrderDetail']);
 
 //OrderDetail
 Route::apiResource('order-details', OrderDetailController::class);
 
 //Voucher
 // Route::apiResource('voucher', VoucherController::class);
+
+//Sale
+Route::apiResource('sales', SaleController::class);
 
 //User
 

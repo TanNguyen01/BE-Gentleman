@@ -5,16 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Attribute extends Model
+class Sale extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'name',
-        'value',
     ];
-    public function variants()
+
+    public function product()
     {
-        return $this->belongsToMany(Variant::class, 'custom_attribute_variant_table', 'attribute_id', 'variant_id');
+        return $this->hasMany(Product::class);
     }
 }

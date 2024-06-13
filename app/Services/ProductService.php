@@ -24,7 +24,7 @@ class ProductService extends AbstractServices
 
     public function showProduct($id)
     {
-        return Product::with('category', 'variants.attributes')->find($id)->toArray();
+        return Product::with('sales', 'category', 'variants.attributes')->find($id)->toArray();
     }
 
     public function storeProductWithVariants(array $productData, array $variantsData)
@@ -34,12 +34,19 @@ class ProductService extends AbstractServices
             $product = $this->eloquentPostCreate($productData);
 
             foreach ($variantsData as $variantData) {
+
+                // Kiểm tra và xử lý tệp ảnh nếu có
+                $imagePath = $variantData['image'] ?? "";
+                if (isset($variantData['image']) && $variantData['image'] instanceof \Illuminate\Http\UploadedFile) {
+                    $imagePath = $variantData['image']->store('variant_images', 'public'); // Lưu ảnh vào thư mục 'storage/app/public/variant_images'
+                }
+
                 $variant = Variant::create([
                     'product_id' => $product->id,
                     'price' => $variantData['price'],
                     'price_promotional' => $variantData['price_promotional'],
                     'quantity' => $variantData['quantity'],
-                    'image' => $variantData['image'],
+                    'image' => $imagePath,
                 ]);
 
                 if (isset($variantData['attribute_id']) && is_array($variantData['attribute_id'])) {
