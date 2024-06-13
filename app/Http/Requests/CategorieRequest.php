@@ -29,9 +29,9 @@ class CategorieRequest extends FormRequest
     {
         return [
               "name" => "required|string",
-              "quantity" => "required|integer",
+              "quantity" => "integer",
               "status"=> [
-                    "required",
+
                      Rule::in([
                         Category::Enable,
                         Category::Disable,
@@ -44,8 +44,8 @@ class CategorieRequest extends FormRequest
 
         return [
             "name.required" => "Nhap ten danh muc",
-            "quantity.required" => "Nhap so luong",
-            "status.required" => "Nhap trang thai danh muc",
+           // "quantity.required" => "Nhap so luong",
+           // "status.required" => "Nhap trang thai danh muc",
         ];
     }
 

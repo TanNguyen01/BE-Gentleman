@@ -31,6 +31,7 @@ class ProductsRequest extends FormRequest
             "name" => "required|string",
             "category_id" => "required|integer",
             'description' => 'nullable|string',
+            'brand' => 'nullable|string',
         ];
     }
 
