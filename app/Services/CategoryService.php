@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Category;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 
 class CategoryService

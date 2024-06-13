@@ -35,7 +35,17 @@ class ProductController extends Controller
     {
         $productData = $request->all();
         $variantsData = $request->input('variants', []);
+
+        // Xử lý tệp ảnh trong các biến thể
+        foreach ($variantsData as &$variantData) {
+            if (isset($variantData['image']) && $variantData['image'] instanceof \Illuminate\Http\UploadedFile) {
+                $variantData['image'] = $variantData['image']->store('image', 'public'); // Lưu ảnh vào thư mục 'storage/app/public/variant_images'
+            }
+        }
+
+        // Gọi phương thức lưu trữ sản phẩm và biến thể
         $product = $this->productService->storeProductWithVariants($productData, $variantsData);
+
         return $this->responseCreated(
             __('Tao san pham thanh cong!'),
             [
@@ -43,6 +53,7 @@ class ProductController extends Controller
             ]
         );
     }
+
 
     public function show(int $id)
     {
