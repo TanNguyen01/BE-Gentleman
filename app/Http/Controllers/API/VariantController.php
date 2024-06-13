@@ -36,7 +36,7 @@ class VariantController extends Controller
         $data = $request->all();
         $variant = $this->variantService->storeVariant($data);
         return $this->responseCreated(
-            __('Tao danh muc thanh cong!'),
+            __('Tao bien the thanh cong!'),
             [
                 'data' => $variant
             ]

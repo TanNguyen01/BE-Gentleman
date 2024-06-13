@@ -6,6 +6,8 @@ use App\Http\Requests\BillDetailRequest;
 use App\Traits\APIResponse;
 use Illuminate\Http\Response;
 use App\Services\BillDetailService;
+use Illuminate\Http\Request as HttpRequest;
+use Illuminate\Support\Facades\Request;
 
 class BillDetailController extends BillDetailService
 {
@@ -35,7 +37,7 @@ class BillDetailController extends BillDetailService
         return $this->responseCreated(__
         ('tao danh muc thanh cong'),
         [
-            'data' => $data,
+            'status' => $data,
         ]);
     }
 
@@ -62,36 +64,4 @@ class BillDetailController extends BillDetailService
     /**
      * Show the form for editing the specified resource.
      */
-    public function update(BillDetailRequest $request, string $id)
-    {
-        $data = $this->billDetailService->updateBillDetail($id,$request);
-        if(!$data){
-            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
-            __('khong tim thay danh muc'),
-            );
-        }else{
-            return $this->responseSuccess(
-                __('cap nhat danh muc thanh cong'),
-                [
-                    'data' => $data,
-                ]
-            );
-        }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        $data = $this->billDetailService->destroyBillDetail($id);
-        if(!$data){
-            return $this->responseNotFound(
-                Response::HTTP_NOT_FOUND,
-                __('khong tim thay danh muc'),
-            );
-        }else{
-            return $this->responseDeleted(null, Response::HTTP_NO_CONTENT);
-        }
-    }
 }

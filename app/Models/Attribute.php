@@ -15,6 +15,6 @@ class Attribute extends Model
     ];
     public function variants()
     {
-        return $this->hasMany(Variant::class);
+        return $this->belongsToMany(Variant::class, 'custom_attribute_variant_table', 'attribute_id', 'variant_id');
     }
 }

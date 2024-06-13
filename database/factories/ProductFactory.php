@@ -2,6 +2,7 @@
 
 // database/factories/ProductFactory.php
 namespace Database\Factories;
+
 use App\Models\Product;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -15,8 +16,9 @@ class ProductFactory extends Factory
         return [
             'name' => $this->faker->word,
             'category_id' => \App\Models\Category::factory(),
+            'sale_id' => \App\Models\Sale::factory(),
             'brand' => $this->faker->word,
-               'description' => $this->faker->sentence,
+            'description' => $this->faker->sentence,
         ];
     }
 }

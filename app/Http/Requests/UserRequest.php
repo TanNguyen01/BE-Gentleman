@@ -33,33 +33,23 @@ class UserRequest extends FormRequest
                 'email' => 'required|email|unique:users,email',
                 'name' => 'nullable|string',
                 'password' => 'nullable|string',
-                'role' => 'nullable|integer',
+                'role_id' => 'nullable|integer',
                 'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
                 'address' => 'nullable|string',
                 'number' => 'nullable|string',
-                'status' => [
-                    Rule::in([
-                        User::Enable,
-                        User::Disable,
-                    ])
-                ]
+                'status' => "nullable|integer",
+
             ];
         } else {
             return [
                 'email' => 'nullable|email|unique:users,email',
                 'name' => 'nullable|string',
                 'password' => 'nullable|string',
-                'role' => 'nullable|integer|in:0,1',
+                'role_id' => 'nullable|integer|in:0,1',
                 'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
                 'address' => 'nullable|string',
                 'number' => 'nullable|string',
-                'status' => [
-
-                    Rule::in([
-                        User::Enable,
-                        User::Disable,
-                    ])
-                ]
+                'status' => "nullable|integer",
             ];
         }
     }

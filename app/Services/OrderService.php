@@ -23,10 +23,16 @@ class OrderService extends AbstractServices {
     }
 
     public function updateOrder($id, $data){
+        $data = (array)$data;
         return $this->eloquentUpdate($id,$data);
     }
 
     public function destroyOrder($id){
         return $this->eloquentDelete($id);
     }
+
+    public function eloquentOrderWithOrderDetail($id){
+        $relations = ['orderDetails'];
+        return $this->eloquentWithRelations($id,$relations);
+   }
 }

@@ -9,15 +9,13 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('attributes', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('sales', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string('name');
-            $table->string('value');
             $table->timestamps();
         });
-
     }
 
     /**
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attributes');
+        Schema::dropIfExists('sales');
     }
 };

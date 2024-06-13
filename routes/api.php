@@ -7,9 +7,10 @@ use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\OrderDetailController;
 use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\SaleController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VariantController;
-use App\Http\Controllers\API\VoucherController;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,40 +25,49 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware(['auth:sanctum','checkAdmin'])->group(function(){
+
+    //Categories
+    Route::apiResource("categories", \App\Http\Controllers\API\CategoryController::class);
+    Route::get('categories/{id}/total-products', [\App\Http\Controllers\API\CategoryController::class, 'totalProducts']);
+
+    //Product
+    Route::apiResource("products", \App\Http\Controllers\API\ProductController::class);
+    Route::apiResource("variants", \App\Http\Controllers\API\VariantController::class);
+    Route::apiResource("attributes", \App\Http\Controllers\API\AttributeController::class);
+    Route::apiResource("attribute-values", \App\Http\Controllers\API\AttributeValueController::class);
+
+
+    //User
+
+    Route::apiResource('users', UserController::class);
+
 });
 
-//Product
-Route::apiResource('products', ProductController::class);
 
-//Variant
-Route::apiResource('variants', VariantController::class);
 
-//Attribute
-Route::apiResource('attributes', AttributeController::class);
 
 //Bill
 Route::apiResource('bills', BillController::class);
+Route::get('bills-with-billDetail/{id}', [BillController::class, 'billWithBillDetail']);
 
 //BillDetail
 Route::apiResource('bill-details', BillDetailController::class);
 
 //Order
 Route::apiResource('orders', OrderController::class);
+Route::get('order-with-orderDetail/{id}', [OrderController::class, 'orderWithOrderDetail']);
 
 //OrderDetail
 Route::apiResource('order-details', OrderDetailController::class);
 
-//Category
-Route::apiResource('categories', CategoryController::class);
-
 //Voucher
-Route::apiResource('voucher', VoucherController::class);
+// Route::apiResource('voucher', VoucherController::class);
 
-//User
+//Sale
+Route::apiResource('sales', SaleController::class);
 
-Route::apiResource('users', UserController::class);
+
 
 
 Route::post('register', [\App\Http\Controllers\API\AuthController::class, 'register'])->name('register');

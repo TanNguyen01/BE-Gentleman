@@ -8,39 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     use HasFactory;
-    protected $fillable = [
-        'name',
-        'category_id',
-        'brand',
-        'description'
-    ];
 
-    public function toArray()
-    {
-        $data = [
-            'id' => $this->id,
-            'name' => $this->name,
-            'category_id' => $this->category ? [
-                'id' => $this->category->id,
-                'name' => $this->category->name,
-                'status' => $this->category->status
-            ] : null,
-            'brand' => $this->brand,
-            'variants' => $this->variants->map(function ($variant) {
-                return [
-                    "attribute_id" => $variant->attribute_id,
-                    "price" => $variant->price,
-                    "price_promotional" => $variant->price_promotional,
-                    "quantity" => $variant->quantity,
-                    "status" => $variant->status,
-                    "description" => $variant->description,
-                    "image" => $variant->image,
-                ];
-            })->toArray(),
-        ];
+    protected $fillable = ['name', 'brand', 'description', 'category_id', 'sale_id'];
 
-        return $data;
-    }
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -49,5 +19,9 @@ class Product extends Model
     public function variants()
     {
         return $this->hasMany(Variant::class);
+    }
+    public function sales()
+    {
+        return $this->belongsTo(Sale::class);
     }
 }

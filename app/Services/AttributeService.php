@@ -3,38 +3,44 @@
 namespace App\Services;
 
 use App\Models\Attribute;
-use App\Traits\APIResponse;
+use Illuminate\Support\Facades\DB;
 
-class AttributeService extends AbstractServices
+class AttributeService
 {
-    use APIResponse;
-
-    public function __construct(Attribute $attribute)
+    public function getAllAttributes()
     {
-        parent::__construct($attribute);
-    }
-    public function getAttributes()
-    {
-        return $this->getAll();
+        return Attribute::with('attributeValues')->get();
     }
 
-    public function showAttribute($id)
+    public function createAttribute($data)
     {
-        return $this->find($id);
+        DB::beginTransaction();
+
+        try {
+            $attribute = Attribute::create($data);
+            DB::commit();
+            return $attribute;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
-    public function storeAttribute($data)
+    public function getAttributeById($id)
     {
-        return $this->postCreate($data);
+        return Attribute::with('attributeValues')->findOrFail($id);
     }
 
     public function updateAttribute($id, $data)
     {
-        return $this->update($id, $data);
+        $attribute = Attribute::findOrFail($id);
+        $attribute->update($data);
+        return $attribute;
     }
 
-    public function destroyAttribute($id)
+    public function deleteAttribute($id)
     {
-        return $this->delete($id);
+        $attribute = Attribute::findOrFail($id);
+        $attribute->delete();
     }
 }

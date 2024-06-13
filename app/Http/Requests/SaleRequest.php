@@ -2,13 +2,15 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Category;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
-class AttributesRequest extends FormRequest
+class SaleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,8 +28,7 @@ class AttributesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => "required|string",
-            "value" => "required|string",
+            "name" => "required|string|unique:categories,name",
         ];
     }
 
@@ -35,8 +36,7 @@ class AttributesRequest extends FormRequest
     {
 
         return [
-            "name.required" => "Nhap ten thuoc tinh",
-            "value.required" => "Nhap gia tri",
+            "name.required" => "Nhập tên danh mục",
         ];
     }
 

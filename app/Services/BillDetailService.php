@@ -15,7 +15,7 @@ class BillDetailService extends AbstractServices {
     }
 
     public function storeBillDetail($data){
-        return $this->eloquentPostCreate($data);
+        return $this->eloquentMutiInsert($data);
     }
 
     public function showBillDetail($id){

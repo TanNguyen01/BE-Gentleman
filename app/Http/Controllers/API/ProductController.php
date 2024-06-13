@@ -22,11 +22,11 @@ class ProductController extends Controller
 
     public function index()
     {
-        $product = $this->productService->getProducts();
+        $products = $this->productService->getAllProducts();
         return $this->responseSuccess(
             __('Lấy danh sách thành công!'),
             [
-                'data' => $product,
+                'product' => $products,
             ]
         );
     }
@@ -35,14 +35,25 @@ class ProductController extends Controller
     {
         $productData = $request->all();
         $variantsData = $request->input('variants', []);
+
+        // Xử lý tệp ảnh trong các biến thể
+        foreach ($variantsData as &$variantData) {
+            if (isset($variantData['image']) && $variantData['image'] instanceof \Illuminate\Http\UploadedFile) {
+                $variantData['image'] = $variantData['image']->store('image', 'public'); // Lưu ảnh vào thư mục 'storage/app/public/variant_images'
+            }
+        }
+
+        // Gọi phương thức lưu trữ sản phẩm và biến thể
         $product = $this->productService->storeProductWithVariants($productData, $variantsData);
+
         return $this->responseCreated(
             __('Tao san pham thanh cong!'),
             [
-                'data' => $product
+                'product' => $product
             ]
         );
     }
+
 
     public function show(int $id)
     {
@@ -51,16 +62,14 @@ class ProductController extends Controller
             return
                 $this->responseNotFound(
                     Response::HTTP_NOT_FOUND,
-                    __('khong tim thay san pham!'),
-                    [
-                        'data' => $product,
-                    ]
+                    __('khong tim thay san pham!')
+
                 );
         } else {
             return $this->responseSuccess(
                 __('lay san pham thanh cong!'),
                 [
-                    'data' => $product,
+                    'product' => $product,
                 ]
             );
         }
@@ -73,17 +82,14 @@ class ProductController extends Controller
         if (!$product) {
             return $this->responseNotFound(
                 Response::HTTP_NOT_FOUND,
-                __('khong tim thay san pham !'),
-                [
-                    'data' => $product
-                ]
+                __('khong tim thay san pham !')
             );
         } else {
             $product->update($data);
             return $this->responseSuccess(
                 __('sua thanh cong'),
                 [
-                    'data' => $product
+                    'product' => $product
                 ]
             );
         }

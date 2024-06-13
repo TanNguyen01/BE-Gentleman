@@ -3,6 +3,10 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 
 class OrderDetailRequest extends FormRequest
 {
@@ -11,7 +15,7 @@ class OrderDetailRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,28 +26,48 @@ class OrderDetailRequest extends FormRequest
     public function rules()
     {
         return [
-            'variant_id' => 'required|integer|exists:variants,id', // Ki?m tra variant_id có t?n t?i trong b?ng variants không
-            'order_id' => 'required|integer|exists:orders,id', // Ki?m tra order_id có t?n t?i trong b?ng orders không
-            'status' => 'required|string|in:pending,shipped,delivered,canceled', // Tr?ng thái là b?t bu?c và ph?i là m?t trong các giá tr?: pending, shipped, delivered, canceled
-            'quantity' => 'required|integer|min:1', // S? lý?ng là b?t bu?c, ph?i là s? nguyên và không nh? hõn 1
+            'data' => 'required|array',
+            'data.*.variant_id' => 'required|integer|exists:variants,id', // Kiem tra variant_id co ton tai trong bang variants khong
+            'data.*.order_id' => 'required|integer|exists:orders,id', // Kiem tra order_id co ton tai trong bang orders khong
+            'data.*.status' => 'required|string|in:pending,shipped,delivered,canceled', // Trang thai la bat buoc va phai la mot trong cac gia tri: pending, shipped, delivered, canceled
+            'data.*.quantity' => 'required|integer|min:1', // So luong la bat buoc, phai la so nguyen va khong nho hon 1
+            'data.*.voucher_id' => 'nullable|integer|exists:vouchers,id', // ID ma giam gia la tuy chon, phai la so nguyen va ton tai trong bang vouchers
         ];
     }
 
     public function messages()
     {
         return [
-            'variant_id.required' => 'Variant ID là b?t bu?c.',
-            'variant_id.integer' => 'Variant ID ph?i là s? nguyên.',
-            'variant_id.exists' => 'Variant ID không t?n t?i.',
-            'order_id.required' => 'Order ID là b?t bu?c.',
-            'order_id.integer' => 'Order ID ph?i là s? nguyên.',
-            'order_id.exists' => 'Order ID không t?n t?i.',
-            'status.required' => 'Tr?ng thái ðõn hàng là b?t bu?c.',
-            'status.string' => 'Tr?ng thái ðõn hàng ph?i là chu?i k? t?.',
-            'status.in' => 'Tr?ng thái ðõn hàng không h?p l?.',
-            'quantity.required' => 'S? lý?ng là b?t bu?c.',
-            'quantity.integer' => 'S? lý?ng ph?i là s? nguyên.',
-            'quantity.min' => 'S? lý?ng không ðý?c nh? hõn 1.',
+            'data.required' => 'Du lieu la bat buoc.',
+            'data.array' => 'Du lieu phai la mot mang.',
+            'data.*.variant_id.required' => 'ID bien the la bat buoc.',
+            'data.*.variant_id.integer' => 'ID bien the phai la so nguyen.',
+            'data.*.variant_id.exists' => 'ID bien the khong ton tai.',
+            'data.*.order_id.required' => 'ID don hang la bat buoc.',
+            'data.*.order_id.integer' => 'ID don hang phai la so nguyen.',
+            'data.*.order_id.exists' => 'ID don hang khong ton tai.',
+            'data.*.status.required' => 'Trang thai don hang la bat buoc.',
+            'data.*.status.string' => 'Trang thai don hang phai la chuoi ky tu.',
+            'data.*.status.in' => 'Trang thai don hang khong hop le.',
+            'data.*.quantity.required' => 'So luong la bat buoc.',
+            'data.*.quantity.integer' => 'So luong phai la so nguyen.',
+            'data.*.quantity.min' => 'So luong khong duoc nho hon 1.',
+            'data.*.voucher_id.integer' => 'ID ma giam gia phai la so nguyen.',
+            'data.*.voucher_id.exists' => 'ID ma giam gia khong ton tai.',
         ];
+    }
+
+
+    protected function failedValidation(Validator $validator)
+    {
+
+        $errors = (new ValidationException($validator))->errors();
+        throw new HttpResponseException(response()->json(
+            [
+                'error' => $errors,
+                'status_code' => 402,
+            ],
+            JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+        ));
     }
 }
