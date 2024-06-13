@@ -1,17 +1,19 @@
 <?php
+
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\VariantResource;
+use App\Http\Requests\VariantsRequest;
 use App\Services\VariantService;
-use App\Traits\ApiResponseTrait;
-use Illuminate\Http\Request;
+use App\Traits\APIResponse;
+use Illuminate\Http\Response;
 
 class VariantController extends Controller
 {
-    use ApiResponseTrait;
+    use APIResponse;
 
     protected $variantService;
+
 
     public function __construct(VariantService $variantService)
     {
@@ -20,60 +22,82 @@ class VariantController extends Controller
 
     public function index()
     {
-        try {
-            $variants = $this->variantService->getAllVariants();
-            return $this->successResponse(['variants' => VariantResource::collection($variants)],'Get variant list successfully.');
-        } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), 500);
+        $variant = $this->variantService->getVariant();
+        return $this->responseSuccess(
+            __('Lấy danh sách thành công!'),
+            [
+                'data' => $variant,
+            ]
+        );
+    }
+
+    public function store(VariantsRequest $request)
+    {
+        $data = $request->all();
+        $variant = $this->variantService->storeVariant($data);
+        return $this->responseCreated(
+            __('Tao danh muc thanh cong!'),
+            [
+                'data' => $variant
+            ]
+        );
+    }
+
+    public function show(String $id)
+    {
+        $variant = $this->variantService->showVariant($id);
+        if (!$variant) {
+            return
+                $this->responseNotFound(
+                    Response::HTTP_NOT_FOUND,
+                    __('khong tim thay bien the!'),
+                    [
+                        'data' => $variant,
+                    ]
+                );
+        } else {
+            return $this->responseSuccess(
+                __('lay bien the thanh cong!'),
+                [
+                    'data' => $variant,
+                ]
+            );
         }
     }
 
-    public function store(Request $request)
+    public function update(VariantsRequest $request, $id)
     {
-        try {
-            $request->validate([
-                'name' => 'required|string|max:255',
-            ]);
-
-            $variant = $this->variantService->createVariant($request->all());
-            return new VariantResource($variant);
-        } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
+        $data = $request->all();
+        $variant = $this->variantService->updateVariant($id, $data);
+        if (!$variant) {
+            return $this->responseNotFound(
+                Response::HTTP_NOT_FOUND,
+                __('khong tim thay bien the!'),
+                [
+                    'data' => $variant
+                ]
+            );
+        } else {
+            $variant->update($data);
+            return $this->responseSuccess(
+                __('sua thanh cong'),
+                [
+                    'data' => $variant
+                ]
+            );
         }
     }
 
-    public function show($id)
+    public function destroy(string $id)
     {
-        try {
-            $variant = $this->variantService->getVariantById($id);
-            return new VariantResource($variant);
-        } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), 404);
-        }
-    }
-
-    public function update(Request $request, $id)
-    {
-        try {
-            $request->validate([
-                'name' => 'required|string|max:255',
-            ]);
-
-            $variant = $this->variantService->getVariantById($id);
-            $variant = $this->variantService->updateVariant($variant, $request->all());
-            return new VariantResource($variant);
-        } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
-        }
-    }
-
-    public function destroy($id)
-    {
-        try {
-            $this->variantService->deleteVariant($id);
-            return $this->successResponse("Variant deleted successfully");
-        } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
+        $variant = $this->variantService->destroyVariant($id);
+        if (!$variant) {
+            return $this->responseNotFound(
+                Response::HTTP_NOT_FOUND,
+                __('khong tim thay bien the!')
+            );
+        } else {
+            return $this->responseDeleted(null, Response::HTTP_NO_CONTENT);
         }
     }
 }
