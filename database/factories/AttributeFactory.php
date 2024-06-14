@@ -21,7 +21,7 @@ class AttributeFactory extends Factory
     {
         return [
             'name' => $this->faker->word,
-            'value' => $this->faker->word,
+            'variant_id' => \App\Models\Variant::factory(),
         ];
     }
 }

@@ -26,7 +26,6 @@ class DatabaseSeeder extends Seeder
         \App\Models\Bill::query()->delete();
         \App\Models\BillDetail::query()->delete();
         \App\Models\Voucher::query()->delete();
-        DB::table('custom_attribute_variant_table')->delete();
 
         // Enable foreign key checks
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');

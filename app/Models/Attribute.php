@@ -11,10 +11,18 @@ class Attribute extends Model
 
     protected $fillable = [
         'name',
-        'value',
+        'variant_id',
     ];
     public function variants()
     {
-        return $this->belongsToMany(Variant::class, 'custom_attribute_variant_table', 'attribute_id', 'variant_id');
+        return $this->belongsTo(Variant::class);
+    }
+    public function colors()
+    {
+        return $this->belongsToMany(Color::class, "color_attributes");
+    }
+    public function sizes()
+    {
+        return $this->belongsToMany(Size::class, "size_attributes");
     }
 }

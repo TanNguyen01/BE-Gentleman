@@ -12,10 +12,11 @@ return new class extends Migration
     public function up()
     {
         Schema::create('attributes', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->string('name');
-            $table->string('value');
+            $table->unsignedBigInteger('variant_id');
             $table->timestamps();
+            $table->foreign('variant_id')->references('id')->on('variants')->onDelete('cascade');
         });
     }
 
