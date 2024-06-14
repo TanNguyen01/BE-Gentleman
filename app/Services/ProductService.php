@@ -24,7 +24,7 @@ class ProductService extends AbstractServices
 
     public function showProduct($id)
     {
-        return Product::with('sales', 'category', 'variants.attributes')->find($id)->toArray();
+        return Product::with('sales', 'category', 'variants.attributes.colors', 'variants.attributes.sizes')->find($id)->toArray();
     }
 
     public function storeProductWithVariants(array $productData, array $variantsData)
@@ -34,7 +34,6 @@ class ProductService extends AbstractServices
             $product = $this->eloquentPostCreate($productData);
 
             foreach ($variantsData as $variantData) {
-
                 // Kiểm tra và xử lý tệp ảnh nếu có
                 $imagePath = $variantData['image'] ?? "";
                 if (isset($variantData['image']) && $variantData['image'] instanceof \Illuminate\Http\UploadedFile) {
@@ -49,13 +48,19 @@ class ProductService extends AbstractServices
                     'image' => $imagePath,
                 ]);
 
-                if (isset($variantData['attribute_id']) && is_array($variantData['attribute_id'])) {
-                    foreach ($variantData['attribute_id'] as $attributeData) {
-                        $attribute = Attribute::firstOrCreate(
-                            ['name' => $attributeData['name'], 'value' => $attributeData['value']],
-                            $attributeData
-                        );
-                        $variant->attributes()->attach($attribute->id);
+                foreach ($variantData['attributes'] as $attributeData) {
+                    // Tạo hoặc lấy thuộc tính đã tồn tại
+                    $attribute = Attribute::firstOrCreate(
+                        ['variant_id' => $variant->id, 'name' => $attributeData['name']],
+                        $attributeData
+                    );
+
+                    // Cập nhật màu sắc và kích thước
+                    if (isset($attributeData['colors'])) {
+                        $attribute->colors()->sync($attributeData['colors']);
+                    }
+                    if (isset($attributeData['sizes'])) {
+                        $attribute->sizes()->sync($attributeData['sizes']);
                     }
                 }
             }
@@ -68,6 +73,7 @@ class ProductService extends AbstractServices
         }
     }
 
+
     public function updateProduct($id, $data)
     {
         DB::beginTransaction();
@@ -79,32 +85,46 @@ class ProductService extends AbstractServices
             // Cập nhật thông tin sản phẩm
             $product->update($data);
 
-            // Kiểm tra nếu có dữ liệu biến thể và là một mảng
+            // Kiểm tra và cập nhật các biến thể (variants)
             if (isset($data['variants']) && is_array($data['variants'])) {
                 foreach ($data['variants'] as $variantData) {
                     // Lấy thông tin biến thể hoặc tạo mới nếu chưa tồn tại
                     $variant = Variant::updateOrCreate(
-                        ['id' => $variantData['id']], // Nếu id được cung cấp, sử dụng nó để tìm biến thể cần cập nhật, nếu không, tạo mới
+                        ['id' => $variantData['id']],
                         [
-                            'product_id' => $id, // Sản phẩm mà biến thể thuộc về
+                            'product_id' => $id,
                             'price' => $variantData['price'],
                             'price_promotional' => $variantData['price_promotional'],
                             'quantity' => $variantData['quantity'],
-                            'image' => $variantData['image'],
+                            'image' => $variantData['image'] ?? "",
                         ]
                     );
 
+                    // Kiểm tra và xử lý tệp ảnh mới
+                    if (isset($variantData['new_image']) && $variantData['new_image'] instanceof \Illuminate\Http\UploadedFile) {
+                        $imagePath = $variantData['new_image']->store('variant_images', 'public');
+                        $variant->image = $imagePath;
+                        $variant->save();
+                    }
+
                     // Xóa hết các thuộc tính của biến thể
-                    $variant->attributes()->detach();
+                    $variant->attributes()->delete();
 
                     // Cập nhật hoặc thêm mới các thuộc tính của biến thể
                     if (isset($variantData['attributes']) && is_array($variantData['attributes'])) {
                         foreach ($variantData['attributes'] as $attributeData) {
                             $attribute = Attribute::firstOrCreate(
-                                ['name' => $attributeData['name'], 'value' => $attributeData['value']],
+                                ['variant_id' => $variant->id, 'name' => $attributeData['name']],
                                 $attributeData
                             );
-                            $variant->attributes()->attach($attribute->id);
+
+                            // Cập nhật màu sắc và kích thước
+                            if (isset($attributeData['colors'])) {
+                                $attribute->colors()->sync($attributeData['colors']);
+                            }
+                            if (isset($attributeData['sizes'])) {
+                                $attribute->sizes()->sync($attributeData['sizes']);
+                            }
                         }
                     }
                 }
@@ -118,6 +138,8 @@ class ProductService extends AbstractServices
             throw $e;
         }
     }
+
+
 
 
     public function destroyProduct($id)

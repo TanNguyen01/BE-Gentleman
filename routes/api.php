@@ -25,26 +25,38 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['auth:sanctum','checkAdmin'])->group(function(){
+Route::middleware(['auth:sanctum', 'checkAdmin'])->group(function () {
 
-    //Categories
-    Route::apiResource("categories", \App\Http\Controllers\API\CategoryController::class);
-    Route::get('categories/{id}/total-products', [\App\Http\Controllers\API\CategoryController::class, 'totalProducts']);
+    // //Categories
+    // Route::apiResource("categories", \App\Http\Controllers\API\CategoryController::class);
+    // Route::get('categories/{id}/total-products', [\App\Http\Controllers\API\CategoryController::class, 'totalProducts']);
 
-    //Product
-    Route::apiResource("products", \App\Http\Controllers\API\ProductController::class);
-    Route::apiResource("variants", \App\Http\Controllers\API\VariantController::class);
-    Route::apiResource("attributes", \App\Http\Controllers\API\AttributeController::class);
-    Route::apiResource("attribute-values", \App\Http\Controllers\API\AttributeValueController::class);
+    // //Product
+    // Route::apiResource("products", \App\Http\Controllers\API\ProductController::class);
+    // Route::apiResource("variants", \App\Http\Controllers\API\VariantController::class);
+    // Route::apiResource("attributes", \App\Http\Controllers\API\AttributeController::class);
 
 
-    //User
 
-    Route::apiResource('users', UserController::class);
+    // //User
 
+    // Route::apiResource('users', UserController::class);
 });
 
+//Categories
+Route::apiResource("categories", \App\Http\Controllers\API\CategoryController::class);
+Route::get('categories/{id}/total-products', [\App\Http\Controllers\API\CategoryController::class, 'totalProducts']);
 
+//Product
+Route::apiResource("products", \App\Http\Controllers\API\ProductController::class);
+Route::apiResource("variants", \App\Http\Controllers\API\VariantController::class);
+Route::apiResource("attributes", \App\Http\Controllers\API\AttributeController::class);
+
+
+
+//User
+
+Route::apiResource('users', UserController::class);
 
 
 //Bill

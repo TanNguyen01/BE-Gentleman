@@ -24,7 +24,7 @@ class Variant extends Model
 
     public function attributes()
     {
-        return $this->belongsToMany(Attribute::class, 'custom_attribute_variant_table', 'variant_id', 'attribute_id');
+        return $this->hasMany(Attribute::class);
     }
 
     public function orderDetails()
