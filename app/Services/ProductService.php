@@ -31,21 +31,20 @@ class ProductService extends AbstractServices
     {
         DB::beginTransaction();
         try {
+            // Kiểm tra và xử lý tệp ảnh nếu có
+            $imagePath = $variantData['image'] ?? "";
+            if (isset($variantData['image']) && $variantData['image'] instanceof \Illuminate\Http\UploadedFile) {
+                $imagePath = $variantData['image']->store('image', 'public'); // Lưu ảnh vào thư mục 'storage/app/public/variant_images'
+            }
+            $productData['image'] = $imagePath;
             $product = $this->eloquentPostCreate($productData);
 
             foreach ($variantsData as $variantData) {
-                // Kiểm tra và xử lý tệp ảnh nếu có
-                $imagePath = $variantData['image'] ?? "";
-                if (isset($variantData['image']) && $variantData['image'] instanceof \Illuminate\Http\UploadedFile) {
-                    $imagePath = $variantData['image']->store('variant_images', 'public'); // Lưu ảnh vào thư mục 'storage/app/public/variant_images'
-                }
-
                 $variant = Variant::create([
                     'product_id' => $product->id,
                     'price' => $variantData['price'],
                     'price_promotional' => $variantData['price_promotional'],
                     'quantity' => $variantData['quantity'],
-                    'image' => $imagePath,
                 ]);
 
                 foreach ($variantData['attributes'] as $attributeData) {

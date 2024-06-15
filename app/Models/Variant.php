@@ -14,7 +14,6 @@ class Variant extends Model
         'price',
         'price_promotional',
         'quantity',
-        'image',
     ];
 
     public function product()

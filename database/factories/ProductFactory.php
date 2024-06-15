@@ -18,6 +18,7 @@ class ProductFactory extends Factory
             'category_id' => \App\Models\Category::factory(),
             'sale_id' => \App\Models\Sale::factory(),
             'brand' => $this->faker->word,
+            'image' => $this->faker->imageUrl(),
             'description' => $this->faker->sentence,
         ];
     }
