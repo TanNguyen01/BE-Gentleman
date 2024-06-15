@@ -4,10 +4,12 @@ use App\Http\Controllers\API\AttributeController;
 use App\Http\Controllers\API\BillController;
 use App\Http\Controllers\API\BillDetailController;
 use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\ColorController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\OrderDetailController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\SaleController;
+use App\Http\Controllers\API\SizeController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VariantController;
 use App\Models\Order;
@@ -79,6 +81,13 @@ Route::apiResource('order-details', OrderDetailController::class);
 //Sale
 Route::apiResource('sales', SaleController::class);
 
+//color
+
+Route::apiResource('colors', ColorController::class);
+
+//size
+
+Route::apiResource('sizes', SizeController::class);
 
 
 
