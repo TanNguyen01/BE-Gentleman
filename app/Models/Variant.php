@@ -21,11 +21,16 @@ class Variant extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function attributes()
+    public function attributeValues()
     {
-        return $this->hasMany(Attribute::class);
+        return $this->hasMany(AttributeValue::class);
     }
 
+    public function attributes()
+    {
+        return $this->belongsToMany(Attribute::class, 'attribute_values')
+            ->withPivot('name');
+    }
     public function orderDetails()
     {
         return $this->hasMany(OrderDetail::class);

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Attribute;
+use App\Models\AttributeValue;
 use App\Models\Product;
 use App\Models\Variant;
 use App\Traits\APIResponse;
@@ -19,12 +20,12 @@ class ProductService extends AbstractServices
 
     public function getAllProducts()
     {
-        return $this->eloquentGetAll();
+        return Product::with('sales', 'category', 'variants.attributes')->get();
     }
 
     public function showProduct($id)
     {
-        return Product::with('sales', 'category', 'variants.attributes.colors', 'variants.attributes.sizes')->find($id)->toArray();
+        return Product::with('sales', 'category', 'variants.attributes')->find($id);
     }
 
     public function storeProductWithVariants(array $productData, array $variantsData)
@@ -32,15 +33,15 @@ class ProductService extends AbstractServices
         DB::beginTransaction();
         try {
             // Kiểm tra và xử lý tệp ảnh nếu có
-            $imagePath = $variantData['image'] ?? "";
-            if (isset($variantData['image']) && $variantData['image'] instanceof \Illuminate\Http\UploadedFile) {
-                $imagePath = $variantData['image']->store('image', 'public'); // Lưu ảnh vào thư mục 'storage/app/public/variant_images'
+            $imagePath = $productData['image'] ?? "";
+            if (isset($productData['image']) && $productData['image'] instanceof \Illuminate\Http\UploadedFile) {
+                $imagePath = $productData['image']->store('image', 'public'); // Lưu ảnh vào thư mục 'storage/app/public/variant_images'
             }
             $productData['image'] = $imagePath;
             $product = $this->eloquentPostCreate($productData);
 
             foreach ($variantsData as $variantData) {
-                $variant = Variant::create([
+                $variants = Variant::create([
                     'product_id' => $product->id,
                     'price' => $variantData['price'],
                     'price_promotional' => $variantData['price_promotional'],
@@ -49,18 +50,17 @@ class ProductService extends AbstractServices
 
                 foreach ($variantData['attributes'] as $attributeData) {
                     // Tạo hoặc lấy thuộc tính đã tồn tại
-                    $attribute = Attribute::firstOrCreate(
-                        ['variant_id' => $variant->id, 'name' => $attributeData['name']],
-                        $attributeData
+                    $attributes = Attribute::firstOrCreate(
+                        [
+                            'name' => $attributeData['name'],
+                            'product_id' => $product->id
+                        ]
                     );
-
-                    // Cập nhật màu sắc và kích thước
-                    if (isset($attributeData['colors'])) {
-                        $attribute->colors()->sync($attributeData['colors']);
-                    }
-                    if (isset($attributeData['sizes'])) {
-                        $attribute->sizes()->sync($attributeData['sizes']);
-                    }
+                    AttributeValue::create([
+                        'attribute_id' => $attributes->id,
+                        'variant_id' => $variants->id,
+                        'name' => $attributeData['value'],
+                    ]);
                 }
             }
 
@@ -82,7 +82,20 @@ class ProductService extends AbstractServices
             $product = Product::findOrFail($id);
 
             // Cập nhật thông tin sản phẩm
-            $product->update($data);
+            $product->update([
+                'name' => $data['name'],
+                'brand' => $data['brand'],
+                'image' => $data['image'] ?? $product->image,
+                'description' => $data['description'],
+                'category_id' => $data['category_id'],
+                'sale_id' => $data['sale_id'],
+            ]);
+            // Kiểm tra và xử lý tệp ảnh mới
+            if (isset($data['new_image']) && $data['new_image'] instanceof \Illuminate\Http\UploadedFile) {
+                $imagePath = $data['new_image']->store('image', 'public');
+                $product->image = $imagePath;
+                $product->save();
+            }
 
             // Kiểm tra và cập nhật các biến thể (variants)
             if (isset($data['variants']) && is_array($data['variants'])) {
@@ -91,20 +104,12 @@ class ProductService extends AbstractServices
                     $variant = Variant::updateOrCreate(
                         ['id' => $variantData['id']],
                         [
-                            'product_id' => $id,
+                            'product_id' => $product->id,
                             'price' => $variantData['price'],
                             'price_promotional' => $variantData['price_promotional'],
                             'quantity' => $variantData['quantity'],
-                            'image' => $variantData['image'] ?? "",
                         ]
                     );
-
-                    // Kiểm tra và xử lý tệp ảnh mới
-                    if (isset($variantData['new_image']) && $variantData['new_image'] instanceof \Illuminate\Http\UploadedFile) {
-                        $imagePath = $variantData['new_image']->store('variant_images', 'public');
-                        $variant->image = $imagePath;
-                        $variant->save();
-                    }
 
                     // Xóa hết các thuộc tính của biến thể
                     $variant->attributes()->delete();
@@ -112,18 +117,15 @@ class ProductService extends AbstractServices
                     // Cập nhật hoặc thêm mới các thuộc tính của biến thể
                     if (isset($variantData['attributes']) && is_array($variantData['attributes'])) {
                         foreach ($variantData['attributes'] as $attributeData) {
-                            $attribute = Attribute::firstOrCreate(
-                                ['variant_id' => $variant->id, 'name' => $attributeData['name']],
-                                $attributeData
+                            $attribute = Attribute::updateOrCreate(
+                                ['product_id' => $product->id, 'name' => $attributeData['name']],
+                                ['product_id' => $product->id]
                             );
-
-                            // Cập nhật màu sắc và kích thước
-                            if (isset($attributeData['colors'])) {
-                                $attribute->colors()->sync($attributeData['colors']);
-                            }
-                            if (isset($attributeData['sizes'])) {
-                                $attribute->sizes()->sync($attributeData['sizes']);
-                            }
+                            AttributeValue::updateOrCreate([
+                                'attribute_id' => $attribute->id,
+                                'variant_id' => $variant->id,
+                                'name' => $attributeData['value'],
+                            ]);
                         }
                     }
                 }

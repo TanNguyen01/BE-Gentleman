@@ -11,18 +11,21 @@ class Attribute extends Model
 
     protected $fillable = [
         'name',
-        'variant_id',
+        'product_id',
     ];
+
+    public function products()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function attributeValues()
+    {
+        return $this->hasMany(AttributeValue::class);
+    }
     public function variants()
     {
-        return $this->belongsTo(Variant::class);
-    }
-    public function colors()
-    {
-        return $this->belongsToMany(Color::class, "color_attributes");
-    }
-    public function sizes()
-    {
-        return $this->belongsToMany(Size::class, "size_attributes");
+        return $this->belongsToMany(Variant::class, 'attribute_values')
+            ->withPivot('name');
     }
 }
