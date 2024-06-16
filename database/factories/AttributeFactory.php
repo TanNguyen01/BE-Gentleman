@@ -20,8 +20,8 @@ class AttributeFactory extends Factory
     public function definition()
     {
         return [
+            'product_id' => \App\Models\Product::factory(),
             'name' => $this->faker->word,
-            'variant_id' => \App\Models\Variant::factory(),
         ];
     }
 }

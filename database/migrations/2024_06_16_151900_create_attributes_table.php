@@ -9,14 +9,13 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('attributes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->string('name');
-            $table->unsignedBigInteger('variant_id');
             $table->timestamps();
-            $table->foreign('variant_id')->references('id')->on('variants')->onDelete('cascade');
         });
     }
 
