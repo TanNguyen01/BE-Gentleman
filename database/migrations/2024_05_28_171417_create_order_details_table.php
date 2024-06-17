@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('quantity');
             $table->string('status');
             $table->integer('voucher_id')->nullable();
+            $table->integer('price');
             $table->timestamps();
         });
 

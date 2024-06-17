@@ -71,6 +71,7 @@ Route::apiResource('bill-details', BillDetailController::class);
 //Order
 Route::apiResource('orders', OrderController::class);
 Route::get('order-with-orderDetail/{id}', [OrderController::class, 'orderWithOrderDetail']);
+Route::post('order-confirm/{id}',[OrderController::class,'confirm']);
 
 //OrderDetail
 Route::apiResource('order-details', OrderDetailController::class);
@@ -80,16 +81,6 @@ Route::apiResource('order-details', OrderDetailController::class);
 
 //Sale
 Route::apiResource('sales', SaleController::class);
-
-//color
-
-Route::apiResource('colors', ColorController::class);
-
-//size
-
-Route::apiResource('sizes', SizeController::class);
-
-
 
 Route::post('register', [\App\Http\Controllers\API\AuthController::class, 'register'])->name('register');
 Route::post('login', [\App\Http\Controllers\API\AuthController::class, 'login'])->name('login');
