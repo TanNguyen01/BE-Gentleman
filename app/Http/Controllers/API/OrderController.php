@@ -100,13 +100,98 @@ class OrderController extends OrderService
         if (!$data) {
             return $this->responseNotFound(
                 Response::HTTP_NOT_FOUND,
-                __('khong thay bill detail')
+                __('khong thay order detail')
             );
         } else {
             return $this->responseSuccess(
                 __('hien thi danh muc thanh cong'),
                 [
                     'data' => $data,
+                ]
+            );
+        }
+    }
+
+    public function confirm(string $id)
+    {
+        $data = $this->orderService->chanceStatusConfirm($id);
+        if(!$data){
+            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            __('khong tim thay danh muc'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => 'confirm',
+                ]
+            );
+        }
+    }
+
+    public function shiping(string $id)
+    {
+        $data = $this->orderService->chanceStatusConfirm($id);
+        if(!$data){
+            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            __('khong tim thay danh muc'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => 'shiping',
+                ]
+            );
+        }
+    }
+
+    public function paid(string $id)
+    {
+        $data = $this->orderService->chanceStatusPaid($id);
+        if(!$data){
+            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            __('khong tim thay danh muc'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => 'paid',
+                ]
+            );
+        }
+    }
+
+    public function paidShiping(string $id)
+    {
+        $data = $this->orderService->chanceStatusPaidShiping($id);
+        if(!$data){
+            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            __('khong tim thay danh muc'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => 'paidShiping',
+                ]
+            );
+        }
+    }
+
+    public function cancel(string $id)
+    {
+        $data = $this->orderService->chanceStatusCancel($id);
+        if(!$data){
+            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            __('khong tim thay danh muc'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => 'paidShiping',
                 ]
             );
         }

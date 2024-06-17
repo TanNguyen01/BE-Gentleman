@@ -24,6 +24,7 @@ class OrderDetailFactory extends Factory
             'status' => $this->faker->randomElement(['pending', 'shipped', 'delivered']),
             'quantity' => $this->faker->numberBetween(1, 100),
             'voucher_id' => \App\Models\Voucher::factory(),
+            'price' => $this->faker->randomFloat(2, 1, 100),
         ];
     }
 }
