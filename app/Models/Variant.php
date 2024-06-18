@@ -16,20 +16,10 @@ class Variant extends Model
         'quantity',
     ];
 
-    public function product()
-    {
-        return $this->belongsTo(Product::class);
-    }
 
-    public function attributeValues()
+    public function attributeName()
     {
-        return $this->hasMany(AttributeValue::class);
-    }
-
-    public function attributes()
-    {
-        return $this->belongsToMany(Attribute::class, 'attribute_values')
-            ->withPivot('name');
+        return $this->belongsToMany(AttributeName::class, 'variant_attribute', 'variant_id', 'attribute_id');
     }
     public function orderDetails()
     {
