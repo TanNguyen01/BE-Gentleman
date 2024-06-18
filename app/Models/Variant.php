@@ -19,7 +19,7 @@ class Variant extends Model
 
     public function attributeName()
     {
-        return $this->belongsToMany(AttributeName::class, 'variant_attribute', 'attribute_id', 'variant_id');
+        return $this->belongsToMany(AttributeName::class, 'variant_attributes', 'attribute_id', 'variant_id');
     }
     public function orderDetails()
     {

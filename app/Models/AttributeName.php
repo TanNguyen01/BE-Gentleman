@@ -19,7 +19,7 @@ class AttributeName extends Model
 
     public function variants()
     {
-        return $this->belongsToMany(Variant::class, 'variant_attribute', 'variant_id', 'attribute_id');
+        return $this->belongsToMany(Variant::class, 'variant_attributes', 'variant_id', 'attribute_id');
     }
 
     public function products()
