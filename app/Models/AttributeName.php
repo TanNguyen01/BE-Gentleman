@@ -14,7 +14,7 @@ class AttributeName extends Model
 
     public function attributeValues()
     {
-        return $this->hasMany(attributeValue::class);
+        return $this->hasMany(AttributeValue::class);
     }
 
     public function variants()
@@ -24,6 +24,6 @@ class AttributeName extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'product_attribute', 'attribute_id', 'product_id');
+        return $this->belongsToMany(Product::class, 'product_attributes', 'attribute_id', 'product_id');
     }
 }
