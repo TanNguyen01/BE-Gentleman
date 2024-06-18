@@ -37,7 +37,7 @@ class ProductController extends Controller
         $variantsData = $request->input('variants', []);
 
         // Xử lý tệp ảnh trong các biến thể
-        foreach ($variantsData as &$variantData) {
+        foreach ($variantsData as $variantData) {
             if (isset($variantData['image']) && $variantData['image'] instanceof \Illuminate\Http\UploadedFile) {
                 $variantData['image'] = $variantData['image']->store('image', 'public'); // Lưu ảnh vào thư mục 'storage/app/public/variant_images'
             }
