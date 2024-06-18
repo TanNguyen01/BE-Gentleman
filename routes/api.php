@@ -13,6 +13,7 @@ use App\Http\Controllers\API\SizeController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VariantController;
 use App\Models\Order;
+use App\Models\OrderDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -78,6 +79,7 @@ Route::post('order-paidShiping/{id}',[OrderController::class,'paidShiping']);
 Route::post('order-cancel/{id}',[OrderController::class,'cancel']);
 //OrderDetail
 Route::apiResource('order-details', OrderDetailController::class);
+Route::get('orderDetailWithVariant/{id}',[OrderDetailController::class,'orderDetailWithVariant']);
 
 //Voucher
 // Route::apiResource('voucher', VoucherController::class);

@@ -6,8 +6,6 @@ use App\Http\Requests\BillDetailRequest;
 use App\Traits\APIResponse;
 use Illuminate\Http\Response;
 use App\Services\BillDetailService;
-use Illuminate\Http\Request as HttpRequest;
-use Illuminate\Support\Facades\Request;
 
 class BillDetailController extends BillDetailService
 {
