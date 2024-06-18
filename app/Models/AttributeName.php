@@ -14,16 +14,16 @@ class AttributeName extends Model
 
     public function attributeValues()
     {
-        return $this->hasMany(attributeValue::class);
+        return $this->hasMany(AttributeValue::class);
     }
 
     public function variants()
     {
-        return $this->belongsToMany(Variant::class, 'variant_attribute', 'variant_id', 'attribute_id');
+        return $this->belongsToMany(Variant::class, 'variant_attributes', 'variant_id', 'attribute_id');
     }
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'product_attribute', 'attribute_id', 'product_id');
+        return $this->belongsToMany(Product::class, 'product_attributes', 'attribute_id', 'product_id');
     }
 }
