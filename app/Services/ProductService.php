@@ -22,36 +22,38 @@ class ProductService extends AbstractServices
 
     public function getAllProducts()
     {
-        return Product::with('sales', 'category', 'variants.attributeName.attributeValues')->get();
+        return Product::with('sales', 'category', 'variants.attributeValues.attributeName')->get();
     }
 
     public function showProduct($id)
     {
-        return Product::with('sales', 'category', 'variants.attributeName.attributeValues')->find($id);
+        return Product::with('sales', 'category', 'variants.attributeValues.attributeName')->find($id);
     }
 
     public function createProductWithVariantsAndAttributes(array $productData)
     {
         DB::beginTransaction();
         try {
-            // Lưu ảnh sản phẩm nếu có
-            if (isset($productData['image']) && $productData['image'] instanceof \Illuminate\Http\UploadedFile) {
-                $productData['image'] = $productData['image']->store('products', 'public');
-            }
-
             // Tạo sản phẩm
-            $product = Product::create($productData);
+            $product = Product::create([
+                'name' => $productData['name'],
+                'brand' => $productData['brand'],
+                'description' => $productData['description'],
+                'image' => $productData['image'],
+                'category_id' => $productData['category_id'],
+                'sale_id' => $productData['sale_id'],
+            ]);
 
             // Tạo các biến thể và giá trị thuộc tính liên quan nếu có
             if (isset($productData['variants']) && is_array($productData['variants'])) {
                 foreach ($productData['variants'] as $variantData) {
-                    // Lưu ảnh biến thể nếu có
-                    if (isset($variantData['image']) && $variantData['image'] instanceof \Illuminate\Http\UploadedFile) {
-                        $variantData['image'] = $variantData['image']->store('variants', 'public');
-                    }
-
                     // Tạo biến thể
-                    $variant = $product->variants()->create($variantData);
+                    $variant = $product->variants()->create([
+                        'price' => $variantData['price'],
+                        'price_promotional' => $variantData['price_promotional'],
+                        'quantity' => $variantData['quantity'],
+                        'image' => $variantData['image'] ?? null,
+                    ]);
 
                     // Tạo các giá trị thuộc tính cho biến thể nếu có
                     if (isset($variantData['attributes']) && is_array($variantData['attributes'])) {
@@ -65,7 +67,7 @@ class ProductService extends AbstractServices
                                 'value' => $attribute['value'],
                             ]);
 
-                            // Kết nối biến thể với giá trị thuộc tính thông qua bảng pivot (variant_attributes)
+                            // Kết nối biến thể với giá trị thuộc tính thông qua bảng pivot (variant_attribute_value)
                             $variant->attributeValues()->attach($attributeValue->id);
                         }
                     }
@@ -79,7 +81,6 @@ class ProductService extends AbstractServices
             throw $e;
         }
     }
-
 
     public function updateProduct($id, $data)
     {
