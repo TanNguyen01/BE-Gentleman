@@ -22,56 +22,62 @@ class ProductService extends AbstractServices
 
     public function getAllProducts()
     {
-        return Product::with('sales', 'category', 'variants.attributeName')->get();
+        return Product::with('sales', 'category', 'variants.attributeName.attributeValues')->get();
     }
 
     public function showProduct($id)
     {
-        return Product::with('sales', 'category', 'variants.attributeName')->find($id);
+        return Product::with('sales', 'category', 'variants.attributeName.attributeValues')->find($id);
     }
 
     public function createProductWithVariantsAndAttributes(array $productData)
     {
-        // Tạo sản phẩm
-        $product = Product::create([
-            'name' => $productData['name'],
-            'brand' => $productData['brand'],
-            'description' => $productData['description'],
-            'image' => $productData['image'],
-            'category_id' => $productData['category_id'],
-            'sale_id' => $productData['sale_id'],
-        ]);
+        DB::beginTransaction();
+        try {
+            // Lưu ảnh sản phẩm nếu có
+            if (isset($productData['image']) && $productData['image'] instanceof \Illuminate\Http\UploadedFile) {
+                $productData['image'] = $productData['image']->store('products', 'public');
+            }
 
-        // Tạo các biến thể và giá trị thuộc tính liên quan nếu có
-        if (isset($productData['variants']) && is_array($productData['variants'])) {
-            foreach ($productData['variants'] as $variantData) {
-                // Tạo biến thể
-                $variant = $product->variants()->create([
-                    'price' => $variantData['price'],
-                    'price_promotional' => $variantData['price_promotional'],
-                    'quantity' => $variantData['quantity'],
-                ]);
+            // Tạo sản phẩm
+            $product = Product::create($productData);
 
-                // Tạo các giá trị thuộc tính cho biến thể nếu có
-                if (isset($variantData['attributes']) && is_array($variantData['attributes'])) {
-                    foreach ($variantData['attributes'] as $attribute) {
-                        // Tạo tên thuộc tính nếu chưa tồn tại
-                        $attributeName = AttributeName::firstOrCreate(['name' => $attribute['name']]);
+            // Tạo các biến thể và giá trị thuộc tính liên quan nếu có
+            if (isset($productData['variants']) && is_array($productData['variants'])) {
+                foreach ($productData['variants'] as $variantData) {
+                    // Lưu ảnh biến thể nếu có
+                    if (isset($variantData['image']) && $variantData['image'] instanceof \Illuminate\Http\UploadedFile) {
+                        $variantData['image'] = $variantData['image']->store('variants', 'public');
+                    }
 
-                        // Tạo giá trị thuộc tính
-                        $attributeValue = AttributeValue::create([
-                            'attribute_name_id' => $attributeName->id,
-                            'value' => $attribute['value'],
-                        ]);
+                    // Tạo biến thể
+                    $variant = $product->variants()->create($variantData);
 
-                        // Kết nối biến thể với giá trị thuộc tính thông qua bảng pivot (variant_attributes)
-                        $variant->attributeValues()->attach($attributeValue->id);
+                    // Tạo các giá trị thuộc tính cho biến thể nếu có
+                    if (isset($variantData['attributes']) && is_array($variantData['attributes'])) {
+                        foreach ($variantData['attributes'] as $attribute) {
+                            // Tạo tên thuộc tính nếu chưa tồn tại
+                            $attributeName = AttributeName::firstOrCreate(['name' => $attribute['name']]);
+
+                            // Tạo giá trị thuộc tính
+                            $attributeValue = AttributeValue::firstOrCreate([
+                                'attribute_name_id' => $attributeName->id,
+                                'value' => $attribute['value'],
+                            ]);
+
+                            // Kết nối biến thể với giá trị thuộc tính thông qua bảng pivot (variant_attributes)
+                            $variant->attributeValues()->attach($attributeValue->id);
+                        }
                     }
                 }
             }
-        }
 
-        return $product;
+            DB::commit();
+            return $product;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
 
