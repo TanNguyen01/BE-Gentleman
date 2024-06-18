@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('quantity');
             $table->integer('bill_id');
             $table->string('voucher');
+            $table->string('image');
             $table->timestamps();
         });
     }

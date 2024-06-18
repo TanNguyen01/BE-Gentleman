@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('variants_attributes', function (Blueprint $table) {
+        Schema::create('variant_attributes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('attribute_id');
             $table->unsignedBigInteger('variant_id');
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('variant_attribute');
+        Schema::dropIfExists('variant_attributes');
     }
 };

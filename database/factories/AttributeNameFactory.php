@@ -2,10 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Attribute;
 use App\Models\AttributeName;
-use App\Models\AttributeValue;
-use App\Models\VariantAttribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
