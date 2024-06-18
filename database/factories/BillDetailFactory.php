@@ -26,6 +26,7 @@ class BillDetailFactory extends Factory
             'quantity' => $this->faker->numberBetween(1, 100),
             'bill_id' => \App\Models\Bill::factory(),
             'voucher' => $this->faker->word,
+            'image'  => $this->faker->imageUrl(),
         ];
     }
 }

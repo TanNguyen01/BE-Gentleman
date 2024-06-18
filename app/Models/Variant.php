@@ -16,23 +16,23 @@ class Variant extends Model
         'quantity',
     ];
 
-    public function product()
-    {
-        return $this->belongsTo(Product::class);
-    }
 
     public function attributeValues()
     {
-        return $this->hasMany(AttributeValue::class);
-    }
-
-    public function attributes()
-    {
-        return $this->belongsToMany(Attribute::class, 'attribute_values')
-            ->withPivot('name');
+        return $this->belongsToMany(AttributeValue::class, 'variant_attributes', 'variant_id', 'attribute_id')
+            ->withTimestamps();
     }
     public function orderDetails()
     {
         return $this->hasMany(OrderDetail::class);
+    }
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+    public function attributeName()
+    {
+        // Mô hình Variant có thể có nhiỞu thuộc tính, nếu cần
+        return $this->belongsToMany(AttributeName::class, 'variant_attributes', 'variant_id', 'attribute_id');
     }
 }

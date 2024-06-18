@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use App\Models\Attribute;
+use App\Models\AttributeName;
 use App\Models\AttributeValue;
 use App\Models\Product;
 use App\Models\Variant;
 use App\Traits\APIResponse;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Support\Facades\DB;
 
 class ProductService extends AbstractServices
@@ -20,56 +22,56 @@ class ProductService extends AbstractServices
 
     public function getAllProducts()
     {
-        return Product::with('sales', 'category', 'variants.attributes')->get();
+        return Product::with('sales', 'category', 'variants.attributeName')->get();
     }
 
     public function showProduct($id)
     {
-        return Product::with('sales', 'category', 'variants.attributes')->find($id);
+        return Product::with('sales', 'category', 'variants.attributeName')->find($id);
     }
 
-    public function storeProductWithVariants(array $productData, array $variantsData)
+    public function createProductWithVariantsAndAttributes(array $productData)
     {
-        DB::beginTransaction();
-        try {
-            // Kiểm tra và xử lý tệp ảnh nếu có
-            $imagePath = $productData['image'] ?? "";
-            if (isset($productData['image']) && $productData['image'] instanceof \Illuminate\Http\UploadedFile) {
-                $imagePath = $productData['image']->store('image', 'public'); // Lưu ảnh vào thư mục 'storage/app/public/variant_images'
-            }
-            $productData['image'] = $imagePath;
-            $product = $this->eloquentPostCreate($productData);
+        // Tạo sản phẩm
+        $product = Product::create([
+            'name' => $productData['name'],
+            'brand' => $productData['brand'],
+            'description' => $productData['description'],
+            'image' => $productData['image'],
+            'category_id' => $productData['category_id'],
+            'sale_id' => $productData['sale_id'],
+        ]);
 
-            foreach ($variantsData as $variantData) {
-                $variants = Variant::create([
-                    'product_id' => $product->id,
+        // Tạo các biến thể và giá trị thuộc tính liên quan nếu có
+        if (isset($productData['variants']) && is_array($productData['variants'])) {
+            foreach ($productData['variants'] as $variantData) {
+                // Tạo biến thể
+                $variant = $product->variants()->create([
                     'price' => $variantData['price'],
                     'price_promotional' => $variantData['price_promotional'],
                     'quantity' => $variantData['quantity'],
                 ]);
 
-                foreach ($variantData['attributes'] as $attributeData) {
-                    // Tạo hoặc lấy thuộc tính đã tồn tại
-                    $attributes = Attribute::firstOrCreate(
-                        [
-                            'name' => $attributeData['name'],
-                            'product_id' => $product->id
-                        ]
-                    );
-                    AttributeValue::create([
-                        'attribute_id' => $attributes->id,
-                        'variant_id' => $variants->id,
-                        'name' => $attributeData['value'],
-                    ]);
+                // Tạo các giá trị thuộc tính cho biến thể nếu có
+                if (isset($variantData['attributes']) && is_array($variantData['attributes'])) {
+                    foreach ($variantData['attributes'] as $attribute) {
+                        // Tạo tên thuộc tính nếu chưa tồn tại
+                        $attributeName = AttributeName::firstOrCreate(['name' => $attribute['name']]);
+
+                        // Tạo giá trị thuộc tính
+                        $attributeValue = AttributeValue::create([
+                            'attribute_name_id' => $attributeName->id,
+                            'value' => $attribute['value'],
+                        ]);
+
+                        // Kết nối biến thể với giá trị thuộc tính thông qua bảng pivot (variant_attributes)
+                        $variant->attributeValues()->attach($attributeValue->id);
+                    }
                 }
             }
-
-            DB::commit();
-            return $product;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
         }
+
+        return $product;
     }
 
 

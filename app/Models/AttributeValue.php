@@ -10,18 +10,12 @@ class AttributeValue extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'attribute_id',
-        'variant_id',
+        'value',
+        'attribute_name_id',
     ];
 
-    public function attributes()
+    public function attributeName()
     {
-        return $this->belongsTo(Attribute::class);
-    }
-
-    public function variants()
-    {
-        return $this->belongsTo(Variant::class);
+        return $this->belongsTo(AttributeName::class, 'attribute_name_id');
     }
 }

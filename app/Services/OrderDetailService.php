@@ -29,4 +29,9 @@ class OrderDetailService extends AbstractServices {
     public function destroyOrderDetail($id){
         return $this->eloquentDelete($id);
     }
+
+    public function eloquentOrderDetailWithVariant($id){
+        return $this->eloquentWithRelations($id,['variant','variant.attributeName.attributeValues','variant.product']);
+    }
 }
+

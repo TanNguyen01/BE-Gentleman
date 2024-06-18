@@ -18,11 +18,6 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function attributes()
-    {
-        return $this->hasMany(Attribute::class);
-    }
-
     public function variants()
     {
         return $this->hasMany(Variant::class);
