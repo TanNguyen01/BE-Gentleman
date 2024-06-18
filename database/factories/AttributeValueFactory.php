@@ -22,7 +22,7 @@ class AttributeValueFactory extends Factory
     {
         return [
             'attribute_name_id' => \App\Models\AttributeName::factory(),
-            'name' => $this->faker->word,
+            'value' => $this->faker->word,
         ];
     }
 }

@@ -54,7 +54,7 @@ class ProductService extends AbstractServices
                 ]);
 
                 // Tạo các thuộc tính cho variant nếu có
-                if (isset($variantData['attributes']) && is_array($variantData['attributes'])) {
+                if (isset($variantData['attribute']) && is_array($variantData['attributes'])) {
                     foreach ($variantData['attributes'] as $attribute) {
                         // Tạo attribute_name nếu chưa tồn tại
                         $attributeName = AttributeName::firstOrCreate(['name' => $attribute['name']]);
