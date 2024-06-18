@@ -44,7 +44,7 @@ class ProductController extends Controller
         }
 
         // Gọi phương thức lưu trữ sản phẩm và biến thể
-        $product = $this->productService->storeProductWithVariants($productData, $variantsData);
+        $product = $this->productService->storeProductVariants($productData, $variantsData);
 
         return $this->responseCreated(
             __('Tao san pham thanh cong!'),

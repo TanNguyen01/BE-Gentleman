@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
         // Clear existing data using DELETE instead of TRUNCATE
-        \App\Models\Attribute::query()->delete();
+        //\App\Models\AttributeName::query()->delete();
         \App\Models\Category::query()->delete();
         \App\Models\Product::query()->delete();
         \App\Models\Variant::query()->delete();
@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         // Seed new data
-        \App\Models\Attribute::factory()->count(5)->create();
+        //\App\Models\AttributeName::factory()->count(5)->create();
         \App\Models\Category::factory()->count(5)->create();
         \App\Models\Product::factory()->count(20)->create();
         \App\Models\Variant::factory()->count(5)->create();
