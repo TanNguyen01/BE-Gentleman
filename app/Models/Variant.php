@@ -32,7 +32,7 @@ class Variant extends Model
     }
     public function attributeName()
     {
-        // Mô hình Variant có thể có nhiỞu thuộc tính, nếu cần
+        // Mô hình Variant có thể có nhiều thuộc tính, nếu cần
         return $this->belongsToMany(AttributeName::class, 'variant_attributes', 'variant_id', 'attribute_id');
     }
 }
