@@ -31,6 +31,7 @@ class OrderDetailService extends AbstractServices {
     }
 
     public function eloquentOrderDetailWithVariant($id){
-        return $this->eloquentWithRelations($id,['variant']);
+        return $this->eloquentWithRelations($id,['variant','variant.attributeName','variant.product']);
     }
 }
+

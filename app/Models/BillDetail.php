@@ -16,6 +16,7 @@ class BillDetail extends Model
         'quantity',
         'bill_id',
         'voucher',
+        'image'
     ];
     public function bill()
     {

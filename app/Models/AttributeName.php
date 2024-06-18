@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class AttributeName extends Model
 {
     use HasFactory;
-    protected $table = 'attribute_name';
     protected $fillable = [
         'name',
     ];
