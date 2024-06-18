@@ -8,19 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 class AttributeName extends Model
 {
     use HasFactory;
-
+    protected $table = 'attribute_name';
     protected $fillable = [
         'name',
     ];
 
-    public function attributeValue()
+    public function attributeValues()
     {
         return $this->hasMany(attributeValue::class);
     }
 
     public function variants()
     {
-        return $this->belongsToMany(Variant::class, 'variant_attribute', 'attribute_id', 'variant_id');
+        return $this->belongsToMany(Variant::class, 'variant_attribute', 'variant_id', 'attribute_id');
     }
 
     public function products()
