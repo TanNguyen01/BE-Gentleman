@@ -30,7 +30,7 @@ class ProductService extends AbstractServices
         return Product::with('sales', 'category', 'variants.attributeName')->find($id);
     }
 
-    public function storeProductVariants(array $productData, $variantData)
+    public function createProductWithVariantsAndAttributes(array $productData)
     {
         // Tạo sản phẩm
         $product = Product::create([
@@ -42,30 +42,29 @@ class ProductService extends AbstractServices
             'sale_id' => $productData['sale_id'],
         ]);
 
-        // Tạo các variant và thuộc tính liên quan nếu có
+        // Tạo các biến thể và giá trị thuộc tính liên quan nếu có
         if (isset($productData['variants']) && is_array($productData['variants'])) {
             foreach ($productData['variants'] as $variantData) {
-                // Tạo variant
-                $variant = Variant::create([
-                    'product_id' => $product->id,
+                // Tạo biến thể
+                $variant = $product->variants()->create([
                     'price' => $variantData['price'],
                     'price_promotional' => $variantData['price_promotional'],
                     'quantity' => $variantData['quantity'],
                 ]);
 
-                // Tạo các thuộc tính cho variant nếu có
-                if (isset($variantData['attribute']) && is_array($variantData['attributes'])) {
+                // Tạo các giá trị thuộc tính cho biến thể nếu có
+                if (isset($variantData['attributes']) && is_array($variantData['attributes'])) {
                     foreach ($variantData['attributes'] as $attribute) {
-                        // Tạo attribute_name nếu chưa tồn tại
+                        // Tạo tên thuộc tính nếu chưa tồn tại
                         $attributeName = AttributeName::firstOrCreate(['name' => $attribute['name']]);
 
-                        // Tạo attribute_value
+                        // Tạo giá trị thuộc tính
                         $attributeValue = AttributeValue::create([
                             'attribute_name_id' => $attributeName->id,
-                            'name' => $attribute['value'],
+                            'value' => $attribute['value'],
                         ]);
 
-                        // Kết nối variant với attribute_value thông qua pivot table (variant_attribute)
+                        // Kết nối biến thể với giá trị thuộc tính thông qua bảng pivot (variant_attributes)
                         $variant->attributeValues()->attach($attributeValue->id);
                     }
                 }
@@ -74,6 +73,7 @@ class ProductService extends AbstractServices
 
         return $product;
     }
+
 
     public function updateProduct($id, $data)
     {
