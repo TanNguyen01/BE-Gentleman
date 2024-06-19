@@ -55,6 +55,7 @@ Route::apiResource("products", \App\Http\Controllers\API\ProductController::clas
 Route::apiResource("variants", \App\Http\Controllers\API\VariantController::class);
 Route::apiResource("attributes", \App\Http\Controllers\API\AttributeController::class);
 Route::get("get-by-sale", [ProductController::class, 'getBySale']);
+Route::get("get-by-sale/{id}", [ProductController::class, 'getProductBySaleId']);
 
 
 //User
@@ -86,15 +87,15 @@ Route::get('order-with-orderDetail/{id}', [OrderController::class, 'orderWithOrd
 
 //OrderDetail
 Route::apiResource('order-details', OrderDetailController::class);
-Route::post('orderDetailWithVariant',[OrderDetailController::class,'orderDetailWithVariant']);
+Route::post('orderDetailWithVariant', [OrderDetailController::class, 'orderDetailWithVariant']);
 
 //Voucher
 // Route::apiResource('voucher', VoucherController::class);
 
 //Sale
 Route::apiResource('sales', SaleController::class);
-Route::get('sale-onlayout',[SaleController::class,'getOnlayout']);
-Route::get('sale-product/{id}',[SaleController::class,'saleWithProduct']);
+Route::get('sale-onlayout', [SaleController::class, 'getOnlayout']);
+Route::get('sale-product/{id}', [SaleController::class, 'saleWithProduct']);
 
 Route::post('register', [\App\Http\Controllers\API\AuthController::class, 'register'])->name('register');
 Route::post('login', [\App\Http\Controllers\API\AuthController::class, 'login'])->name('login');
