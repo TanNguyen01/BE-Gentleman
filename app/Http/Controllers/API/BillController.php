@@ -164,4 +164,21 @@ class BillController extends BillService
             );
         }
     }
+
+    public function getPaid()
+    {
+        $data = $this->billService->getStatusPaid();
+        if(!$data){
+            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            __('khong tim thay danh muc'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
+        }
+    }
 }

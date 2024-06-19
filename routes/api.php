@@ -70,6 +70,11 @@ Route::post('bills-paid/{id}',[BillController::class,'paid']);
 Route::post('bills-shiping/{id}',[BillController::class,'shiping']);
 Route::post('bills-paidShiping/{id}',[BillController::class,'paidShiping']);
 Route::post('bills-cancel/{id}',[BillController::class,'cancel']);
+Route::get('bills-confirm',[BillController::class,'getConfirm']);
+Route::get('bills-paid',[BillController::class,'getPaid']);
+Route::get('bills-shiping',[BillController::class,'getShiping']);
+Route::get('bills-paidShiping',[BillController::class,'getPaidShiping']);
+Route::get('bills-cancel',[BillController::class,'getCancel']);
 
 //BillDetail
 Route::apiResource('bill-details', BillDetailController::class);
