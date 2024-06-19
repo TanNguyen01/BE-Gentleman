@@ -61,4 +61,30 @@ public function chanceStatusCancel($id){
     $res->save();
     return 'confirm';
 }
+
+public function getStatusPaid(){
+    $res = $this->eloquentWhere('status','Paid');
+    return $res;
+}
+
+public function getStatusShiping(){
+    $res = $this->eloquentWhere('status','Shiping');
+    return $res;
+}
+
+public function getStatusCancel(){
+    $res = $this->eloquentWhere('status','Cancel');
+    return $res;
+}
+
+public function getStatusConfirm(){
+    $res = $this->eloquentWhere('status','Confirm');
+    return $res;
+}
+
+public function getStatusPaidShiping(){
+    $res = $this->eloquentWhere('status','PaidShiping');
+    return $res;
+}
+
 }
