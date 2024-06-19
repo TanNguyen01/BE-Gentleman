@@ -55,6 +55,7 @@ Route::apiResource("products", \App\Http\Controllers\API\ProductController::clas
 Route::apiResource("variants", \App\Http\Controllers\API\VariantController::class);
 Route::apiResource("attributes", \App\Http\Controllers\API\AttributeController::class);
 Route::get("get-by-sale", [ProductController::class, 'getBySale']);
+Route::get("get-by-sale/{id}", [ProductController::class, 'getProductBySaleId']);
 
 
 //User
@@ -65,11 +66,11 @@ Route::apiResource('users', UserController::class);
 //Bill
 Route::apiResource('bills', BillController::class);
 Route::get('bills-with-billDetail/{id}', [BillController::class, 'billWithBillDetail']);
-Route::post('bills-confirm/{id}',[BillController::class,'confirm']);
-Route::post('bills-paid/{id}',[BillController::class,'paid']);
-Route::post('bills-shiping/{id}',[BillController::class,'shiping']);
-Route::post('bills-paidShiping/{id}',[BillController::class,'paidShiping']);
-Route::post('bills-cancel/{id}',[BillController::class,'cancel']);
+Route::post('bills-confirm/{id}', [BillController::class, 'confirm']);
+Route::post('bills-paid/{id}', [BillController::class, 'paid']);
+Route::post('bills-shiping/{id}', [BillController::class, 'shiping']);
+Route::post('bills-paidShiping/{id}', [BillController::class, 'paidShiping']);
+Route::post('bills-cancel/{id}', [BillController::class, 'cancel']);
 
 //BillDetail
 Route::apiResource('bill-details', BillDetailController::class);
@@ -81,15 +82,15 @@ Route::get('order-with-orderDetail/{id}', [OrderController::class, 'orderWithOrd
 
 //OrderDetail
 Route::apiResource('order-details', OrderDetailController::class);
-Route::post('orderDetailWithVariant',[OrderDetailController::class,'orderDetailWithVariant']);
+Route::post('orderDetailWithVariant', [OrderDetailController::class, 'orderDetailWithVariant']);
 
 //Voucher
 // Route::apiResource('voucher', VoucherController::class);
 
 //Sale
 Route::apiResource('sales', SaleController::class);
-Route::get('sale-onlayout',[SaleController::class,'getOnlayout']);
-Route::get('sale-product/{id}',[SaleController::class,'saleWithProduct']);
+Route::get('sale-onlayout', [SaleController::class, 'getOnlayout']);
+Route::get('sale-product/{id}', [SaleController::class, 'saleWithProduct']);
 
 Route::post('register', [\App\Http\Controllers\API\AuthController::class, 'register'])->name('register');
 Route::post('login', [\App\Http\Controllers\API\AuthController::class, 'login'])->name('login');
