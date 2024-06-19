@@ -54,7 +54,7 @@ Route::get('categories/{id}/total-products', [\App\Http\Controllers\API\Category
 Route::apiResource("products", \App\Http\Controllers\API\ProductController::class);
 Route::apiResource("variants", \App\Http\Controllers\API\VariantController::class);
 Route::apiResource("attributes", \App\Http\Controllers\API\AttributeController::class);
-
+Route::get("get-by-sale", [ProductController::class, 'getBySale']);
 
 
 //User
@@ -72,14 +72,14 @@ Route::apiResource('bill-details', BillDetailController::class);
 //Order
 Route::apiResource('orders', OrderController::class);
 Route::get('order-with-orderDetail/{id}', [OrderController::class, 'orderWithOrderDetail']);
-Route::post('order-confirm/{id}',[OrderController::class,'confirm']);
-Route::post('order-paid/{id}',[OrderController::class,'paid']);
-Route::post('order-shiping/{id}',[OrderController::class,'shiping']);
-Route::post('order-paidShiping/{id}',[OrderController::class,'paidShiping']);
-Route::post('order-cancel/{id}',[OrderController::class,'cancel']);
+Route::post('order-confirm/{id}', [OrderController::class, 'confirm']);
+Route::post('order-paid/{id}', [OrderController::class, 'paid']);
+Route::post('order-shiping/{id}', [OrderController::class, 'shiping']);
+Route::post('order-paidShiping/{id}', [OrderController::class, 'paidShiping']);
+Route::post('order-cancel/{id}', [OrderController::class, 'cancel']);
 //OrderDetail
 Route::apiResource('order-details', OrderDetailController::class);
-Route::get('orderDetailWithVariant/{id}',[OrderDetailController::class,'orderDetailWithVariant']);
+Route::get('orderDetailWithVariant/{id}', [OrderDetailController::class, 'orderDetailWithVariant']);
 
 //Voucher
 // Route::apiResource('voucher', VoucherController::class);
