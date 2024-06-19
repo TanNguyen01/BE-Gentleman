@@ -125,7 +125,7 @@ class ProductController extends Controller
     public function getProductBySaleId($id)
     {
         try {
-            $products = $this->productService->getProductsBySaleId($id);
+            $products = $this->productService->getProductBySaleId($id);
 
             if ($products->isEmpty()) {
                 return $this->responseNotFound(

@@ -16,6 +16,6 @@ class AttributeValue extends Model
 
     public function attributeName()
     {
-        return $this->belongsTo(AttributeName::class, 'attribute_name_id');
+        return $this->belongsTo(AttributeName::class);
     }
 }
