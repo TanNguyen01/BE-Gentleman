@@ -54,7 +54,7 @@ Route::get('categories/{id}/total-products', [\App\Http\Controllers\API\Category
 Route::apiResource("products", \App\Http\Controllers\API\ProductController::class);
 Route::apiResource("variants", \App\Http\Controllers\API\VariantController::class);
 Route::apiResource("attributes", \App\Http\Controllers\API\AttributeController::class);
-
+Route::get("get-by-sale", [ProductController::class, 'getBySale']);
 
 
 //User
