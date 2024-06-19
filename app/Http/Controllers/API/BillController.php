@@ -181,4 +181,72 @@ class BillController extends BillService
             );
         }
     }
+
+    public function getCancel()
+    {
+        $data = $this->billService->getStatusCancel();
+        if(!$data){
+            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            __('khong tim thay danh muc'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
+        }
+    }
+
+    public function getShiping()
+    {
+        $data = $this->billService->getStatusShiping();
+        if(!$data){
+            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            __('khong tim thay danh muc'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
+        }
+    }
+
+    public function getPaidShiping()
+    {
+        $data = $this->billService->getStatusPaidShiping();
+        if(!$data){
+            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            __('khong tim thay danh muc'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
+        }
+    }
+
+    public function getConfirm()
+    {
+        $data = $this->billService->getStatusConfirm();
+        if(!$data){
+            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            __('khong tim thay danh muc'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
+        }
+    }
 }
