@@ -6,6 +6,7 @@ use App\Http\Requests\OrderDetailRequest;
 use App\Traits\APIResponse;
 use Illuminate\Http\Response;
 use App\Services\OrderDetailService;
+use Illuminate\Http\Request;
 
 class OrderDetailController extends OrderDetailService
 {
@@ -95,8 +96,9 @@ class OrderDetailController extends OrderDetailService
         }
     }
 
-    public function orderDetailWithVariant($id)
+    public function orderDetailWithVariant(Request $request)
     {
+        $id = $request->all();
         $data = $this->orderDetailService->eloquentOrderDetailWithVariant($id);
         if(!$data){
             return $this->responseNotFound(
