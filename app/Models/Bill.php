@@ -14,7 +14,8 @@ class Bill extends Model
         'recipient_phone',
         'recipient_address',
         'total_amount',
-        'bill_date',
+        'status',
+        'pay'
     ];
 
     public function user()

@@ -3,11 +3,12 @@
 namespace App\Services;
 
 use App\Models\OrderDetail;
+use App\Models\Variant;
 
 class OrderDetailService extends AbstractServices {
-    public function __construct(OrderDetail $orderDetail)
+    public function __construct(Variant $cart)
     {
-        parent::__construct($orderDetail);
+        parent::__construct($cart);
     }
 
     public function getAllOrderDetail(){
@@ -31,7 +32,10 @@ class OrderDetailService extends AbstractServices {
     }
 
     public function eloquentOrderDetailWithVariant($id){
-        return $this->eloquentWithRelations($id,['variant','variant.attributeName.attributeValues','variant.product']);
+        $data = [];
+        foreach ($id['data'] as $key => $value){
+            $data [] = $this->eloquentWithRelations($value,['attributeName','attributeName.attributeValues','product']);
+        }
+        return $data;
     }
 }
-

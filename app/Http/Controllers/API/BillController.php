@@ -79,4 +79,89 @@ class BillController extends BillService
             );
         }
     }
+
+    public function confirm(string $id)
+    {
+        $data = $this->billService->chanceStatusConfirm($id);
+        if(!$data){
+            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            __('khong tim thay danh muc'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => 'confirm',
+                ]
+            );
+        }
+    }
+
+    public function shiping(string $id)
+    {
+        $data = $this->billService->chanceStatusConfirm($id);
+        if(!$data){
+            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            __('khong tim thay danh muc'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => 'shiping',
+                ]
+            );
+        }
+    }
+
+    public function paid(string $id)
+    {
+        $data = $this->billService->chanceStatusPaid($id);
+        if(!$data){
+            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            __('khong tim thay danh muc'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => 'paid',
+                ]
+            );
+        }
+    }
+
+    public function paidShiping(string $id)
+    {
+        $data = $this->billService->chanceStatusPaidShiping($id);
+        if(!$data){
+            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            __('khong tim thay danh muc'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => 'paidShiping',
+                ]
+            );
+        }
+    }
+
+    public function cancel(string $id)
+    {
+        $data = $this->billService->chanceStatusCancel($id);
+        if(!$data){
+            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            __('khong tim thay danh muc'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => 'paidShiping',
+                ]
+            );
+        }
+    }
 }

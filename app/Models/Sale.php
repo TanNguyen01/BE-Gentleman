@@ -11,6 +11,8 @@ class Sale extends Model
 
     protected $fillable = [
         'name',
+        'status',
+        'onLayout'
     ];
 
     public function product()

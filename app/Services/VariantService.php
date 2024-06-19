@@ -24,12 +24,12 @@ class VariantService extends AbstractServices
 
     public function showVariant($id)
     {
-        // Lấy thông tin biến thể cùng với các thuộc tính của nó
+        // L?y th�ng tin bi?n th? c�ng v?i c�c thu?c t�nh c?a n�
         $variant = Variant::with('attributes')->find($id);
 
 
 
-        // Trả về kết quả
+        // Tr? v? k?t qu?
         return $variant;
     }
 
@@ -48,7 +48,7 @@ class VariantService extends AbstractServices
         if ($variant) {
             if (isset($data['file']) && $data['file'] instanceof UploadedFile) {
                 $data['file_path'] = $this->uploadFile($data['file'], 'variants');
-                // Xóa file cũ nếu cần thiết
+                // X�a file c? n?u c?n thi?t
                 if ($variant->file_path) {
                     Storage::delete($variant->file_path);
                 }

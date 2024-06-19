@@ -24,7 +24,8 @@ class BillFactory extends Factory
             'recipient_phone' => $this->faker->phoneNumber,
             'recipient_address' => $this->faker->address,
             'total_amount' => $this->faker->randomFloat(2, 10, 1000),
-            'bill_date' => $this->faker->date(),
+            'pay' => $this->faker->word,
+            'status' => $this->faker->randomElement(['pending', 'completed', 'canceled'])
         ];
     }
 }
