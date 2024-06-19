@@ -26,4 +26,39 @@ class BillService extends AbstractServices {
         $relations = ['billDetails'];
         return $this->eloquentWithRelations($id,$relations);
    }
+
+   public function chanceStatusConfirm($id){
+    $res = $this->eloquentFind($id);
+    $res->status = 'confirm';
+    $res->save();
+    return 'confirm';
+}
+
+public function chanceStatusShiping($id){
+    $res = $this->eloquentFind($id);
+    $res->status = 'Shiping';
+    $res->save();
+    return 'confirm';
+}
+
+public function chanceStatusPaid($id){
+    $res = $this->eloquentFind($id);
+    $res->status = 'Paid';
+    $res->save();
+    return 'confirm';
+}
+
+public function chanceStatusPaidShiping($id){
+    $res = $this->eloquentFind($id);
+    $res->status = 'PaidShiping';
+    $res->save();
+    return 'confirm';
+}
+
+public function chanceStatusCancel($id){
+    $res = $this->eloquentFind($id);
+    $res->status = 'Cancel';
+    $res->save();
+    return 'confirm';
+}
 }

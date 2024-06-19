@@ -28,7 +28,7 @@ class BillDetailRequest extends FormRequest
         return [
             'data' => 'required|array',
             'data.*.product_name' => 'required|string|max:255',
-            'data.*.attribute_name' => 'required|string|max:255',
+            'data.*.attribute' => 'required|string|max:255',
             'data.*.price' => 'required|numeric|min:0',
             'data.*.quantity' => 'required|integer|min:1',
             'data.*.bill_id' => 'required|integer|exists:bills,id',

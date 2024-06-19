@@ -21,6 +21,8 @@ class SaleFactory extends Factory
     {
         return [
             'name' => $this->faker->word,
+            'onLayout' => $this->faker->randomElement(['1', '0']),
+            'status' => $this->faker->randomElement(['1', '0'])
         ];
     }
 }

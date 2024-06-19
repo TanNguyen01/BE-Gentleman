@@ -80,4 +80,27 @@ class SaleController extends Controller
             return $this->errorResponse($e->getMessage(), 400);
         }
     }
+
+    public function getOnlayout()
+    {
+        try {
+            $sale = $this->saleService->onLayoutSale();
+            return $this->successResponse([
+                'sales' => $sale,
+            ], 'Get All sale onlayout');
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 404);
+        }
+    }
+
+    public function saleWithProduct($id){
+        try {
+            $sale = $this->saleService->EloquentSaleWithProduct($id);
+            return $this->successResponse([
+                'sales' => $sale,
+            ], 'Get All product find sale');
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 404);
+        }
+    }
 }

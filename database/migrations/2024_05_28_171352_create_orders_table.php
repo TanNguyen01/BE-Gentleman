@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('number')->nullable();
             $table->decimal('total_amount', 10, 2);
             $table->string('status');
-            $table->dateTime('order_date');
             $table->timestamps();
         });
     }
