@@ -46,7 +46,7 @@ class ProductService extends AbstractServices
                 'image' => $productData['image'] ?? null,
                 'description' => $productData['description'],
                 'category_id' => $productData['category_id'],
-                'sale_id' => $productData['sale_id'],
+                'sale_id' => $productData['sale_id'] ?? null,
             ]);
 
             // Tạo các biến thể và giá trị thuộc tính liên quan nếu có
@@ -102,7 +102,7 @@ class ProductService extends AbstractServices
                 'description' => $productData['description'],
                 'image' => $productData['image'] ?? $product->image,
                 'category_id' => $productData['category_id'],
-                'sale_id' => $productData['sale_id'],
+                'sale_id' => $productData['sale_id'] ?? null,
             ]);
 
             // Xóa các biến thể cũ và các giá trị thuộc tính của chúng
@@ -167,6 +167,20 @@ class ProductService extends AbstractServices
     {
         try {
             $products = Product::whereNotNull('sale_id')
+                ->with('sales', 'category', 'variants.attributeValues.attributeName')
+                ->get();
+
+            return $products;
+        } catch (\Exception $e) {
+            Log::error('Error fetching products by sale_id: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+    public function getProductsBySaleId($saleId)
+    {
+        try {
+            // Sử dụng Eloquent ORM để lấy danh sách sản phẩm có sale_id
+            $products = Product::where('sale_id', $saleId)
                 ->with('sales', 'category', 'variants.attributeValues.attributeName')
                 ->get();
 
