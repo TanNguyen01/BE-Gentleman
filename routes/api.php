@@ -12,6 +12,7 @@ use App\Http\Controllers\API\SaleController;
 use App\Http\Controllers\API\SizeController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VariantController;
+use App\Http\Controllers\SizeController as ControllersSizeController;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
@@ -57,6 +58,15 @@ Route::apiResource("attributes", \App\Http\Controllers\API\AttributeController::
 Route::get("get-by-sale", [ProductController::class, 'getBySale']);
 Route::get("get-by-sale/{id}", [ProductController::class, 'getProductBySaleId']);
 
+//size
+Route::get("get-all-size", [SizeController::class, 'index']);
+Route::post("add-size", [SizeController::class, 'store']);
+
+
+//color
+Route::get("get-all-color", [ColorController::class, 'index']);
+Route::post("add-color", [ColorController::class, 'store']);
+
 
 //User
 
@@ -66,16 +76,16 @@ Route::apiResource('users', UserController::class);
 //Bill
 Route::apiResource('bills', BillController::class);
 Route::get('bills-with-billDetail/{id}', [BillController::class, 'billWithBillDetail']);
-Route::post('bills-confirm/{id}',[BillController::class,'confirm']);
-Route::post('bills-paid/{id}',[BillController::class,'paid']);
-Route::post('bills-shiping/{id}',[BillController::class,'shiping']);
-Route::post('bills-paidShiping/{id}',[BillController::class,'paidShiping']);
-Route::post('bills-cancel/{id}',[BillController::class,'cancel']);
-Route::get('bills-confirm',[BillController::class,'getConfirm']);
-Route::get('bills-paid',[BillController::class,'getPaid']);
-Route::get('bills-shiping',[BillController::class,'getShiping']);
-Route::get('bills-paidShiping',[BillController::class,'getPaidShiping']);
-Route::get('bills-cancel',[BillController::class,'getCancel']);
+Route::post('bills-confirm/{id}', [BillController::class, 'confirm']);
+Route::post('bills-paid/{id}', [BillController::class, 'paid']);
+Route::post('bills-shiping/{id}', [BillController::class, 'shiping']);
+Route::post('bills-paidShiping/{id}', [BillController::class, 'paidShiping']);
+Route::post('bills-cancel/{id}', [BillController::class, 'cancel']);
+Route::get('bills-confirm', [BillController::class, 'getConfirm']);
+Route::get('bills-paid', [BillController::class, 'getPaid']);
+Route::get('bills-shiping', [BillController::class, 'getShiping']);
+Route::get('bills-paidShiping', [BillController::class, 'getPaidShiping']);
+Route::get('bills-cancel', [BillController::class, 'getCancel']);
 
 //BillDetail
 Route::apiResource('bill-details', BillDetailController::class);

@@ -17,10 +17,9 @@ class Variant extends Model
     ];
 
 
-    public function attributeValues()
+    public function attributeNames()
     {
-        return $this->belongsToMany(AttributeValue::class, 'variant_attributes', 'variant_id', 'attribute_id')
-            ->withTimestamps();
+        return $this->belongsToMany(AttributeValue::class, 'variant_attributes', 'variant_id', 'attribute_id');
     }
     public function orderDetails()
     {
@@ -29,10 +28,5 @@ class Variant extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
-    }
-    public function attributeName()
-    {
-        // Mô hình Variant có thể có nhiều thuộc tính, nếu cần
-        return $this->belongsToMany(AttributeName::class, 'variant_attributes', 'variant_id', 'attribute_id');
     }
 }
