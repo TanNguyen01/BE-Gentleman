@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\AttributeController;
 use App\Http\Controllers\API\BillController;
 use App\Http\Controllers\API\BillDetailController;
+use App\Http\Controllers\API\BillStoryController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ColorController;
 use App\Http\Controllers\API\OrderController;
@@ -77,11 +78,15 @@ Route::apiResource('users', UserController::class);
 Route::apiResource('bills', BillController::class);
 Route::get('bills-with-billDetail/{id}', [BillController::class, 'billWithBillDetail']);
 Route::post('bills-confirm/{id}', [BillController::class, 'confirm']);
+Route::post('bills-pending/{id}', [BillController::class, 'pending']);
+Route::post('bills-done/{id}', [BillController::class, 'done']);
 Route::post('bills-paid/{id}', [BillController::class, 'paid']);
 Route::post('bills-shiping/{id}', [BillController::class, 'shiping']);
 Route::post('bills-paidShiping/{id}', [BillController::class, 'paidShiping']);
 Route::post('bills-cancel/{id}', [BillController::class, 'cancel']);
 Route::get('bills-confirm', [BillController::class, 'getConfirm']);
+Route::get('bills-pending', [BillController::class, 'getPending']);
+Route::get('bills-done', [BillController::class, 'getDone']);
 Route::get('bills-paid', [BillController::class, 'getPaid']);
 Route::get('bills-shiping', [BillController::class, 'getShiping']);
 Route::get('bills-paidShiping', [BillController::class, 'getPaidShiping']);
@@ -90,6 +95,8 @@ Route::get('bills-cancel', [BillController::class, 'getCancel']);
 //BillDetail
 Route::apiResource('bill-details', BillDetailController::class);
 
+// BillStory
+Route::apiResource('bill-stores', BillStoryController::class);
 
 //Order
 Route::apiResource('orders', OrderController::class);
