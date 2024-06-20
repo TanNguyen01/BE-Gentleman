@@ -21,7 +21,7 @@ class BillDetailFactory extends Factory
     {
         return [
             'product_name' => $this->faker->word,
-            'attribute_name' => $this->faker->word,
+            'attribute' => $this->faker->word,
             'price' => $this->faker->randomFloat(2, 1, 100),
             'quantity' => $this->faker->numberBetween(1, 100),
             'bill_id' => \App\Models\Bill::factory(),

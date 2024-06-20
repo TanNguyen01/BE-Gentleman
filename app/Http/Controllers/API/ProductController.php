@@ -35,14 +35,6 @@ class ProductController extends Controller
     {
         $productData = $request->all();
         $variantsData = $request->input('variants', []);
-
-        // Xử lý tệp ảnh trong các biến thể
-        foreach ($variantsData as $variantData) {
-            if (isset($variantData['image']) && $variantData['image'] instanceof \Illuminate\Http\UploadedFile) {
-                $variantData['image'] = $variantData['image']->store('image', 'public'); // Lưu ảnh vào thư mục 'storage/app/public/variant_images'
-            }
-        }
-
         // Gọi phương thức lưu trữ sản phẩm và biến thể
         $product = $this->productService->createProductWithVariantsAndAttributes($productData, $variantsData);
 
@@ -78,7 +70,7 @@ class ProductController extends Controller
     public function update(ProductsRequest $request, $id)
     {
         $data = $request->all();
-        $product = $this->productService->updateProduct($id, $data);
+        $product = $this->productService->updateProductWithVariantsAndAttributes($id, $data);
         if (!$product) {
             return $this->responseNotFound(
                 Response::HTTP_NOT_FOUND,
@@ -105,6 +97,51 @@ class ProductController extends Controller
             );
         } else {
             return $this->responseDeleted(null, Response::HTTP_NO_CONTENT);
+        }
+    }
+
+    public function getBySale()
+    {
+        try {
+            $products = $this->productService->getAllWithSale();
+
+            if ($products->isEmpty()) {
+                return $this->responseNotFound(
+                    Response::HTTP_NOT_FOUND,
+                    __('khong tim thay san pham!')
+                );
+            } else {
+                return response()->json([
+                    'data' => $products,
+                    'message' => 'Successfully retrieved products with sale_id',
+                ], Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            return $this->responseServerError(
+                __('loi khi lay danh sach san pham theo sale_id: ') . $e->getMessage()
+            );
+        }
+    }
+    public function getProductBySaleId($id)
+    {
+        try {
+            $products = $this->productService->getProductsBySaleId($id);
+
+            if ($products->isEmpty()) {
+                return $this->responseNotFound(
+                    Response::HTTP_NOT_FOUND,
+                    __('khong tim thay san pham!')
+                );
+            } else {
+                return response()->json([
+                    'data' => $products,
+                    'message' => 'Successfully retrieved products with sale_id',
+                ], Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            return $this->responseServerError(
+                __('loi khi lay danh sach san pham theo sale_id: ') . $e->getMessage()
+            );
         }
     }
 }

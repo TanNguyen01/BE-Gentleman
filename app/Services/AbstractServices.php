@@ -95,7 +95,7 @@ abstract class AbstractServices
      }
 
 // lay du lieu theo quan he
-    public function eloquentWithRelations(int $id, array $relations): ?Model
+    public function eloquentWithRelations($id, array $relations): ?Model
     {
         $record = $this->model->with($relations)->findOrFail($id);
         return $record;

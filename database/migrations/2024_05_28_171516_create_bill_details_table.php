@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('bill_details', function (Blueprint $table) {
             $table->increments('id');
             $table->string('product_name');
-            $table->string('attribute_name');
+            $table->string('attribute');
             $table->decimal('price', 10, 2);
             $table->integer('quantity');
             $table->integer('bill_id');

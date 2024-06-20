@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('Recipient_phone');
             $table->string('Recipient_address');
             $table->decimal('total_amount', 10, 2);
-            $table->dateTime('bill_date');
+            $table->string('status');
+            $table->string('pay')->nullable();
             $table->timestamps();
         });
 

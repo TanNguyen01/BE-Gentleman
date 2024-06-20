@@ -8,8 +8,9 @@ use App\Models\AttributeValue;
 use App\Models\Product;
 use App\Models\Variant;
 use App\Traits\APIResponse;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ProductService extends AbstractServices
 {
@@ -34,14 +35,18 @@ class ProductService extends AbstractServices
     {
         DB::beginTransaction();
         try {
+            if (isset($productData['image'])) {
+                $productData['image'] = $this->uploadImage($productData['image']);
+            }
+
             // Tạo sản phẩm
             $product = Product::create([
                 'name' => $productData['name'],
                 'brand' => $productData['brand'],
+                'image' => $productData['image'] ?? null,
                 'description' => $productData['description'],
-                'image' => $productData['image'],
                 'category_id' => $productData['category_id'],
-                'sale_id' => $productData['sale_id'],
+                'sale_id' => $productData['sale_id'] ?? null,
             ]);
 
             // Tạo các biến thể và giá trị thuộc tính liên quan nếu có
@@ -52,7 +57,7 @@ class ProductService extends AbstractServices
                         'price' => $variantData['price'],
                         'price_promotional' => $variantData['price_promotional'],
                         'quantity' => $variantData['quantity'],
-                        'image' => $variantData['image'] ?? null,
+                        'image' => $variantData['image'] ?? "",
                     ]);
 
                     // Tạo các giá trị thuộc tính cho biến thể nếu có
@@ -78,82 +83,111 @@ class ProductService extends AbstractServices
             return $product;
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Error creating product with variants and attributes: ' . $e->getMessage());
             throw $e;
         }
     }
 
-    public function updateProduct($id, $data)
+    public function updateProductWithVariantsAndAttributes($productId, array $productData)
     {
         DB::beginTransaction();
-
         try {
-            // Lấy thông tin sản phẩm cần cập nhật
-            $product = Product::findOrFail($id);
+            // Lấy sản phẩm cần cập nhật
+            $product = Product::findOrFail($productId);
 
             // Cập nhật thông tin sản phẩm
             $product->update([
-                'name' => $data['name'],
-                'brand' => $data['brand'],
-                'image' => $data['image'] ?? $product->image,
-                'description' => $data['description'],
-                'category_id' => $data['category_id'],
-                'sale_id' => $data['sale_id'],
+                'name' => $productData['name'],
+                'brand' => $productData['brand'],
+                'description' => $productData['description'],
+                'image' => $productData['image'] ?? $product->image,
+                'category_id' => $productData['category_id'],
+                'sale_id' => $productData['sale_id'] ?? null,
             ]);
-            // Kiểm tra và xử lý tệp ảnh mới
-            if (isset($data['new_image']) && $data['new_image'] instanceof \Illuminate\Http\UploadedFile) {
-                $imagePath = $data['new_image']->store('image', 'public');
-                $product->image = $imagePath;
-                $product->save();
-            }
 
-            // Kiểm tra và cập nhật các biến thể (variants)
-            if (isset($data['variants']) && is_array($data['variants'])) {
-                foreach ($data['variants'] as $variantData) {
-                    // Lấy thông tin biến thể hoặc tạo mới nếu chưa tồn tại
-                    $variant = Variant::updateOrCreate(
-                        ['id' => $variantData['id']],
-                        [
-                            'product_id' => $product->id,
-                            'price' => $variantData['price'],
-                            'price_promotional' => $variantData['price_promotional'],
-                            'quantity' => $variantData['quantity'],
-                        ]
-                    );
+            // Xóa các biến thể cũ và các giá trị thuộc tính của chúng
+            $product->variants()->delete();
 
-                    // Xóa hết các thuộc tính của biến thể
-                    $variant->attributes()->delete();
+            // Thêm các biến thể mới và các giá trị thuộc tính tương ứng
+            if (isset($productData['variants']) && is_array($productData['variants'])) {
+                foreach ($productData['variants'] as $variantData) {
+                    // Tạo biến thể mới
+                    $variant = $product->variants()->create([
+                        'price' => $variantData['price'],
+                        'price_promotional' => $variantData['price_promotional'],
+                        'quantity' => $variantData['quantity'],
+                        'image' => $variantData['image'] ?? null,
+                    ]);
 
-                    // Cập nhật hoặc thêm mới các thuộc tính của biến thể
+                    // Xử lý các giá trị thuộc tính của biến thể mới
                     if (isset($variantData['attributes']) && is_array($variantData['attributes'])) {
-                        foreach ($variantData['attributes'] as $attributeData) {
-                            $attribute = Attribute::updateOrCreate(
-                                ['product_id' => $product->id, 'name' => $attributeData['name']],
-                                ['product_id' => $product->id]
-                            );
-                            AttributeValue::updateOrCreate([
-                                'attribute_id' => $attribute->id,
-                                'variant_id' => $variant->id,
-                                'name' => $attributeData['value'],
+                        foreach ($variantData['attributes'] as $attribute) {
+                            // Tạo hoặc lấy tên thuộc tính
+                            $attributeName = AttributeName::firstOrCreate(['name' => $attribute['name']]);
+
+                            // Tạo hoặc lấy giá trị thuộc tính
+                            $attributeValue = AttributeValue::firstOrCreate([
+                                'attribute_name_id' => $attributeName->id,
+                                'value' => $attribute['value'],
                             ]);
+
+                            // Liên kết giá trị thuộc tính với biến thể
+                            $variant->attributeValues()->attach($attributeValue);
                         }
                     }
                 }
             }
 
             DB::commit();
-
             return $product;
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Error updating product with variants and attributes: ' . $e->getMessage());
             throw $e;
         }
     }
 
-
-
+    public function uploadImage($image)
+    {
+        try {
+            $path = $image->store('images', 's3', 'public');
+            return Storage::disk('s3')->url($path);
+        } catch (\Exception $e) {
+            Log::error('Error uploading image to S3: ' . $e->getMessage());
+            throw $e;
+        }
+    }
 
     public function destroyProduct($id)
     {
         return $this->eloquentDelete($id);
+    }
+
+    public function getAllWithSale()
+    {
+        try {
+            $products = Product::whereNotNull('sale_id')
+                ->with('sales', 'category', 'variants.attributeValues.attributeName')
+                ->get();
+
+            return $products;
+        } catch (\Exception $e) {
+            Log::error('Error fetching products by sale_id: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+    public function getProductsBySaleId($saleId)
+    {
+        try {
+            // Sử dụng Eloquent ORM để lấy danh sách sản phẩm có sale_id
+            $products = Product::where('sale_id', $saleId)
+                ->with('sales', 'category', 'variants.attributeValues.attributeName')
+                ->get();
+
+            return $products;
+        } catch (\Exception $e) {
+            Log::error('Error fetching products by sale_id: ' . $e->getMessage());
+            throw $e;
+        }
     }
 }
