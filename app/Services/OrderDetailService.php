@@ -43,7 +43,7 @@ class OrderDetailService extends AbstractServices
         $data = [];
         foreach ($param['data'] as $key => $value) {
             // L?y thông tin c?a variant cùng v?i các m?i quan h? liên quan
-            $variant = $this->eloquentWithRelations($value['variant_id'], ['attributeValues', 'attributeName']);
+            $variant = $this->eloquentWithRelations($value['variant_id'], ['attributeValues', 'attributeNames']);
 
             // T?o m?ng v?i các trı?ng c?n thi?t
             $data[] = [
@@ -54,7 +54,7 @@ class OrderDetailService extends AbstractServices
                 'quantity' => $variant->quantity,
                 'attribute_values' => $variant->attributeValues->map(function ($attr) use ($variant) {
                     // T?m tên attribute tıõng ?ng v?i attribute_name_id
-                    $attributeName = $variant->attributeName->firstWhere('id', $attr->attribute_name_id);
+                    $attributeName = $variant->attributeNames->firstWhere('id', $attr->attribute_name_id);
 
                     return [
                         'id' => $attr->id,
