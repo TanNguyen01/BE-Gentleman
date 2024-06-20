@@ -23,7 +23,8 @@ class BillRequest extends FormRequest
         'recipient_phone' => 'required|string|max:15|',
         'recipient_address' => 'required|string|max:255',
         'total_amount' => 'numeric|min:0',
-        'status' => 'required'
+        'status' => 'required',
+        'pay' => 'string'
     ];
 }
 

@@ -130,9 +130,9 @@ class BillController extends BillService
         }
     }
 
-    public function paidShiping(string $id)
+    public function pending(string $id)
     {
-        $data = $this->billService->chanceStatusPaidShiping($id);
+        $data = $this->billService->chanceStatusPending($id);
         if(!$data){
             return $this->responseNotFound(Response::HTTP_NOT_FOUND,
             __('khong tim thay danh muc'),
@@ -141,7 +141,24 @@ class BillController extends BillService
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
-                    'data' => 'paidShiping',
+                    'data' => 'pending',
+                ]
+            );
+        }
+    }
+
+    public function done(string $id)
+    {
+        $data = $this->billService->chanceStatusDone($id);
+        if(!$data){
+            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            __('khong tim thay danh muc'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => 'pending',
                 ]
             );
         }
@@ -215,9 +232,26 @@ class BillController extends BillService
         }
     }
 
-    public function getPaidShiping()
+    public function getPending()
     {
-        $data = $this->billService->getStatusPaidShiping();
+        $data = $this->billService->getStatusPending();
+        if(!$data){
+            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            __('khong tim thay danh muc'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
+        }
+    }
+
+    public function getDone()
+    {
+        $data = $this->billService->getStatusDone();
         if(!$data){
             return $this->responseNotFound(Response::HTTP_NOT_FOUND,
             __('khong tim thay danh muc'),
