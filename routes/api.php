@@ -87,7 +87,7 @@ Route::get('order-with-orderDetail/{id}', [OrderController::class, 'orderWithOrd
 
 //OrderDetail
 Route::apiResource('order-details', OrderDetailController::class);
-Route::post('orderDetailWithVariant', [OrderDetailController::class, 'orderDetailWithVariant']);
+Route::post('cart', [OrderDetailController::class, 'orderDetailWithVariant']);
 
 //Voucher
 // Route::apiResource('voucher', VoucherController::class);
