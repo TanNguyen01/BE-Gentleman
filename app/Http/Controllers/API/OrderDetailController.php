@@ -98,8 +98,8 @@ class OrderDetailController extends OrderDetailService
 
     public function orderDetailWithVariant(Request $request)
     {
-        $id = $request->all();
-        $data = $this->orderDetailService->eloquentOrderDetailWithVariant($id);
+        $param = $request->all();
+        $data = $this->orderDetailService->eloquentOrderDetailWithVariant($param);
         if(!$data){
             return $this->responseNotFound(
                 Response::HTTP_NOT_FOUND,

@@ -6,7 +6,6 @@ use App\Http\Requests\BillRequest;
 use App\Traits\APIResponse;
 use Illuminate\Http\Response;
 use App\Services\BillService;
-use Illuminate\Http\JsonResponse;
 
 class BillController extends BillService
 {
