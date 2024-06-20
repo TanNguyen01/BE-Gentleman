@@ -23,29 +23,30 @@ class ProductService extends AbstractServices
 
     public function getAllProducts()
     {
-        return Product::with('sales', 'category', 'variants.attributeValues.attributeName')->get();
+        return Product::with('sales', 'category', 'variants.attributeNames')->get();
     }
 
     public function showProduct($id)
     {
-        return Product::with('sales', 'category', 'variants.attributeValues.attributeName')->find($id);
+        return Product::with('sales', 'category', 'variants.attributeNames')->find($id);
     }
 
     public function createProductWithVariantsAndAttributes(array $productData)
     {
         DB::beginTransaction();
         try {
-            if (isset($productData['image'])) {
-                $productData['image'] = $this->uploadImage($productData['image']);
-            }
+            // // Upload hình ảnh lên S3 và lấy URL
+            // if (isset($productData['image']) && $productData['image']) {
+            //     $productData['image'] = $this->uploadImage($productData['image']);
+            // }
 
             // Tạo sản phẩm
             $product = Product::create([
-                'name' => $productData['name'],
-                'brand' => $productData['brand'],
+                'name' => $productData['name'] ?? null,
+                'brand' => $productData['brand'] ?? null,
                 'image' => $productData['image'] ?? null,
-                'description' => $productData['description'],
-                'category_id' => $productData['category_id'],
+                'description' => $productData['description'] ?? null,
+                'category_id' => $productData['category_id'] ?? null,
                 'sale_id' => $productData['sale_id'] ?? null,
             ]);
 
@@ -54,10 +55,9 @@ class ProductService extends AbstractServices
                 foreach ($productData['variants'] as $variantData) {
                     // Tạo biến thể
                     $variant = $product->variants()->create([
-                        'price' => $variantData['price'],
-                        'price_promotional' => $variantData['price_promotional'],
-                        'quantity' => $variantData['quantity'],
-                        'image' => $variantData['image'] ?? "",
+                        'price' => $variantData['price'] ?? 0,
+                        'price_promotional' => $variantData['price_promotional'] ?? 0,
+                        'quantity' => $variantData['quantity'] ?? 0
                     ]);
 
                     // Tạo các giá trị thuộc tính cho biến thể nếu có
@@ -72,8 +72,8 @@ class ProductService extends AbstractServices
                                 'value' => $attribute['value'],
                             ]);
 
-                            // Kết nối biến thể với giá trị thuộc tính thông qua bảng pivot (variant_attribute_value)
-                            $variant->attributeValues()->attach($attributeValue->id);
+                            // Kết nối biến thể với giá trị thuộc tính thông qua bảng pivot (variant_attributes)
+                            $variant->attributeNames()->attach($attributeValue->id);
                         }
                     }
                 }
@@ -87,6 +87,8 @@ class ProductService extends AbstractServices
             throw $e;
         }
     }
+
+
 
     public function updateProductWithVariantsAndAttributes($productId, array $productData)
     {
@@ -147,16 +149,16 @@ class ProductService extends AbstractServices
         }
     }
 
-    public function uploadImage($image)
-    {
-        try {
-            $path = $image->store('images', 's3', 'public');
-            return Storage::disk('s3')->url($path);
-        } catch (\Exception $e) {
-            Log::error('Error uploading image to S3: ' . $e->getMessage());
-            throw $e;
-        }
-    }
+    // public function uploadImage($image)
+    // {
+    //     try {
+    //         $path = $image->store('images', 's3', 'public');
+    //         return Storage::disk('s3')->url($path);
+    //     } catch (\Exception $e) {
+    //         Log::error('Error uploading image to S3: ' . $e->getMessage());
+    //         throw $e;
+    //     }
+    // }
 
     public function destroyProduct($id)
     {
@@ -176,10 +178,10 @@ class ProductService extends AbstractServices
             throw $e;
         }
     }
-    public function getProductsBySaleId($saleId)
+
+    public function getProductBySaleId($saleId)
     {
         try {
-            // Sử dụng Eloquent ORM để lấy danh sách sản phẩm có sale_id
             $products = Product::where('sale_id', $saleId)
                 ->with('sales', 'category', 'variants.attributeValues.attributeName')
                 ->get();

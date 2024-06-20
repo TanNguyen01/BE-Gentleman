@@ -52,6 +52,10 @@ abstract class AbstractServices
         return $record->delete();
     }
 
+    public function eloquentWhere($key,$value){
+        $record = $this->model::where($key,$value)->get();
+        return $record;
+    }
 // xoa nheu ban ghi
      public function eloquentMultiDelete(array $ids): int
      {
