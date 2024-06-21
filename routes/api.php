@@ -91,6 +91,7 @@ Route::get('bills-paid', [BillController::class, 'getPaid']);
 Route::get('bills-shiping', [BillController::class, 'getShiping']);
 Route::get('bills-paidShiping', [BillController::class, 'getPaidShiping']);
 Route::get('bills-cancel', [BillController::class, 'getCancel']);
+Route::get('bills-with-user/{id}', [BillController::class, 'getBillWithUser']);
 
 //BillDetail
 Route::apiResource('bill-details', BillDetailController::class);

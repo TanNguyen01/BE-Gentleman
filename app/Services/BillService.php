@@ -11,7 +11,8 @@ class BillService extends AbstractServices {
     }
 
     public function getAllBill(){
-        return $this->eloquentGetAll();
+        $bill = $this->eloquentGetAll()->toArray();
+        return $this->sortBills($bill);
     }
 
     public function storeBill($data){
@@ -102,6 +103,28 @@ public function getStatusConfirm(){
 public function getStatusPaidShiping(){
     $res = $this->eloquentWhere('status','PaidShiping');
     return $res;
+}
+
+public function sortBills(array $bills)
+{
+    usort($bills, function($a, $b) {
+        $statusOrder = ['Pending', 'Paid', 'Confirm','Shipping', 'Done', 'Cancel'];
+        $statusA = array_search($a['status'], $statusOrder);
+        $statusB = array_search($b['status'], $statusOrder);
+
+        if ($statusA === $statusB) {
+            return strtotime($b['updated_at']) - strtotime($a['updated_at']);
+        }
+
+        return $statusA - $statusB;
+    });
+
+    return $bills;
+}
+
+public function billWithUser($id){
+    $res = $this->eloquentWhere('user_id',$id)->toArray();
+    return $this->sortBills($res);
 }
 
 }
