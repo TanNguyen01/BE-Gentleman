@@ -24,7 +24,7 @@ class VariantController extends Controller
     {
         $variant = $this->variantService->getVariant();
         return $this->responseSuccess(
-            __('Lấy danh sách thành công!'),
+            __('lay anh sach thanh cong'),
             [
                 'data' => $variant,
             ]

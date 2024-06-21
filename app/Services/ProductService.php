@@ -135,7 +135,7 @@ class ProductService extends AbstractServices
                             ]);
 
                             // Liên kết giá trị thuộc tính với biến thể
-                            $variant->attributeValues()->attach($attributeValue);
+                            $variant->attributeNames()->attach($attributeValue);
                         }
                     }
                 }

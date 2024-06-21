@@ -29,4 +29,10 @@ class Variant extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function attributeValues()
+    {
+        return $this->belongsToMany(AttributeValue::class, 'variant_attributes', 'variant_id', 'attribute_id')
+            ->withTimestamps();
+    }
 }
