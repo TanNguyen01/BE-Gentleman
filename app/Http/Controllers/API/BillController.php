@@ -282,4 +282,21 @@ class BillController extends BillService
             );
         }
     }
+
+    public function getBillWithUser($id)
+    {
+        $data = $this->billService->billWithUser($id);
+        if(!$data){
+            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            __('user khong co bill'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
+        }
+    }
 }
