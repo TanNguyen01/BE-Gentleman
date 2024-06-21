@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\AttributeName;
 use App\Models\AttributeValue;
+use App\Models\Variant;
 use Illuminate\Support\Facades\Log;
 
 class ColorService extends AbstractServices
@@ -44,6 +45,35 @@ class ColorService extends AbstractServices
             'value' => $value
         ]);
         return $sizeValue;
+    }
+
+    public function getColorById($color)
+    {
+        try {
+            // Lấy tất cả các attribute_name có tên là 'size'
+            $attributeName = AttributeName::where('name', 'color')->first();
+            $attributeValue = AttributeValue::where('attribute_name_id', $attributeName->id)
+
+                ->where('value', $color)
+                ->get();
+            $Variants = Variant::whereHas('attributeValues', function ($query) use ($attributeValue) {
+                $query->whereIn('id',  $attributeValue->pluck('id'));
+
+            })->get();
+
+             return $Variants;
+
+
+
+            // Lấy tất cả các attribute_values của attribute_name 'size'
+
+
+
+
+        } catch (\Exception $e) {
+            Log::error('Error fetching all colors with values: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
 

@@ -4,9 +4,12 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductsRequest;
+use App\Services\ColorService;
 use App\Services\ProductService;
 use App\Traits\APIResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+
 
 class ProductController extends Controller
 {
@@ -19,6 +22,8 @@ class ProductController extends Controller
     {
         $this->productService = $productService;
     }
+
+
 
     public function index()
     {
@@ -144,4 +149,57 @@ class ProductController extends Controller
             );
         }
     }
+
+
+
+
+
+    public function getByColor(){
+        try{
+            $products = $this->productService->getAllWithColor();
+
+            if ($products->isEmpty()) {
+                return $this->responseNotFound(
+                    __('khong tim thay san pham!')
+                );
+            }else{
+                return response()->json([
+                    'data' => $products,
+                    'message' => 'Successfully retrieved products with price',
+                    Response::HTTP_OK
+                ]);
+            }
+        }catch (\Exception $e){
+            return $this->responseServerError(
+                __('loi khi lay danh sach san pham theo mau'),
+            );
+        }
+    }
+
+    public function getProductByColor(Request $request){
+        try{
+            $value = $request->input('color');
+            $color = $this->productService->getColorById($value);
+//            if ($products->isEmpty()) {
+//                return $this->responseNotFound(
+//                    __('khong tim thay san pham!')
+//                );
+//            }else{
+//                return response()->json([
+//                    'data' => $products,
+//                    'message' => 'Successfully retrieved products with price',
+//                    Response::HTTP_OK
+//                ]);
+//            }
+            return response()->json(
+                  $color
+            );
+        }catch (\Exception $e){
+            return $this->responseServerError(
+                __('loi khi lay danh sach san pham theo mau'),
+            );
+        }
+    }
+
+
 }

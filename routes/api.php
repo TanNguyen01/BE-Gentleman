@@ -58,6 +58,13 @@ Route::apiResource("attributes", \App\Http\Controllers\API\AttributeController::
 Route::get("get-by-sale", [ProductController::class, 'getBySale']);
 Route::get("get-by-sale/{id}", [ProductController::class, 'getProductBySaleId']);
 
+Route::get("get-by-price", [ProductController::class, 'getByPrice']);
+//Route::get("get-by-price/{price}", [ProductController::class, 'getProductByPrice']);
+
+Route::get("get-by-color", [ProductController::class, 'getByColor']);
+Route::get("get-by-color", [ProductController::class, 'getProductByColor']);
+
+
 //size
 Route::get("get-all-size", [SizeController::class, 'index']);
 Route::post("add-size", [SizeController::class, 'store']);

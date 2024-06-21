@@ -10,6 +10,7 @@ use App\Models\Variant;
 use App\Traits\APIResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ProductService extends AbstractServices
@@ -192,4 +193,82 @@ class ProductService extends AbstractServices
             throw $e;
         }
     }
+
+    public function getAllWithPrice( Request $request){
+          try{
+              $priceMin = $request->price_min;
+              $priceMax = $request->price_max;
+
+              $priceMin = str_replace(',', '', $priceMin);
+              $priceMax = str_replace(',', '', $priceMax);
+
+              $products =($priceMin != null && $priceMax != null)
+                 ? Product::whereBetween('price', [$priceMin, $priceMax])
+                 : Product::whereNotNull('price')
+              ->with('sales', 'category', 'variants.attributeValues.attributeName')
+              ->get();
+
+              return $products;
+          }catch (\Exception $e){
+              Log::error('Error fetching products by price: ' . $e->getMessage());
+              throw $e;
+          }
+
+    }
+
+    public function getProductByPrice($price){
+        try{
+            $products = Product::where('price', $price)
+                ->with('sales', 'category', 'variants.attributeValues.attributeName')
+                ->get();
+        }catch (\Exception $e){
+            Log::error('Error fetching products by price: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+
+
+//    public function getProductByColor($color){
+//        try{
+//            $products = Product::where('color', $color)
+//             ->with('sales', 'category', 'variants.attributeValues.attributeName')
+//             ->get();
+//
+//            return $products;
+//        }catch (\Exception $e){
+//            Log::error('Error fetching products by color: ' . $e->getMessage());
+//            throw $e;
+//        }
+//    }
+
+    public function getColorById($color)
+    {
+        try {
+            // Lấy tất cả các attribute_name có tên là 'size'
+            $attributeName = AttributeName::where('name', 'color')->first();
+            $attributeValue = AttributeValue::where('attribute_name_id', $attributeName->id)
+
+                ->where('value', $color)
+                ->get();
+            $Variants = Variant::whereHas('attributeValues', function ($query) use ($attributeValue) {
+                $query->whereIn('id',  $attributeValue->pluck('id'));
+
+            })->get();
+
+            return $Variants;
+
+
+
+            // Lấy tất cả các attribute_values của attribute_name 'size'
+
+
+
+
+        } catch (\Exception $e) {
+            Log::error('Error fetching all colors with values: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
 }
