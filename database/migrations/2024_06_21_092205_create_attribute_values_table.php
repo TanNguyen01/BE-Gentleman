@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('attribute_values', function (Blueprint $table) {
             $table->id();
-            $table->string('value');
+            $table->string('value')->unique();
             $table->unsignedBigInteger('attribute_name_id');
             $table->timestamps();
 

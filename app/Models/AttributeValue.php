@@ -18,4 +18,8 @@ class AttributeValue extends Model
     {
         return $this->belongsTo(AttributeName::class);
     }
+    public function variants()
+    {
+        return $this->belongsToMany(Variant::class, 'variant_attributes', 'attribute_value_id', 'variant_id')->withPivot('variant_id');
+    }
 }

@@ -23,23 +23,18 @@ class ProductService extends AbstractServices
 
     public function getAllProducts()
     {
-        return Product::with('sales', 'category', 'variants.attributeNames')->get();
+        return Product::with('sales', 'category', 'variants.attributeValues.attributeName')->get();
     }
 
     public function showProduct($id)
     {
-        return Product::with('sales', 'category', 'variants.attributeNames')->find($id);
+        return Product::with('sales', 'category', 'variants.attributeValues.attributeName')->find($id);
     }
 
     public function createProductWithVariantsAndAttributes(array $productData)
     {
         DB::beginTransaction();
         try {
-            // // Upload hình ảnh lên S3 và lấy URL
-            // if (isset($productData['image']) && $productData['image']) {
-            //     $productData['image'] = $this->uploadImage($productData['image']);
-            // }
-
             // Tạo sản phẩm
             $product = Product::create([
                 'name' => $productData['name'] ?? null,
@@ -53,14 +48,9 @@ class ProductService extends AbstractServices
             // Tạo các biến thể và giá trị thuộc tính liên quan nếu có
             if (isset($productData['variants']) && is_array($productData['variants'])) {
                 foreach ($productData['variants'] as $variantData) {
-                    // Tạo biến thể
-                    $variant = $product->variants()->create([
-                        'price' => $variantData['price'] ?? 0,
-                        'price_promotional' => $variantData['price_promotional'] ?? 0,
-                        'quantity' => $variantData['quantity'] ?? 0
-                    ]);
+                    // Tạo một collection để lưu các giá trị thuộc tính
+                    $attributeValues = collect();
 
-                    // Tạo các giá trị thuộc tính cho biến thể nếu có
                     if (isset($variantData['attributes']) && is_array($variantData['attributes'])) {
                         foreach ($variantData['attributes'] as $attribute) {
                             // Tạo tên thuộc tính nếu chưa tồn tại
@@ -72,8 +62,34 @@ class ProductService extends AbstractServices
                                 'value' => $attribute['value'],
                             ]);
 
-                            // Kết nối biến thể với giá trị thuộc tính thông qua bảng pivot (variant_attributes)
-                            $variant->attributeNames()->attach($attributeValue->id);
+                            $attributeValues->push($attributeValue->id);
+                        }
+                    }
+
+                    // Kiểm tra sự tồn tại của biến thể dựa trên giá trị thuộc tính
+                    $existingVariant = $product->variants()
+                        ->where('price', $variantData['price'] ?? 0)
+                        ->where('price_promotional', $variantData['price_promotional'] ?? 0)
+                        ->whereHas('attributeValues', function ($query) use ($attributeValues) {
+                            $query->whereIn('attribute_value_id', $attributeValues);
+                        })->first();
+
+                    if ($existingVariant) {
+                        // Cộng dồn số lượng nếu biến thể đã tồn tại
+                        $existingVariant->quantity += $variantData['quantity'] ?? 0;
+                        $existingVariant->save();
+                        $variant = $existingVariant;
+                    } else {
+                        // Tạo biến thể mới nếu không tồn tại
+                        $variant = $product->variants()->create([
+                            'price' => $variantData['price'] ?? 0,
+                            'price_promotional' => $variantData['price_promotional'] ?? 0,
+                            'quantity' => $variantData['quantity'] ?? 0,
+                        ]);
+
+                        // Kết nối biến thể với giá trị thuộc tính thông qua bảng pivot (variant_attributes)
+                        if ($attributeValues->isNotEmpty()) {
+                            $variant->attributeValues()->attach($attributeValues);
                         }
                     }
                 }
@@ -87,6 +103,8 @@ class ProductService extends AbstractServices
             throw $e;
         }
     }
+
+
 
 
 
@@ -134,7 +152,7 @@ class ProductService extends AbstractServices
                             ]);
 
                             // Liên kết giá trị thuộc tính với biến thể
-                            $variant->attributeNames()->attach($attributeValue);
+                            $variant->attributeValues()->attach($attributeValue);
                         }
                     }
                 }

@@ -16,14 +16,4 @@ class AttributeName extends Model
     {
         return $this->hasMany(AttributeValue::class, 'attribute_name_id');
     }
-
-    public function variants()
-    {
-        return $this->belongsToMany(Variant::class, 'variant_attributes', 'attribute_id', 'variant_id')->withTimestamps();
-    }
-
-    public function products()
-    {
-        return $this->belongsToMany(Product::class, 'product_attributes', 'attribute_id', 'product_id');
-    }
 }
