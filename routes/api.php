@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\API\AttributeController;
+use App\Http\Controllers\API\AttributeNameController;
+use App\Http\Controllers\API\AttributeValueController;
 use App\Http\Controllers\API\BillController;
 use App\Http\Controllers\API\BillDetailController;
 use App\Http\Controllers\API\BillStoryController;
@@ -55,18 +57,15 @@ Route::get('categories/{id}/total-products', [\App\Http\Controllers\API\Category
 //Product
 Route::apiResource("products", \App\Http\Controllers\API\ProductController::class);
 Route::apiResource("variants", \App\Http\Controllers\API\VariantController::class);
-Route::apiResource("attributes", \App\Http\Controllers\API\AttributeController::class);
 Route::get("get-by-sale", [ProductController::class, 'getBySale']);
 Route::get("get-by-sale/{id}", [ProductController::class, 'getProductBySaleId']);
 
-//size
-Route::get("get-all-size", [SizeController::class, 'index']);
-Route::post("add-size", [SizeController::class, 'store']);
+//Attribute_name
+Route::apiResource("attribute-name", AttributeNameController::class);
 
 
-//color
-Route::get("get-all-color", [ColorController::class, 'index']);
-Route::post("add-color", [ColorController::class, 'store']);
+//Attribute_value
+Route::apiResource("attribute-value", AttributeValueController::class);
 
 
 //User
