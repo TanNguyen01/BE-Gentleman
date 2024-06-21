@@ -158,7 +158,7 @@ class BillController extends BillService
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
-                    'data' => 'pending',
+                    'data' => 'done',
                 ]
             );
         }
@@ -175,7 +175,7 @@ class BillController extends BillService
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
-                    'data' => 'paidShiping',
+                    'data' => 'cancel',
                 ]
             );
         }
