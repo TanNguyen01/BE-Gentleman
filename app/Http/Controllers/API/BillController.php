@@ -98,7 +98,7 @@ class BillController extends BillService
 
     public function shiping(string $id)
     {
-        $data = $this->billService->chanceStatusConfirm($id);
+        $data = $this->billService->chanceStatusShiping($id);
         if(!$data){
             return $this->responseNotFound(Response::HTTP_NOT_FOUND,
             __('khong tim thay danh muc'),
