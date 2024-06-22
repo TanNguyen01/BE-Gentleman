@@ -1,24 +1,17 @@
 <?php
 
 use App\Http\Controllers\API\AttributeController;
-use App\Http\Controllers\API\AttributeNameController;
 use App\Http\Controllers\API\AttributeValueController;
 use App\Http\Controllers\API\BillController;
 use App\Http\Controllers\API\BillDetailController;
 use App\Http\Controllers\API\BillStoryController;
 use App\Http\Controllers\API\CategoryController;
-use App\Http\Controllers\API\ColorController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\OrderDetailController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\SaleController;
-use App\Http\Controllers\API\SizeController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VariantController;
-use App\Http\Controllers\SizeController as ControllersSizeController;
-use App\Models\Order;
-use App\Models\OrderDetail;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -51,21 +44,20 @@ Route::middleware(['auth:sanctum', 'checkAdmin'])->group(function () {
 });
 
 //Categories
-Route::apiResource("categories", \App\Http\Controllers\API\CategoryController::class);
-Route::get('categories/{id}/total-products', [\App\Http\Controllers\API\CategoryController::class, 'totalProducts']);
+Route::apiResource("categories", CategoryController::class);
 
 //Product
-Route::apiResource("products", \App\Http\Controllers\API\ProductController::class);
-Route::apiResource("variants", \App\Http\Controllers\API\VariantController::class);
+Route::apiResource("products", ProductController::class);
+Route::apiResource("variants", VariantController::class);
 Route::get("get-by-sale", [ProductController::class, 'getBySale']);
 Route::get("get-by-sale/{id}", [ProductController::class, 'getProductBySaleId']);
 
 //Attribute_name
-Route::apiResource("attribute-name", AttributeNameController::class);
+Route::apiResource("attributes", AttributeController::class);
 
 
 //Attribute_value
-Route::apiResource("attribute-value", AttributeValueController::class);
+Route::apiResource("attribute-values", AttributeValueController::class);
 
 
 //User

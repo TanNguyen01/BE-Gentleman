@@ -3,11 +3,10 @@
 namespace App\Services;
 
 use App\Models\Attribute;
-use App\Models\AttributeName;
 use App\Models\AttributeValue;
 use App\Models\Product;
-use App\Models\Variant;
 use App\Traits\APIResponse;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -20,49 +19,149 @@ class ProductService extends AbstractServices
     {
         Parent::__construct($product);
     }
+    private function uploadImage($image, $productName)
+    {
+        try {
+            $fileName = $productName . '_' . time();
+
+            $extension = $image->getClientOriginalExtension();
+
+            $fileNameToStore = $fileName . '.' . $extension;
+
+            $filePath = $image->storeAs('uploads', $fileNameToStore, 's3'); // 's3' là tên của disk được cấu hình trong config/filesystems.php
+
+            $imageUrl = Storage::disk('s3')->url($filePath);
+
+            return $imageUrl;
+        } catch (Exception $e) {
+            Log::error('Error uploading image: ' . $e->getMessage());
+            throw new Exception('Failed to upload image');
+        }
+    }
+
 
     public function getAllProducts()
     {
-        return Product::with('sales', 'category', 'variants.attributeValues.attributeName')->get();
+        return Product::with('sales', 'category', 'variants.attributeValues.attribute')->get();
     }
 
     public function showProduct($id)
     {
-        return Product::with('sales', 'category', 'variants.attributeValues.attributeName')->find($id);
+        return Product::with('sales', 'category', 'variants.attributeValues.attribute')->find($id);
     }
 
     public function createProductWithVariantsAndAttributes(array $productData)
     {
         DB::beginTransaction();
         try {
+
             // Tạo sản phẩm
             $product = Product::create([
-                'name' => $productData['name'] ?? null,
-                'brand' => $productData['brand'] ?? null,
-                'image' => $productData['image'] ?? null,
-                'description' => $productData['description'] ?? null,
+                'name' => $productData['name'] ?? '',
+                'brand' => $productData['brand'] ?? '',
+                'image' => $productData['image'] ?? '',
+                'description' => $productData['description'] ?? '',
                 'category_id' => $productData['category_id'] ?? null,
                 'sale_id' => $productData['sale_id'] ?? null,
             ]);
 
-            // Tạo các biến thể và giá trị thuộc tính liên quan nếu có
+            if (isset($productData['image'])) {
+                $imageUrl = $this->uploadImage($productData['image'], $product->name);
+                $product->image = $imageUrl;
+                $product->save();
+            }
+
             if (isset($productData['variants']) && is_array($productData['variants'])) {
                 foreach ($productData['variants'] as $variantData) {
-                    // Tạo một collection để lưu các giá trị thuộc tính
                     $attributeValues = collect();
 
                     if (isset($variantData['attributes']) && is_array($variantData['attributes'])) {
-                        foreach ($variantData['attributes'] as $attribute) {
-                            // Tạo tên thuộc tính nếu chưa tồn tại
-                            $attributeName = AttributeName::firstOrCreate(['name' => $attribute['name']]);
+                        foreach ($variantData['attributes'] as $attr) {
+                            $attribute = Attribute::firstOrCreate(['name' => $attr['name']]);
 
-                            // Tạo giá trị thuộc tính
-                            $attributeValue = AttributeValue::firstOrCreate([
-                                'attribute_name_id' => $attributeName->id,
-                                'value' => $attribute['value'],
-                            ]);
+                            if (isset($attr['value']) && !empty($attr['value'])) {
+                                $attributeValue = AttributeValue::firstOrCreate([
+                                    'attribute_id' => $attribute->id,
+                                    'value' => $attr['value'],
+                                ]);
 
-                            $attributeValues->push($attributeValue->id);
+                                $attributeValues->push($attributeValue->id);
+                            } else {
+                                throw new Exception('Attribute value cannot be null or empty');
+                            }
+                        }
+                    }
+
+                    // Kiểm tra sự tồn tại của biến thể dựa trên giá trị thuộc tính
+                    $existingVariant = $product->variants()
+                        ->where('price', $variantData['price'] ?? 0)
+                        ->where('price_promotional', $variantData['price_promotional'] ?? 0)
+                        ->whereHas('attributeValues', function ($query) use ($attributeValues) {
+                            $query->whereIn('attribute_value_id', $attributeValues);
+                        })->first();
+
+                    if ($existingVariant) {
+                        $existingVariant->quantity += $variantData['quantity'] ?? 0;
+                        $existingVariant->save();
+                        $variant = $existingVariant;
+                    } else {
+                        $variant = $product->variants()->create([
+                            'price' => $variantData['price'] ?? 0,
+                            'price_promotional' => $variantData['price_promotional'] ?? 0,
+                            'quantity' => $variantData['quantity'] ?? 0,
+                        ]);
+
+                        if ($attributeValues->isNotEmpty()) {
+                            $variant->attributeValues()->attach($attributeValues);
+                        }
+                    }
+                }
+            }
+
+            DB::commit();
+            return $product;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error creating product with variants and attributes: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function updateProductWithVariantsAndAttributes($productId, array $productData)
+    {
+        DB::beginTransaction();
+        try {
+            $product = Product::findOrFail($productId);
+
+            $product->update([
+                'name' => $productData['name'],
+                'brand' => $productData['brand'],
+                'description' => $productData['description'],
+                'image' => $productData['image'] ?? $product->image,
+                'category_id' => $productData['category_id'],
+                'sale_id' => $productData['sale_id'] ?? null,
+            ]);
+
+            $product->variants()->delete();
+
+            if (isset($productData['variants']) && is_array($productData['variants'])) {
+                foreach ($productData['variants'] as $variantData) {
+                    $attributeValues = collect();
+
+                    if (isset($variantData['attributes']) && is_array($variantData['attributes'])) {
+                        foreach ($variantData['attributes'] as $attr) {
+                            $attribute = Attribute::firstOrCreate(['name' => $attr['name']]);
+
+                            if (isset($attr['value']) && !empty($attr['value'])) {
+                                $attributeValue = AttributeValue::firstOrCreate([
+                                    'attribute_id' => $attribute->id,
+                                    'value' => $attr['value'],
+                                ]);
+
+                                $attributeValues->push($attributeValue->id);
+                            } else {
+                                throw new Exception('Attribute value cannot be null or empty');
+                            }
                         }
                     }
 
@@ -90,69 +189,6 @@ class ProductService extends AbstractServices
                         // Kết nối biến thể với giá trị thuộc tính thông qua bảng pivot (variant_attributes)
                         if ($attributeValues->isNotEmpty()) {
                             $variant->attributeValues()->attach($attributeValues);
-                        }
-                    }
-                }
-            }
-
-            DB::commit();
-            return $product;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Error creating product with variants and attributes: ' . $e->getMessage());
-            throw $e;
-        }
-    }
-
-
-
-
-
-    public function updateProductWithVariantsAndAttributes($productId, array $productData)
-    {
-        DB::beginTransaction();
-        try {
-            // Lấy sản phẩm cần cập nhật
-            $product = Product::findOrFail($productId);
-
-            // Cập nhật thông tin sản phẩm
-            $product->update([
-                'name' => $productData['name'],
-                'brand' => $productData['brand'],
-                'description' => $productData['description'],
-                'image' => $productData['image'] ?? $product->image,
-                'category_id' => $productData['category_id'],
-                'sale_id' => $productData['sale_id'] ?? null,
-            ]);
-
-            // Xóa các biến thể cũ và các giá trị thuộc tính của chúng
-            $product->variants()->delete();
-
-            // Thêm các biến thể mới và các giá trị thuộc tính tương ứng
-            if (isset($productData['variants']) && is_array($productData['variants'])) {
-                foreach ($productData['variants'] as $variantData) {
-                    // Tạo biến thể mới
-                    $variant = $product->variants()->create([
-                        'price' => $variantData['price'],
-                        'price_promotional' => $variantData['price_promotional'],
-                        'quantity' => $variantData['quantity'],
-                        'image' => $variantData['image'] ?? null,
-                    ]);
-
-                    // Xử lý các giá trị thuộc tính của biến thể mới
-                    if (isset($variantData['attributes']) && is_array($variantData['attributes'])) {
-                        foreach ($variantData['attributes'] as $attribute) {
-                            // Tạo hoặc lấy tên thuộc tính
-                            $attributeName = AttributeName::firstOrCreate(['name' => $attribute['name']]);
-
-                            // Tạo hoặc lấy giá trị thuộc tính
-                            $attributeValue = AttributeValue::firstOrCreate([
-                                'attribute_name_id' => $attributeName->id,
-                                'value' => $attribute['value'],
-                            ]);
-
-                            // Liên kết giá trị thuộc tính với biến thể
-                            $variant->attributeValues()->attach($attributeValue);
                         }
                     }
                 }

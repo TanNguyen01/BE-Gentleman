@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\AttributeResource;
 use App\Services\AttributeValueService;
 use App\Traits\APIResponse;
 use App\Traits\ApiResponseTrait;
@@ -28,15 +27,15 @@ class AttributeValueController extends Controller
         return $this->responseSuccess(
             __('Lấy attribute thành công!'),
             [
-                'attributeValue' => $attributeValues,
+                'attributeValues' => $attributeValues,
             ]
         );
     }
 
     public function store(Request $request)
     {
-        $attributeValueData = $request->all();
-        $attributeValue = $this->attributeValueService->storeAttributeValue($attributeValueData);
+        $attributeValue = $request->all();
+        $attributeValue = $this->attributeValueService->storeAttributeValue($attributeValue);
 
         return $this->responseCreated(
             __('Tao san attribute thanh cong!'),

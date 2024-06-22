@@ -13,7 +13,7 @@ class AttributeValueService extends AbstractServices
 
     public function getAllAttributeValue()
     {
-        return AttributeValue::with('attributeName')->get();
+        return AttributeValue::with('attribute')->get();
     }
 
     public function storeAttributeValue($data)
@@ -24,7 +24,7 @@ class AttributeValueService extends AbstractServices
 
     public function getAttributeValueById($id)
     {
-        return AttributeValue::with('attributeName')->findOrFail($id);
+        return AttributeValue::with('attribute')->findOrFail($id);
     }
 
     public function updateAttributeValue($id, $data)
