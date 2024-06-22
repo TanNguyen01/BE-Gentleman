@@ -108,7 +108,7 @@ Route::apiResource('bill-stores', BillStoryController::class);
 Route::apiResource('orders', OrderController::class);
 Route::get('order-with-orderDetail/{id}', [OrderController::class, 'orderWithOrderDetail']);
 
-//OrderDetail
+//OrderDetail------------cart-------------------
 Route::apiResource('order-details', OrderDetailController::class);
 Route::post('cart', [OrderDetailController::class, 'orderDetailWithVariant']);
 
