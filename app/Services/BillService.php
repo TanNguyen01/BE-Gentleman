@@ -127,4 +127,58 @@ public function billWithUser($id){
     return $this->sortBills($res);
 }
 
+public function billWithUsePending($id){
+    $fill = [
+        'user_id' => $id,
+        'status' => 'Pending'
+    ];
+    $res = $this->eloquentMultiWhere($fill)->toArray();
+    return $res;
+}
+
+public function billWithUsePaid($id){
+    $fill = [
+        'user_id' => $id,
+        'status' => 'Paid'
+    ];
+    $res = $this->eloquentMultiWhere($fill)->toArray();
+    return $res;
+}
+
+public function billWithUseDone($id){
+    $fill = [
+        'user_id' => $id,
+        'status' => 'Done'
+    ];
+    $res = $this->eloquentMultiWhere($fill)->toArray();
+    return $res;
+}
+
+public function billWithUseShiping($id){
+    $fill = [
+        'user_id' => $id,
+        'status' => 'Shiping'
+    ];
+    $res = $this->eloquentMultiWhere($fill)->toArray();
+    return $res;
+}
+
+public function billWithUseCancel($id){
+    $fill = [
+        'user_id' => $id,
+        'status' => 'Cancel'
+    ];
+    $res = $this->eloquentMultiWhere($fill)->toArray();
+    return $res;
+}
+
+public function billWithUseConfirm($id){
+    $fill = [
+        'user_id' => $id,
+        'status' => 'Confirm'
+    ];
+    $res = $this->eloquentMultiWhere($fill)->toArray();
+    return $res;
+}
+
 }

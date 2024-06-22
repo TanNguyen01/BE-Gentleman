@@ -56,6 +56,24 @@ abstract class AbstractServices
         $record = $this->model::where($key,$value)->get();
         return $record;
     }
+
+    public function eloquentMultiWhere(array $fill){
+        // $fill = [
+        //   'user_id' => 1,
+        //   'status' => 'Pending'
+        // ];
+        $table = $this->model->getTable();
+        foreach ($fill as $fillKey => $fillValue) {
+            $conditions[] = $fillKey. ' = ?';
+            $values[] = $fillValue;
+        }
+        $conditionString = implode(' AND ', $conditions);
+        $pendingBills = DB::table($table)
+        ->whereRaw($conditionString, $values)
+        ->orderByDesc('updated_at')
+        ->get();
+        return $pendingBills;
+    }
 // xoa nheu ban ghi
      public function eloquentMultiDelete(array $ids): int
      {
