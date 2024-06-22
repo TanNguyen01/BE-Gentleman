@@ -46,5 +46,6 @@ class DatabaseSeeder extends Seeder
         \App\Models\AttributeValue::factory()->count(20)->create();
         \App\Models\ProductAttribute::factory()->count(20)->create();
         \App\Models\VariantAttribute::factory()->count(20)->create();
+        \App\Models\BillStory::factory()->count(20)->create();
     }
 }
