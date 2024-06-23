@@ -3,7 +3,7 @@
 use App\Http\Controllers\API\AttributeController;
 use App\Http\Controllers\API\BillController;
 use App\Http\Controllers\API\BillDetailController;
-use App\Http\Controllers\API\BillStoryController;
+
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ColorController;
 use App\Http\Controllers\API\OrderController;
@@ -13,7 +13,7 @@ use App\Http\Controllers\API\SaleController;
 use App\Http\Controllers\API\SizeController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VariantController;
-use App\Http\Controllers\SizeController as ControllersSizeController;
+
 use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
