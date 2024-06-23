@@ -3,8 +3,11 @@
 namespace App\Services;
 
 use App\Models\Category;
+use Exception;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CategoryService
 {
@@ -79,5 +82,17 @@ class CategoryService
         }
 
         return $totalQuantity;
+    }
+    public function getCategoriesByName(string $name)
+    {
+        try {
+            $category = Category::whereNotNull('name')
+                ->where('name', 'like', '%' . $name . '%')
+                ->get();
+            return $category;
+        } catch (\Exception $e) {
+            Log::error('Error fetching category by name: ' . $e->getMessage());
+            throw $e;
+        }
     }
 }

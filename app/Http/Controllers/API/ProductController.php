@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductsRequest;
 use App\Services\ProductService;
 use App\Traits\APIResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class ProductController extends Controller
@@ -141,6 +142,52 @@ class ProductController extends Controller
         } catch (\Exception $e) {
             return $this->responseServerError(
                 __('loi khi lay danh sach san pham theo sale_id: ') . $e->getMessage()
+            );
+        }
+    }
+
+    public function getProductByName(Request $request)
+    {
+        try {
+            $name = $request->input('name');
+            $getProductByName = $this->productService->getProductsByName($name);
+            if ($getProductByName->isEmpty()) {
+                return $this->responseNotFound(
+                    Response::HTTP_NOT_FOUND,
+                    __('khong tim thay san pham!')
+                );
+            } else {
+                return response()->json([
+                    'data' => $getProductByName,
+                    'message' => 'Successfully retrieved products with name',
+                ], Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            return $this->responseServerError(
+                __('loi khi lay danh sach san pham theo ten: ') . $e->getMessage()
+            );
+        }
+    }
+
+    public function getProductByCategory(Request $request)
+    {
+        try {
+            $name = $request->input('name');
+            $getProductByCategory = $this->productService->getProductsByCategory($name);
+            if ($getProductByCategory->isEmpty()) {
+                return $this->responseNotFound(
+                    Response::HTTP_NOT_FOUND,
+                    __('khong tim thay san pham!')
+                );
+            } else {
+                return response()->json([
+                    'data' => $getProductByCategory,
+                    'message' => 'Successfully retrieved products with cate',
+                ], Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            return $this->responseServerError(
+                __('loi khi lay danh sach san pham theo cate: ') . $e->getMessage()
             );
         }
     }

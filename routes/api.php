@@ -45,12 +45,15 @@ Route::middleware(['auth:sanctum', 'checkAdmin'])->group(function () {
 
 //Categories
 Route::apiResource("categories", CategoryController::class);
+Route::get("get-category-by-name", [CategoryController::class, 'getCategoryByName']);
 
 //Product
 Route::apiResource("products", ProductController::class);
 Route::apiResource("variants", VariantController::class);
 Route::get("get-by-sale", [ProductController::class, 'getBySale']);
 Route::get("get-by-sale/{id}", [ProductController::class, 'getProductBySaleId']);
+Route::get("get-by-name", [ProductController::class, 'getProductByName']);
+Route::get("get-by-category", [ProductController::class, 'getProductByCategory']);
 
 //Attribute_name
 Route::apiResource("attributes", AttributeController::class);

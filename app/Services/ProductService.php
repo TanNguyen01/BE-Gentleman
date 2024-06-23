@@ -7,6 +7,7 @@ use App\Models\AttributeValue;
 use App\Models\Product;
 use App\Traits\APIResponse;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -223,7 +224,7 @@ class ProductService extends AbstractServices
     {
         try {
             $products = Product::whereNotNull('sale_id')
-                ->with('sales', 'category', 'variants.attributeValues.attributeName')
+                ->with('sales', 'category', 'variants.attributeValues')
                 ->get();
 
             return $products;
@@ -237,12 +238,39 @@ class ProductService extends AbstractServices
     {
         try {
             $products = Product::where('sale_id', $saleId)
-                ->with('sales', 'category', 'variants.attributeValues.attributeName')
+                ->with('sales', 'category', 'variants.attributeValues')
                 ->get();
 
             return $products;
         } catch (\Exception $e) {
             Log::error('Error fetching products by sale_id: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function getProductsByName(string $name)
+    {
+        try {
+            $products = Product::whereNotNull('name')
+                ->with('sales', 'category', 'variants.attributeValues')
+                ->where('name', 'like', '%' . $name . '%')->get();
+            return response()->json($products);
+        } catch (\Exception $e) {
+            Log::error('Error fetching products by name: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function getProductsByCategory(string $category)
+    {
+        try {
+            $products = Product::whereHas('category', function ($query) use ($category) {
+                $query->where('name', 'like', '%' . $category . '%')
+                    ->whereNotNull('name');
+            })->with('category', 'sales', 'variants.attributeValues')->get();
+            return response()->json($products);
+        } catch (\Exception $e) {
+            Log::error('Error fetching products by name: ' . $e->getMessage());
             throw $e;
         }
     }
