@@ -18,6 +18,8 @@ class Bill extends Model
         'pay'
     ];
 
+    protected $table = 'bills';
+
     public function user()
     {
         return $this->belongsTo(User::class);

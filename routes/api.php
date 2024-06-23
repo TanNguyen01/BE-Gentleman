@@ -80,9 +80,14 @@ Route::get('bills-pending', [BillController::class, 'getPending']);
 Route::get('bills-done', [BillController::class, 'getDone']);
 Route::get('bills-paid', [BillController::class, 'getPaid']);
 Route::get('bills-shiping', [BillController::class, 'getShiping']);
-Route::get('bills-paidShiping', [BillController::class, 'getPaidShiping']);
 Route::get('bills-cancel', [BillController::class, 'getCancel']);
 Route::get('bills-with-user/{id}', [BillController::class, 'getBillWithUser']);
+Route::get('bills-with-user-pending/{id}', [BillController::class, 'getBillWithUserPending']);
+Route::get('bills-with-user-done/{id}', [BillController::class, 'getBillWithUserDone']);
+Route::get('bills-with-user-paid/{id}', [BillController::class, 'getBillWithUserPaid']);
+Route::get('bills-with-user-shiping/{id}', [BillController::class, 'getBillWithUserShiping']);
+Route::get('bills-with-user-cancel/{id}', [BillController::class, 'getBillWithUserCancel']);
+Route::get('bills-with-user-confirm/{id}', [BillController::class, 'getBillWithUserConfirm']);
 
 //BillDetail
 Route::apiResource('bill-details', BillDetailController::class);
@@ -94,7 +99,7 @@ Route::apiResource('bill-stores', BillStoryController::class);
 Route::apiResource('orders', OrderController::class);
 Route::get('order-with-orderDetail/{id}', [OrderController::class, 'orderWithOrderDetail']);
 
-//OrderDetail
+//OrderDetail------------cart-------------------
 Route::apiResource('order-details', OrderDetailController::class);
 Route::post('cart', [OrderDetailController::class, 'orderDetailWithVariant']);
 
