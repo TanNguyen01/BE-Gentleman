@@ -7,6 +7,7 @@ use App\Http\Resources\CategoryResource;
 use App\Services\CategoryService;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponseTrait;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
@@ -82,5 +83,17 @@ class CategoryController extends Controller
     {
         $totalQuantity = $this->categoryService->getTotalProductQuantityInCategory($id);
         return response()->json(['total_quantity' => $totalQuantity]);
+    }
+
+    public function getCategoryByName(Request $request)
+    {
+        try {
+            $name = $request->input('name');
+            $getCateByName = $this->categoryService->getCategoriesByName($name);
+            return response()->json($getCateByName);
+        } catch (\Exception $e) {
+            Log::error('Error fetching categories by name: ' . $e->getMessage());
+            return response()->json(['error' => 'Đã xảy ra lỗi khi tìm kiếm danh mục theo tên.'], 500);
+        }
     }
 }
