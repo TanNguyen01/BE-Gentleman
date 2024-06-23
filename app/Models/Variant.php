@@ -13,13 +13,13 @@ class Variant extends Model
         'product_id',
         'price',
         'price_promotional',
+        'image',
         'quantity',
     ];
 
-
-    public function attributeNames()
+    public function attributeValues()
     {
-        return $this->belongsToMany(AttributeValue::class, 'variant_attributes', 'variant_id', 'attribute_id');
+        return $this->belongsToMany(AttributeValue::class, 'variant_attributes', 'variant_id', 'attribute_value_id');
     }
     public function orderDetails()
     {
@@ -28,11 +28,5 @@ class Variant extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
-    }
-
-    public function attributeValues()
-    {
-        return $this->belongsToMany(AttributeValue::class, 'variant_attributes', 'variant_id', 'attribute_id')
-            ->withTimestamps();
     }
 }
