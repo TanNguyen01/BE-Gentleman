@@ -4,9 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductsRequest;
+use App\Models\Product;
 use App\Services\ColorService;
 use App\Services\ProductService;
 use App\Traits\APIResponse;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -14,6 +16,7 @@ use Illuminate\Http\Response;
 class ProductController extends Controller
 {
     use APIResponse;
+
 
     protected $productService;
 
@@ -34,6 +37,7 @@ class ProductController extends Controller
                 'product' => $products,
             ]
         );
+
     }
 
     public function store(ProductsRequest $request)
@@ -52,7 +56,7 @@ class ProductController extends Controller
     }
 
 
-    public function show(int $id)
+    public function show($id)
     {
         $product = $this->productService->showProduct($id);
         if (!$product) {
@@ -151,55 +155,73 @@ class ProductController extends Controller
     }
 
 
+  public function filterByPrice(Request $request){
+          try{
+               //$price = $request->input('price_promotional');
+               $products = $this->productService->filterByPrice($request);
 
+//              if ($products->isEmpty()) {
+//                  return $this->APIError(Response::HTTP_NOT_FOUND,
+//                      __('user khong co bill'),
+//                  );
+//
+//              }
 
+             return  response()->json($products);
 
-    public function getByColor(){
+          }catch (\Exception $e){
+              return $this->responseServerError(
+                  __('loi khi lay danh sach san pham theo gia: ') . $e->getMessage()
+              );
+          }
+
+  }
+
+  public function filterByColor(Request $request){
         try{
-            $products = $this->productService->getAllWithColor();
 
-            if ($products->isEmpty()) {
-                return $this->responseNotFound(
-                    __('khong tim thay san pham!')
-                );
-            }else{
-                return response()->json([
-                    'data' => $products,
-                    'message' => 'Successfully retrieved products with price',
-                    Response::HTTP_OK
-                ]);
-            }
+            $products = $this->productService->filterByColor($request);
+
+            return  response()->json($products);
         }catch (\Exception $e){
             return $this->responseServerError(
-                __('loi khi lay danh sach san pham theo mau'),
+                __('loi khi lay san pham theo mau: '). $e->getMessage()
+            );
+        }
+  }
+
+    public function filterBySize(Request $request){
+        try{
+
+            $products = $this->productService->filterBySize($request);
+
+            return  response()->json($products);
+        }catch (\Exception $e){
+            return $this->responseServerError(
+                __('loi khi lay san pham theo mau: '). $e->getMessage()
             );
         }
     }
 
-    public function getProductByColor(Request $request){
+    public function filterByCategory(Request $request){
         try{
-            $value = $request->input('color');
-            $color = $this->productService->getColorById($value);
-//            if ($products->isEmpty()) {
-//                return $this->responseNotFound(
-//                    __('khong tim thay san pham!')
-//                );
-//            }else{
-//                return response()->json([
-//                    'data' => $products,
-//                    'message' => 'Successfully retrieved products with price',
-//                    Response::HTTP_OK
-//                ]);
-//            }
-            return response()->json(
-                  $color
-            );
+
+            $products = $this->productService->filterByCategory($request);
+
+            return  response()->json($products);
         }catch (\Exception $e){
             return $this->responseServerError(
-                __('loi khi lay danh sach san pham theo mau'),
+                __('loi khi lay san pham theo mau: '). $e->getMessage()
             );
         }
     }
+
+
+
+
+
+
+
 
 
 }

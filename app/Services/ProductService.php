@@ -8,9 +8,10 @@ use App\Models\AttributeValue;
 use App\Models\Product;
 use App\Models\Variant;
 use App\Traits\APIResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Request;
+
 use Illuminate\Support\Facades\Storage;
 
 class ProductService extends AbstractServices
@@ -24,6 +25,7 @@ class ProductService extends AbstractServices
 
     public function getAllProducts()
     {
+
         return Product::with('sales', 'category', 'variants.attributeNames')->get();
     }
 
@@ -88,7 +90,6 @@ class ProductService extends AbstractServices
             throw $e;
         }
     }
-
 
 
     public function updateProductWithVariantsAndAttributes($productId, array $productData)
@@ -194,81 +195,123 @@ class ProductService extends AbstractServices
         }
     }
 
-    public function getAllWithPrice( Request $request){
-          try{
-              $priceMin = $request->price_min;
-              $priceMax = $request->price_max;
-
-              $priceMin = str_replace(',', '', $priceMin);
-              $priceMax = str_replace(',', '', $priceMax);
-
-              $products =($priceMin != null && $priceMax != null)
-                 ? Product::whereBetween('price', [$priceMin, $priceMax])
-                 : Product::whereNotNull('price')
-              ->with('sales', 'category', 'variants.attributeValues.attributeName')
-              ->get();
-
-              return $products;
-          }catch (\Exception $e){
-              Log::error('Error fetching products by price: ' . $e->getMessage());
-              throw $e;
-          }
-
-    }
-
-    public function getProductByPrice($price){
-        try{
-            $products = Product::where('price', $price)
-                ->with('sales', 'category', 'variants.attributeValues.attributeName')
-                ->get();
-        }catch (\Exception $e){
-            Log::error('Error fetching products by price: ' . $e->getMessage());
-            throw $e;
-        }
-    }
-
-
-
-//    public function getProductByColor($color){
-//        try{
-//            $products = Product::where('color', $color)
-//             ->with('sales', 'category', 'variants.attributeValues.attributeName')
-//             ->get();
 //
-//            return $products;
-//        }catch (\Exception $e){
-//            Log::error('Error fetching products by color: ' . $e->getMessage());
-//            throw $e;
-//        }
-//    }
 
-    public function getColorById($color)
+    public function filterByPrice(Request $request)
     {
+
+//        $products = $this->eloquentWithRelations(1,['variants']);
+//
+//        dd($products);
         try {
-            // Lấy tất cả các attribute_name có tên là 'size'
-            $attributeName = AttributeName::where('name', 'color')->first();
-            $attributeValue = AttributeValue::where('attribute_name_id', $attributeName->id)
-
-                ->where('value', $color)
-                ->get();
-            $Variants = Variant::whereHas('attributeValues', function ($query) use ($attributeValue) {
-                $query->whereIn('id',  $attributeValue->pluck('id'));
-
-            })->get();
-
-            return $Variants;
+            $minPrice = (float)$request->input('minPrice', 0);
+            $maxPrice = (float)$request->input('maxPrice', PHP_INT_MAX);
 
 
+            $products = Product::with(['variants' => function ($query) use ($minPrice, $maxPrice) {
+                $query->whereBetween('price_promotional', [$minPrice, $maxPrice])
+                    ->whereNotNull('price_promotional');
+            }])->get();
 
-            // Lấy tất cả các attribute_values của attribute_name 'size'
+            // Lọc các sản phẩm có ít nhất một biến thể trong khoảng giá
+            $filteredProducts = $products->filter(function ($product) {
+                return $product->variants->isNotEmpty();
+            });
 
-
-
+            return $filteredProducts;
 
         } catch (\Exception $e) {
-            Log::error('Error fetching all colors with values: ' . $e->getMessage());
-            throw $e;
+            Log::error('Error fetching products by price: ' . $e->getMessage());
+        }
+
+    }
+
+    public function filterByColor(Request $request)
+    {
+        try {
+
+            $color = (string)$request->input('color');
+
+            $products = Product::with(['variants.attributeValues' => function ($query) use ($color) {
+                $query->whereHas('attributeName', function ($query) use ($color) {
+                    $query->where('name', 'color')
+                        ->where('value', $color);
+                });
+            }])->get();
+
+
+            $filteredProducts = $products->filter(function ($product) use ($color) {
+                return $product->variants->filter(function ($variant) use ($color) {
+                    return $variant->attributeValues->filter(function ($attributeValue) use ($color) {
+                        return $attributeValue->attributeName->name === 'color' && $attributeValue->value === $color;
+                    })->isNotEmpty();
+                })->isNotEmpty();
+            });
+
+            return $filteredProducts;
+        } catch (\Exception $e) {
+            Log::error('Error fetching products by color: ' . $e->getMessage());
+        }
+
+    }
+
+    public function filterBySize(Request $request)
+    {
+
+            try {
+                $size = (string)$request->input('size');
+
+                $products = Product::with(['variants.attributeValues' => function ($query) use ($size) {
+                    $query->whereHas('attributeName', function ($query) use ($size) {
+                        $query->where('name', 'size')
+                            ->where('value', $size);
+                    });
+                }])->get();
+
+                $filteredProducts = $products->filter(function ($product) use ($size) {
+                    return $product->variants->filter(function ($variant) use ($size) {
+                        return $variant->attributeValues->filter(function ($attributeValue) use ($size) {
+                            return $attributeValue->attributeName->name === 'size' && $attributeValue->value === $size;
+                        })->isNotEmpty();
+                    })->isNotEmpty();
+                });
+
+                return $filteredProducts;
+
+            } catch (\Exception $e) {
+                Log::error('Error fetching products by size: ' . $e->getMessage());
+                return response()->json(['error' => 'An error occurred while fetching products'], 500);
+            }
+
+    }
+
+    public function filterByCategory(Request $request){
+        try {
+            $categoryIds = (array) $request->input('category_id');
+
+            // Truy vấn sản phẩm với điều kiện category_id trong mảng category
+            $products = Product::whereHas('category', function ($query) use ($categoryIds) {
+                $query->whereIn('id', $categoryIds)
+                    ->whereNotNull('id');
+            })->with('category')->get();
+
+            // Lọc các sản phẩm có ít nhất một category hợp lệ
+            $filteredProducts = $products->filter(function ($product) {
+                return $product->category !== null;
+            });
+
+            return $filteredProducts;
+        } catch (\Exception $e) {
+            Log::error('Error fetching products by category: ' . $e->getMessage());
+            return response()->json(['error' => 'An error occurred while fetching products'], 500);
         }
     }
 
 }
+
+
+
+
+
+
+

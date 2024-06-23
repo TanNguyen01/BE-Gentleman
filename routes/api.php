@@ -59,11 +59,15 @@ Route::apiResource("attributes", \App\Http\Controllers\API\AttributeController::
 Route::get("get-by-sale", [ProductController::class, 'getBySale']);
 Route::get("get-by-sale/{id}", [ProductController::class, 'getProductBySaleId']);
 
-Route::get("get-by-price", [ProductController::class, 'getByPrice']);
-//Route::get("get-by-price/{price}", [ProductController::class, 'getProductByPrice']);
 
-Route::get("get-by-color", [ProductController::class, 'getByColor']);
-Route::get("get-by-color", [ProductController::class, 'getProductByColor']);
+Route::get("filter",[ProductController::class, 'filterByPrice']);
+Route::get("filterColor",[ProductController::class, 'filterByColor']);
+Route::get("filterSize",[ProductController::class, 'filterBySize']);
+Route::get("filterCategory",[ProductController::class, 'filterByCategory']);
+
+
+
+
 
 
 //size
