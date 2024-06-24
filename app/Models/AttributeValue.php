@@ -11,11 +11,15 @@ class AttributeValue extends Model
 
     protected $fillable = [
         'value',
-        'attribute_name_id',
+        'attribute_id',
     ];
 
-    public function attributeName()
+    public function attribute()
     {
-        return $this->belongsTo(AttributeName::class);
+        return $this->belongsTo(Attribute::class);
+    }
+    public function variants()
+    {
+        return $this->belongsToMany(Variant::class, 'variant_attributes', 'attribute_value_id', 'variant_id')->withPivot('variant_id');
     }
 }

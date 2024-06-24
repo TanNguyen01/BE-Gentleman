@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('variant_attributes', function (Blueprint $table) {
+        Schema::create('attribute_values', function (Blueprint $table) {
             $table->id();
+            $table->string('value')->unique();
             $table->unsignedBigInteger('attribute_id');
-            $table->unsignedBigInteger('variant_id');
             $table->timestamps();
 
-            $table->foreign('attribute_id')->references('id')->on('attribute_names')->onDelete('cascade');
-            $table->foreign('variant_id')->references('id')->on('variants')->onDelete('cascade');
+            $table->foreign('attribute_id')->references('id')->on('attributes')->onDelete('cascade');
         });
     }
 
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('variant_attributes');
+        Schema::dropIfExists('attribute_values');
     }
 };

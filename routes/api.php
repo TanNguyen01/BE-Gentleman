@@ -1,22 +1,17 @@
 <?php
 
 use App\Http\Controllers\API\AttributeController;
+use App\Http\Controllers\API\AttributeValueController;
 use App\Http\Controllers\API\BillController;
 use App\Http\Controllers\API\BillDetailController;
-
+use App\Http\Controllers\API\BillStoryController;
 use App\Http\Controllers\API\CategoryController;
-use App\Http\Controllers\API\ColorController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\OrderDetailController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\SaleController;
-use App\Http\Controllers\API\SizeController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VariantController;
-
-use App\Models\Order;
-use App\Models\OrderDetail;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -49,31 +44,23 @@ Route::middleware(['auth:sanctum', 'checkAdmin'])->group(function () {
 });
 
 //Categories
-Route::apiResource("categories", \App\Http\Controllers\API\CategoryController::class);
-Route::get('categories/{id}/total-products', [\App\Http\Controllers\API\CategoryController::class, 'totalProducts']);
+Route::apiResource("categories", CategoryController::class);
+Route::get("get-category-by-name", [CategoryController::class, 'getCategoryByName']);
 
 //Product
-Route::apiResource("products", \App\Http\Controllers\API\ProductController::class);
-Route::apiResource("variants", \App\Http\Controllers\API\VariantController::class);
-Route::apiResource("attributes", \App\Http\Controllers\API\AttributeController::class);
+Route::apiResource("products", ProductController::class);
+Route::apiResource("variants", VariantController::class);
 Route::get("get-by-sale", [ProductController::class, 'getBySale']);
 Route::get("get-by-sale/{id}", [ProductController::class, 'getProductBySaleId']);
+Route::get("get-by-name", [ProductController::class, 'getProductByName']);
+Route::get("get-by-category", [ProductController::class, 'getProductByCategory']);
+
+//Attribute_name
+Route::apiResource("attributes", AttributeController::class);
 
 
-Route::get("filter", [ProductController::class, 'filter']);
-
-
-
-
-
-//size
-Route::get("get-all-size", [SizeController::class, 'index']);
-Route::post("add-size", [SizeController::class, 'store']);
-
-
-//color
-Route::get("get-all-color", [ColorController::class, 'index']);
-Route::post("add-color", [ColorController::class, 'store']);
+//Attribute_value
+Route::apiResource("attribute-values", AttributeValueController::class);
 
 
 //User
@@ -96,9 +83,14 @@ Route::get('bills-pending', [BillController::class, 'getPending']);
 Route::get('bills-done', [BillController::class, 'getDone']);
 Route::get('bills-paid', [BillController::class, 'getPaid']);
 Route::get('bills-shiping', [BillController::class, 'getShiping']);
-Route::get('bills-paidShiping', [BillController::class, 'getPaidShiping']);
 Route::get('bills-cancel', [BillController::class, 'getCancel']);
 Route::get('bills-with-user/{id}', [BillController::class, 'getBillWithUser']);
+Route::get('bills-with-user-pending/{id}', [BillController::class, 'getBillWithUserPending']);
+Route::get('bills-with-user-done/{id}', [BillController::class, 'getBillWithUserDone']);
+Route::get('bills-with-user-paid/{id}', [BillController::class, 'getBillWithUserPaid']);
+Route::get('bills-with-user-shiping/{id}', [BillController::class, 'getBillWithUserShiping']);
+Route::get('bills-with-user-cancel/{id}', [BillController::class, 'getBillWithUserCancel']);
+Route::get('bills-with-user-confirm/{id}', [BillController::class, 'getBillWithUserConfirm']);
 
 //BillDetail
 Route::apiResource('bill-details', BillDetailController::class);
@@ -110,7 +102,7 @@ Route::apiResource('bill-stores', BillStoryController::class);
 Route::apiResource('orders', OrderController::class);
 Route::get('order-with-orderDetail/{id}', [OrderController::class, 'orderWithOrderDetail']);
 
-//OrderDetail
+//OrderDetail------------cart-------------------
 Route::apiResource('order-details', OrderDetailController::class);
 Route::post('cart', [OrderDetailController::class, 'orderDetailWithVariant']);
 

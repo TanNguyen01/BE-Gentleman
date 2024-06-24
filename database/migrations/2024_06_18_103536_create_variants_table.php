@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->decimal('price', 8, 2);
             $table->decimal('price_promotional', 8, 2);
+            $table->string('image')->nullable();
             $table->integer('quantity')->default(0);
             $table->timestamps();
         });

@@ -48,7 +48,7 @@ class BillController extends BillService
     {
         $data = $this->billService->showBill($id);
         if (!$data) {
-            return $this->responseNotFound(
+            return $this->APIError(
                 Response::HTTP_NOT_FOUND,
                 __('khong tim thay danh muc')
             );
@@ -65,7 +65,7 @@ class BillController extends BillService
     public function billWithBillDetail($id){
         $data = $this->billService->eloquentBillWithBillDetail($id);
         if (!$data) {
-            return $this->responseNotFound(
+            return $this->APIError(
                 Response::HTTP_NOT_FOUND,
                 __('khong thay bill detail')
             );
@@ -83,7 +83,7 @@ class BillController extends BillService
     {
         $data = $this->billService->chanceStatusConfirm($id);
         if(!$data){
-            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            return $this->APIError(Response::HTTP_NOT_FOUND,
             __('khong tim thay danh muc'),
             );
         }else{
@@ -100,7 +100,7 @@ class BillController extends BillService
     {
         $data = $this->billService->chanceStatusShiping($id);
         if(!$data){
-            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            return $this->APIError(Response::HTTP_NOT_FOUND,
             __('khong tim thay danh muc'),
             );
         }else{
@@ -117,7 +117,7 @@ class BillController extends BillService
     {
         $data = $this->billService->chanceStatusPaid($id);
         if(!$data){
-            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            return $this->APIError(Response::HTTP_NOT_FOUND,
             __('khong tim thay danh muc'),
             );
         }else{
@@ -134,7 +134,7 @@ class BillController extends BillService
     {
         $data = $this->billService->chanceStatusPending($id);
         if(!$data){
-            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            return $this->APIError(Response::HTTP_NOT_FOUND,
             __('khong tim thay danh muc'),
             );
         }else{
@@ -151,7 +151,7 @@ class BillController extends BillService
     {
         $data = $this->billService->chanceStatusDone($id);
         if(!$data){
-            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            return $this->APIError(Response::HTTP_NOT_FOUND,
             __('khong tim thay danh muc'),
             );
         }else{
@@ -168,7 +168,7 @@ class BillController extends BillService
     {
         $data = $this->billService->chanceStatusCancel($id);
         if(!$data){
-            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            return $this->APIError(Response::HTTP_NOT_FOUND,
             __('khong tim thay danh muc'),
             );
         }else{
@@ -185,7 +185,7 @@ class BillController extends BillService
     {
         $data = $this->billService->getStatusPaid();
         if(!$data){
-            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            return $this->APIError(Response::HTTP_NOT_FOUND,
             __('khong tim thay danh muc'),
             );
         }else{
@@ -202,7 +202,7 @@ class BillController extends BillService
     {
         $data = $this->billService->getStatusCancel();
         if(!$data){
-            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            return $this->APIError(Response::HTTP_NOT_FOUND,
             __('khong tim thay danh muc'),
             );
         }else{
@@ -219,7 +219,7 @@ class BillController extends BillService
     {
         $data = $this->billService->getStatusShiping();
         if(!$data){
-            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            return $this->APIError(Response::HTTP_NOT_FOUND,
             __('khong tim thay danh muc'),
             );
         }else{
@@ -236,7 +236,7 @@ class BillController extends BillService
     {
         $data = $this->billService->getStatusPending();
         if(!$data){
-            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            return $this->APIError(Response::HTTP_NOT_FOUND,
             __('khong tim thay danh muc'),
             );
         }else{
@@ -253,7 +253,7 @@ class BillController extends BillService
     {
         $data = $this->billService->getStatusDone();
         if(!$data){
-            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            return $this->APIError(Response::HTTP_NOT_FOUND,
             __('khong tim thay danh muc'),
             );
         }else{
@@ -270,7 +270,7 @@ class BillController extends BillService
     {
         $data = $this->billService->getStatusConfirm();
         if(!$data){
-            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            return $this->APIError(Response::HTTP_NOT_FOUND,
             __('khong tim thay danh muc'),
             );
         }else{
@@ -287,7 +287,7 @@ class BillController extends BillService
     {
         $data = $this->billService->billWithUser($id);
         if(!$data){
-            return $this->responseNotFound(Response::HTTP_NOT_FOUND,
+            return $this->APIError(Response::HTTP_NOT_FOUND,
             __('user khong co bill'),
             );
         }else{
@@ -299,4 +299,107 @@ class BillController extends BillService
             );
         }
     }
+
+    public function getBillWithUserPending($id)
+    {
+        $data = $this->billService->billWithUsePending($id);
+        if(!$data){
+            return $this->APIError(Response::HTTP_NOT_FOUND,
+            __('user khong co bill'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
+        }
+    }
+
+    public function getBillWithUserCancel($id)
+    {
+        $data = $this->billService->billWithUseCancel($id);
+        if(!$data){
+            return $this->APIError(Response::HTTP_NOT_FOUND,
+            __('user khong co bill'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
+        }
+    }
+
+    public function getBillWithUserConfirm($id)
+    {
+        $data = $this->billService->billWithUseConfirm($id);
+        if(!$data){
+            return $this->APIError(Response::HTTP_NOT_FOUND,
+            __('user khong co bill'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
+        }
+    }
+
+    public function getBillWithUserShiping($id)
+    {
+        $data = $this->billService->billWithUseShiping($id);
+        if(!$data){
+            return $this->APIError(Response::HTTP_NOT_FOUND,
+            __('user khong co bill'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
+        }
+    }
+
+    public function getBillWithUserDone($id)
+    {
+        $data = $this->billService->billWithUseDone($id);
+        if(!$data){
+            return $this->APIError(Response::HTTP_BAD_REQUEST,
+            __('user khong co bill'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
+        }
+    }
+
+    public function getBillWithUserPaid($id)
+    {
+        $data = $this->billService->billWithUsePaid($id);
+        if(!$data){
+            return $this->APIError(Response::HTTP_BAD_REQUEST,
+            __('user khong co bill'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
+        }
+    }
+
 }

@@ -19,8 +19,8 @@ class ProductAttribute extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function attributeName()
+    public function attribute()
     {
-        return $this->belongsTo(AttributeName::class);
+        return $this->belongsTo(Attribute::class);
     }
 }

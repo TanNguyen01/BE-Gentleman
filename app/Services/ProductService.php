@@ -3,15 +3,13 @@
 namespace App\Services;
 
 use App\Models\Attribute;
-use App\Models\AttributeName;
 use App\Models\AttributeValue;
 use App\Models\Product;
-use App\Models\Variant;
 use App\Traits\APIResponse;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
 use Illuminate\Support\Facades\Storage;
 
 class ProductService extends AbstractServices
@@ -22,61 +20,100 @@ class ProductService extends AbstractServices
     {
         Parent::__construct($product);
     }
+    private function uploadImage($image, $productName)
+    {
+        try {
+            $fileName = $productName . '_' . time();
+
+            $extension = $image->getClientOriginalExtension();
+
+            $fileNameToStore = $fileName . '.' . $extension;
+
+            $filePath = $image->storeAs('uploads', $fileNameToStore, 's3'); // 's3' là tên của disk được cấu hình trong config/filesystems.php
+
+            $imageUrl = Storage::disk('s3')->url($filePath);
+
+            return $imageUrl;
+        } catch (Exception $e) {
+            Log::error('Error uploading image: ' . $e->getMessage());
+            throw new Exception('Failed to upload image');
+        }
+    }
+
 
     public function getAllProducts()
     {
-
-        return Product::with('sales', 'category', 'variants.attributeNames')->get();
+        return Product::with('sales', 'category', 'variants.attributeValues.attribute')->get();
     }
 
     public function showProduct($id)
     {
-        return Product::with('sales', 'category', 'variants.attributeNames')->find($id);
+        return Product::with('sales', 'category', 'variants.attributeValues.attribute')->find($id);
     }
 
     public function createProductWithVariantsAndAttributes(array $productData)
     {
         DB::beginTransaction();
         try {
-            // // Upload hình ảnh lên S3 và lấy URL
-            // if (isset($productData['image']) && $productData['image']) {
-            //     $productData['image'] = $this->uploadImage($productData['image']);
-            // }
 
             // Tạo sản phẩm
             $product = Product::create([
-                'name' => $productData['name'] ?? null,
-                'brand' => $productData['brand'] ?? null,
-                'image' => $productData['image'] ?? null,
-                'description' => $productData['description'] ?? null,
+                'name' => $productData['name'] ?? '',
+                'brand' => $productData['brand'] ?? '',
+                'image' => $productData['image'] ?? '',
+                'description' => $productData['description'] ?? '',
                 'category_id' => $productData['category_id'] ?? null,
                 'sale_id' => $productData['sale_id'] ?? null,
             ]);
 
-            // Tạo các biến thể và giá trị thuộc tính liên quan nếu có
+            if (isset($productData['image'])) {
+                $imageUrl = $this->uploadImage($productData['image'], $product->name);
+                $product->image = $imageUrl;
+                $product->save();
+            }
+
             if (isset($productData['variants']) && is_array($productData['variants'])) {
                 foreach ($productData['variants'] as $variantData) {
-                    // Tạo biến thể
-                    $variant = $product->variants()->create([
-                        'price' => $variantData['price'] ?? 0,
-                        'price_promotional' => $variantData['price_promotional'] ?? 0,
-                        'quantity' => $variantData['quantity'] ?? 0
-                    ]);
+                    $attributeValues = collect();
 
-                    // Tạo các giá trị thuộc tính cho biến thể nếu có
                     if (isset($variantData['attributes']) && is_array($variantData['attributes'])) {
-                        foreach ($variantData['attributes'] as $attribute) {
-                            // Tạo tên thuộc tính nếu chưa tồn tại
-                            $attributeName = AttributeName::firstOrCreate(['name' => $attribute['name']]);
+                        foreach ($variantData['attributes'] as $attr) {
+                            $attribute = Attribute::firstOrCreate(['name' => $attr['name']]);
 
-                            // Tạo giá trị thuộc tính
-                            $attributeValue = AttributeValue::firstOrCreate([
-                                'attribute_name_id' => $attributeName->id,
-                                'value' => $attribute['value'],
-                            ]);
+                            if (isset($attr['value']) && !empty($attr['value'])) {
+                                $attributeValue = AttributeValue::firstOrCreate([
+                                    'attribute_id' => $attribute->id,
+                                    'value' => $attr['value'],
+                                ]);
 
-                            // Kết nối biến thể với giá trị thuộc tính thông qua bảng pivot (variant_attributes)
-                            $variant->attributeNames()->attach($attributeValue->id);
+                                $attributeValues->push($attributeValue->id);
+                            } else {
+                                throw new Exception('Attribute value cannot be null or empty');
+                            }
+                        }
+                    }
+
+                    // Kiểm tra sự tồn tại của biến thể dựa trên giá trị thuộc tính
+                    $existingVariant = $product->variants()
+                        ->where('price', $variantData['price'] ?? 0)
+                        ->where('price_promotional', $variantData['price_promotional'] ?? 0)
+                        ->whereHas('attributeValues', function ($query) use ($attributeValues) {
+                            $query->whereIn('attribute_value_id', $attributeValues);
+                        })->first();
+
+                    if ($existingVariant) {
+                        $existingVariant->quantity += $variantData['quantity'] ?? 0;
+                        $existingVariant->save();
+                        $variant = $existingVariant;
+                    } else {
+                        $variant = $product->variants()->create([
+                            'price' => $variantData['price'] ?? 0,
+                            'price_promotional' => $variantData['price_promotional'] ?? 0,
+                            'quantity' => $variantData['quantity'] ?? 0,
+                        ]);
+
+                        if ($attributeValues->isNotEmpty()) {
+                            $variant->attributeValues()->attach($attributeValues);
                         }
                     }
                 }
@@ -91,15 +128,12 @@ class ProductService extends AbstractServices
         }
     }
 
-
     public function updateProductWithVariantsAndAttributes($productId, array $productData)
     {
         DB::beginTransaction();
         try {
-            // Lấy sản phẩm cần cập nhật
             $product = Product::findOrFail($productId);
 
-            // Cập nhật thông tin sản phẩm
             $product->update([
                 'name' => $productData['name'],
                 'brand' => $productData['brand'],
@@ -109,34 +143,53 @@ class ProductService extends AbstractServices
                 'sale_id' => $productData['sale_id'] ?? null,
             ]);
 
-            // Xóa các biến thể cũ và các giá trị thuộc tính của chúng
             $product->variants()->delete();
 
-            // Thêm các biến thể mới và các giá trị thuộc tính tương ứng
             if (isset($productData['variants']) && is_array($productData['variants'])) {
                 foreach ($productData['variants'] as $variantData) {
-                    // Tạo biến thể mới
-                    $variant = $product->variants()->create([
-                        'price' => $variantData['price'],
-                        'price_promotional' => $variantData['price_promotional'],
-                        'quantity' => $variantData['quantity'],
-                        'image' => $variantData['image'] ?? null,
-                    ]);
+                    $attributeValues = collect();
 
-                    // Xử lý các giá trị thuộc tính của biến thể mới
                     if (isset($variantData['attributes']) && is_array($variantData['attributes'])) {
-                        foreach ($variantData['attributes'] as $attribute) {
-                            // Tạo hoặc lấy tên thuộc tính
-                            $attributeName = AttributeName::firstOrCreate(['name' => $attribute['name']]);
+                        foreach ($variantData['attributes'] as $attr) {
+                            $attribute = Attribute::firstOrCreate(['name' => $attr['name']]);
 
-                            // Tạo hoặc lấy giá trị thuộc tính
-                            $attributeValue = AttributeValue::firstOrCreate([
-                                'attribute_name_id' => $attributeName->id,
-                                'value' => $attribute['value'],
-                            ]);
+                            if (isset($attr['value']) && !empty($attr['value'])) {
+                                $attributeValue = AttributeValue::firstOrCreate([
+                                    'attribute_id' => $attribute->id,
+                                    'value' => $attr['value'],
+                                ]);
 
-                            // Liên kết giá trị thuộc tính với biến thể
-                            $variant->attributeNames()->attach($attributeValue);
+                                $attributeValues->push($attributeValue->id);
+                            } else {
+                                throw new Exception('Attribute value cannot be null or empty');
+                            }
+                        }
+                    }
+
+                    // Kiểm tra sự tồn tại của biến thể dựa trên giá trị thuộc tính
+                    $existingVariant = $product->variants()
+                        ->where('price', $variantData['price'] ?? 0)
+                        ->where('price_promotional', $variantData['price_promotional'] ?? 0)
+                        ->whereHas('attributeValues', function ($query) use ($attributeValues) {
+                            $query->whereIn('attribute_value_id', $attributeValues);
+                        })->first();
+
+                    if ($existingVariant) {
+                        // Cộng dồn số lượng nếu biến thể đã tồn tại
+                        $existingVariant->quantity += $variantData['quantity'] ?? 0;
+                        $existingVariant->save();
+                        $variant = $existingVariant;
+                    } else {
+                        // Tạo biến thể mới nếu không tồn tại
+                        $variant = $product->variants()->create([
+                            'price' => $variantData['price'] ?? 0,
+                            'price_promotional' => $variantData['price_promotional'] ?? 0,
+                            'quantity' => $variantData['quantity'] ?? 0,
+                        ]);
+
+                        // Kết nối biến thể với giá trị thuộc tính thông qua bảng pivot (variant_attributes)
+                        if ($attributeValues->isNotEmpty()) {
+                            $variant->attributeValues()->attach($attributeValues);
                         }
                     }
                 }
@@ -171,7 +224,7 @@ class ProductService extends AbstractServices
     {
         try {
             $products = Product::whereNotNull('sale_id')
-                ->with('sales', 'category', 'variants.attributeValues.attributeName')
+                ->with('sales', 'category', 'variants.attributeValues')
                 ->get();
 
             return $products;
@@ -185,7 +238,7 @@ class ProductService extends AbstractServices
     {
         try {
             $products = Product::where('sale_id', $saleId)
-                ->with('sales', 'category', 'variants.attributeValues.attributeName')
+                ->with('sales', 'category', 'variants.attributeValues')
                 ->get();
 
             return $products;
@@ -195,106 +248,30 @@ class ProductService extends AbstractServices
         }
     }
 
-//
-
-
-
-    public function filter(Request $request){
+    public function getProductsByName(string $name)
+    {
         try {
-            $query = Product::query();
-
-
-            // Lọc theo khoảng giá
-            if ($request->filled('minPrice') || $request->filled('maxPrice')) {
-                $minPrice = (float)$request->input('minPrice', 0);
-                $maxPrice = (float)$request->input('maxPrice', PHP_INT_MAX);
-
-                $query->whereHas('variants', function ($query) use ($minPrice, $maxPrice) {
-                    $query->whereBetween('price_promotional', [$minPrice, $maxPrice])
-                        ->whereNotNull('price_promotional');
-                });
-            }
-
-            // Lọc theo màu sắc
-            if ($request->filled('color')) {
-                $color = (string)$request->input('color');
-                $query->whereHas('variants.attributeValues', function ($query) use ($color) {
-                    $query->whereHas('attributeName', function ($query) use ($color) {
-                        $query->where('name', 'color')->where('value', $color);
-                    });
-                });
-            }
-
-            // Lọc theo kích thước
-            if ($request->filled('size')) {
-                $size = (string)$request->input('size');
-                $query->whereHas('variants.attributeValues', function ($query) use ($size) {
-                    $query->whereHas('attributeName', function ($query) use ($size) {
-                        $query->where('name', 'size')->where('value', $size);
-                    });
-                });
-            }
-
-            // Lọc theo danh mục
-            if ($request->filled('category_id')) {
-                $categoryIds = (array) $request->input('category_id');
-                $query->whereHas('category', function ($query) use ($categoryIds) {
-                    $query->whereIn('id', $categoryIds)->whereNotNull('id');
-                });
-            }
-
-            // Lấy danh sách sản phẩm đã lọc
-            $products = $query->with(['variants.attributeValues', 'category'])->get();
-
-            // Lọc các sản phẩm có ít nhất một thuộc tính hợp lệ
-            $filteredProducts = $products->filter(function ($product) use ($request) {
-                $validPrice = true;
-                $validColor = true;
-                $validSize = true;
-                $validCategory = true;
-
-                if ($request->filled('minPrice') || $request->filled('maxPrice')) {
-                    $validPrice = $product->variants->isNotEmpty();
-                }
-
-                if ($request->filled('color')) {
-                    $color = (string)$request->input('color');
-                    $validColor = $product->variants->filter(function ($variant) use ($color) {
-                        return $variant->attributeValues->filter(function ($attributeValue) use ($color) {
-                            return $attributeValue->attributeName->name === 'color' && $attributeValue->value === $color;
-                        })->isNotEmpty();
-                    })->isNotEmpty();
-                }
-
-                if ($request->filled('size')) {
-                    $size = (string)$request->input('size');
-                    $validSize = $product->variants->filter(function ($variant) use ($size) {
-                        return $variant->attributeValues->filter(function ($attributeValue) use ($size) {
-                            return $attributeValue->attributeName->name === 'size' && $attributeValue->value === $size;
-                        })->isNotEmpty();
-                    })->isNotEmpty();
-                }
-
-                if ($request->filled('category_id')) {
-                    $validCategory = $product->category !== null;
-                }
-
-                return $validPrice && $validColor && $validSize && $validCategory ;
-            });
-
-            return $filteredProducts;
+            $products = Product::whereNotNull('name')
+                ->with('sales', 'category', 'variants.attributeValues')
+                ->where('name', 'like', '%' . $name . '%')->get();
+            return response()->json($products);
         } catch (\Exception $e) {
-            Log::error('Error fetching products: ' . $e->getMessage());
-            return response()->json(['error' => 'An error occurred while fetching products'], 500);
+            Log::error('Error fetching products by name: ' . $e->getMessage());
+            throw $e;
         }
     }
 
-
+    public function getProductsByCategory(string $category)
+    {
+        try {
+            $products = Product::whereHas('category', function ($query) use ($category) {
+                $query->where('name', 'like', '%' . $category . '%')
+                    ->whereNotNull('name');
+            })->with('category', 'sales', 'variants.attributeValues')->get();
+            return response()->json($products);
+        } catch (\Exception $e) {
+            Log::error('Error fetching products by name: ' . $e->getMessage());
+            throw $e;
+        }
+    }
 }
-
-
-
-
-
-
-

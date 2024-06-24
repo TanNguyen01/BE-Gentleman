@@ -3,28 +3,24 @@
 namespace App\Services;
 
 use App\Models\Attribute;
-use Illuminate\Support\Facades\DB;
 
-class AttributeService
+class AttributeService extends AbstractServices
 {
-    public function getAllAttributes()
+    public function __construct(Attribute $attribute)
     {
-        return Attribute::with('attributeValues')->get();
+        Parent::__construct($attribute);
+    }
+
+    public function getAllAttribute()
+    {
+        return $this->eloquentGetAll();
     }
 
     public function createAttribute($data)
     {
-        DB::beginTransaction();
-
-        try {
-            $attribute = Attribute::create($data);
-            DB::commit();
-            return $attribute;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+        return $this->eloquentPostCreate($data);
     }
+
 
     public function getAttributeById($id)
     {
@@ -38,9 +34,8 @@ class AttributeService
         return $attribute;
     }
 
-    public function deleteAttribute($id)
+    public function deleteAttribute($attribute)
     {
-        $attribute = Attribute::findOrFail($id);
         $attribute->delete();
     }
 }

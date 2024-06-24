@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Attribute;
 use App\Models\AttributeName;
 use App\Models\AttributeValue;
 use App\Models\Variant;
@@ -18,7 +19,7 @@ class ColorService extends AbstractServices
     {
         try {
             // Lấy tất cả các attribute_name có tên là 'size'
-            $attributeName = AttributeName::where('name', 'color')->first();
+            $attributeName = Attribute::where('name', 'color')->first();
 
             if (!$attributeName) {
                 return []; // Nếu không tìm thấy, trả về mảng rỗng hoặc null tùy theo nhu cầu của bạn
@@ -37,7 +38,7 @@ class ColorService extends AbstractServices
     public function createColorValue($value)
     {
         //Tìm hoặc tạo 1 attribute_name có name là size
-        $attributeName = AttributeName::firstOrCreate(['name' => 'color']);
+        $attributeName = Attribute::firstOrCreate(['name' => 'color']);
 
         //tạo 1 attribute_value cho attribute_name size
         $sizeValue = AttributeValue::create([

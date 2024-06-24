@@ -4,19 +4,14 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductsRequest;
-use App\Models\Product;
-use App\Services\ColorService;
 use App\Services\ProductService;
 use App\Traits\APIResponse;
-
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-
 
 class ProductController extends Controller
 {
     use APIResponse;
-
 
     protected $productService;
 
@@ -25,8 +20,6 @@ class ProductController extends Controller
     {
         $this->productService = $productService;
     }
-
-
 
     public function index()
     {
@@ -37,7 +30,6 @@ class ProductController extends Controller
                 'product' => $products,
             ]
         );
-
     }
 
     public function store(ProductsRequest $request)
@@ -56,7 +48,7 @@ class ProductController extends Controller
     }
 
 
-    public function show($id)
+    public function show(int $id)
     {
         $product = $this->productService->showProduct($id);
         if (!$product) {
@@ -154,98 +146,49 @@ class ProductController extends Controller
         }
     }
 
-
-  public function filterByPrice(Request $request){
-          try{
-
-               $products = $this->productService->filterByPrice($request);
-
-//              if ($products->isEmpty()) {
-//                  return $this->APIError(Response::HTTP_NOT_FOUND,
-//                      __('user khong co bill'),
-//                  );
-//
-//              }
-
-             return  response()->json($products);
-
-          }catch (\Exception $e){
-              return $this->responseServerError(
-                  __('loi khi lay danh sach san pham theo gia: ') . $e->getMessage()
-              );
-          }
-
-  }
-
-  public function filterByColor(Request $request){
-        try{
-
-            $products = $this->productService->filterByColor($request);
-
-            return  response()->json($products);
-        }catch (\Exception $e){
-            return $this->responseServerError(
-                __('loi khi lay san pham theo mau: '). $e->getMessage()
-            );
-        }
-  }
-
-    public function filterBySize(Request $request){
-        try{
-
-            $products = $this->productService->filterBySize($request);
-
-            return  response()->json($products);
-        }catch (\Exception $e){
-            return $this->responseServerError(
-                __('loi khi lay san pham theo mau: '). $e->getMessage()
-            );
-        }
-    }
-
-    public function filterByCategory(Request $request){
-        try{
-
-            $products = $this->productService->filterByCategory($request);
-
-            return  response()->json($products);
-        }catch (\Exception $e){
-            return $this->responseServerError(
-                __('loi khi lay san pham theo mau: '). $e->getMessage()
-            );
-        }
-    }
-
-    public function filter(Request $request){
-        try{
-           $products = $this->productService->filter($request);
-
-            if ($products->isEmpty()) {
+    public function getProductByName(Request $request)
+    {
+        try {
+            $name = $request->input('name');
+            $getProductByName = $this->productService->getProductsByName($name);
+            if ($getProductByName->isEmpty()) {
                 return $this->responseNotFound(
                     Response::HTTP_NOT_FOUND,
                     __('khong tim thay san pham!')
                 );
             } else {
                 return response()->json([
-                    'data' => $products,
-                    'message' => 'Successfully retrieved products with filter',
+                    'data' => $getProductByName,
+                    'message' => 'Successfully retrieved products with name',
                 ], Response::HTTP_OK);
             }
-
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             return $this->responseServerError(
-                 __('loi khi lay san pham theo bo loc: '). $e->getMessage()
+                __('loi khi lay danh sach san pham theo ten: ') . $e->getMessage()
             );
         }
     }
 
-
-
-
-
-
-
-
-
-
+    public function getProductByCategory(Request $request)
+    {
+        try {
+            $name = $request->input('name');
+            $getProductByCategory = $this->productService->getProductsByCategory($name);
+            if ($getProductByCategory->isEmpty()) {
+                return $this->responseNotFound(
+                    Response::HTTP_NOT_FOUND,
+                    __('khong tim thay san pham!')
+                );
+            } else {
+                return response()->json([
+                    'data' => $getProductByCategory,
+                    'message' => 'Successfully retrieved products with cate',
+                ], Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            return $this->responseServerError(
+                __('loi khi lay danh sach san pham theo cate: ') . $e->getMessage()
+            );
+        }
+    }
 }
