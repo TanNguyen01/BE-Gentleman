@@ -21,6 +21,6 @@ class VariantAttribute extends Model
 
     public function attributeNames()
     {
-        return $this->belongsTo(AttributeName::class);
+        return $this->belongsTo(Attribute::class);
     }
 }

@@ -24,7 +24,7 @@ class VariantAttributeFactory extends Factory
     {
         return [
             'variant_id' => \App\Models\Variant::factory(),
-            'attribute_id' => \App\Models\AttributeName::factory(),
+            'attribute_value_id' => \App\Models\AttributeValue::factory(),
         ];
     }
 }

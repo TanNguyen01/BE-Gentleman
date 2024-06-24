@@ -54,7 +54,7 @@ Route::get("get-by-sale", [ProductController::class, 'getBySale']);
 Route::get("get-by-sale/{id}", [ProductController::class, 'getProductBySaleId']);
 Route::get("get-by-name", [ProductController::class, 'getProductByName']);
 Route::get("get-by-category", [ProductController::class, 'getProductByCategory']);
-
+Route::get("filter", [ProductController::class, 'filter']);
 //Attribute_name
 Route::apiResource("attributes", AttributeController::class);
 

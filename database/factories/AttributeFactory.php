@@ -2,20 +2,21 @@
 
 namespace Database\Factories;
 
-use App\Models\AttributeName;
+use App\Models\Attribute;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Attribute>
  */
-class AttributeNameFactory extends Factory
+class AttributeFactory extends Factory
 {
     /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
      */
-    protected $model = AttributeName::class;
+    protected $model = Attribute::class;
 
     public function definition()
     {
