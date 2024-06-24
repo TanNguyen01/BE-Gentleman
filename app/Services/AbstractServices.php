@@ -68,11 +68,11 @@ abstract class AbstractServices
             $values[] = $fillValue;
         }
         $conditionString = implode(' AND ', $conditions);
-        $pendingBills = DB::table($table)
+        $res = DB::table($table)
         ->whereRaw($conditionString, $values)
         ->orderByDesc('updated_at')
         ->get();
-        return $pendingBills;
+        return $res;
     }
 // xoa nheu ban ghi
      public function eloquentMultiDelete(array $ids): int
