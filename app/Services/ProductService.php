@@ -197,115 +197,98 @@ class ProductService extends AbstractServices
 
 //
 
-    public function filterByPrice(Request $request)
-    {
 
-//        $products = $this->eloquentWithRelations(1,['variants']);
-//
-//        dd($products);
+
+    public function filter(Request $request){
         try {
-            $minPrice = (float)$request->input('minPrice', 0);
-            $maxPrice = (float)$request->input('maxPrice', PHP_INT_MAX);
+            $query = Product::query();
 
 
-            $products = Product::with(['variants' => function ($query) use ($minPrice, $maxPrice) {
-                $query->whereBetween('price_promotional', [$minPrice, $maxPrice])
-                    ->whereNotNull('price_promotional');
-            }])->get();
+            // Lọc theo khoảng giá
+            if ($request->filled('minPrice') || $request->filled('maxPrice')) {
+                $minPrice = (float)$request->input('minPrice', 0);
+                $maxPrice = (float)$request->input('maxPrice', PHP_INT_MAX);
 
-            // Lọc các sản phẩm có ít nhất một biến thể trong khoảng giá
-            $filteredProducts = $products->filter(function ($product) {
-                return $product->variants->isNotEmpty();
-            });
-
-            return $filteredProducts;
-
-        } catch (\Exception $e) {
-            Log::error('Error fetching products by price: ' . $e->getMessage());
-        }
-
-    }
-
-    public function filterByColor(Request $request)
-    {
-        try {
-
-            $color = (string)$request->input('color');
-
-            $products = Product::with(['variants.attributeValues' => function ($query) use ($color) {
-                $query->whereHas('attributeName', function ($query) use ($color) {
-                    $query->where('name', 'color')
-                        ->where('value', $color);
+                $query->whereHas('variants', function ($query) use ($minPrice, $maxPrice) {
+                    $query->whereBetween('price_promotional', [$minPrice, $maxPrice])
+                        ->whereNotNull('price_promotional');
                 });
-            }])->get();
+            }
 
-
-            $filteredProducts = $products->filter(function ($product) use ($color) {
-                return $product->variants->filter(function ($variant) use ($color) {
-                    return $variant->attributeValues->filter(function ($attributeValue) use ($color) {
-                        return $attributeValue->attributeName->name === 'color' && $attributeValue->value === $color;
-                    })->isNotEmpty();
-                })->isNotEmpty();
-            });
-
-            return $filteredProducts;
-        } catch (\Exception $e) {
-            Log::error('Error fetching products by color: ' . $e->getMessage());
-        }
-
-    }
-
-    public function filterBySize(Request $request)
-    {
-
-            try {
-                $size = (string)$request->input('size');
-
-                $products = Product::with(['variants.attributeValues' => function ($query) use ($size) {
-                    $query->whereHas('attributeName', function ($query) use ($size) {
-                        $query->where('name', 'size')
-                            ->where('value', $size);
+            // Lọc theo màu sắc
+            if ($request->filled('color')) {
+                $color = (string)$request->input('color');
+                $query->whereHas('variants.attributeValues', function ($query) use ($color) {
+                    $query->whereHas('attributeName', function ($query) use ($color) {
+                        $query->where('name', 'color')->where('value', $color);
                     });
-                }])->get();
+                });
+            }
 
-                $filteredProducts = $products->filter(function ($product) use ($size) {
-                    return $product->variants->filter(function ($variant) use ($size) {
+            // Lọc theo kích thước
+            if ($request->filled('size')) {
+                $size = (string)$request->input('size');
+                $query->whereHas('variants.attributeValues', function ($query) use ($size) {
+                    $query->whereHas('attributeName', function ($query) use ($size) {
+                        $query->where('name', 'size')->where('value', $size);
+                    });
+                });
+            }
+
+            // Lọc theo danh mục
+            if ($request->filled('category_id')) {
+                $categoryIds = (array) $request->input('category_id');
+                $query->whereHas('category', function ($query) use ($categoryIds) {
+                    $query->whereIn('id', $categoryIds)->whereNotNull('id');
+                });
+            }
+
+            // Lấy danh sách sản phẩm đã lọc
+            $products = $query->with(['variants.attributeValues', 'category'])->get();
+
+            // Lọc các sản phẩm có ít nhất một thuộc tính hợp lệ
+            $filteredProducts = $products->filter(function ($product) use ($request) {
+                $validPrice = true;
+                $validColor = true;
+                $validSize = true;
+                $validCategory = true;
+
+                if ($request->filled('minPrice') || $request->filled('maxPrice')) {
+                    $validPrice = $product->variants->isNotEmpty();
+                }
+
+                if ($request->filled('color')) {
+                    $color = (string)$request->input('color');
+                    $validColor = $product->variants->filter(function ($variant) use ($color) {
+                        return $variant->attributeValues->filter(function ($attributeValue) use ($color) {
+                            return $attributeValue->attributeName->name === 'color' && $attributeValue->value === $color;
+                        })->isNotEmpty();
+                    })->isNotEmpty();
+                }
+
+                if ($request->filled('size')) {
+                    $size = (string)$request->input('size');
+                    $validSize = $product->variants->filter(function ($variant) use ($size) {
                         return $variant->attributeValues->filter(function ($attributeValue) use ($size) {
                             return $attributeValue->attributeName->name === 'size' && $attributeValue->value === $size;
                         })->isNotEmpty();
                     })->isNotEmpty();
-                });
+                }
 
-                return $filteredProducts;
+                if ($request->filled('category_id')) {
+                    $validCategory = $product->category !== null;
+                }
 
-            } catch (\Exception $e) {
-                Log::error('Error fetching products by size: ' . $e->getMessage());
-                return response()->json(['error' => 'An error occurred while fetching products'], 500);
-            }
-
-    }
-
-    public function filterByCategory(Request $request){
-        try {
-            $categoryIds = (array) $request->input('category_id');
-
-            // Truy vấn sản phẩm với điều kiện category_id trong mảng category
-            $products = Product::whereHas('category', function ($query) use ($categoryIds) {
-                $query->whereIn('id', $categoryIds)
-                    ->whereNotNull('id');
-            })->with('category')->get();
-
-            // Lọc các sản phẩm có ít nhất một category hợp lệ
-            $filteredProducts = $products->filter(function ($product) {
-                return $product->category !== null;
+                return $validPrice && $validColor && $validSize && $validCategory ;
             });
 
             return $filteredProducts;
         } catch (\Exception $e) {
-            Log::error('Error fetching products by category: ' . $e->getMessage());
+            Log::error('Error fetching products: ' . $e->getMessage());
             return response()->json(['error' => 'An error occurred while fetching products'], 500);
         }
     }
+
 
 }
 

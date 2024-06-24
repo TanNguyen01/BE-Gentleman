@@ -60,11 +60,7 @@ Route::get("get-by-sale", [ProductController::class, 'getBySale']);
 Route::get("get-by-sale/{id}", [ProductController::class, 'getProductBySaleId']);
 
 
-Route::get("filter",[ProductController::class, 'filterByPrice']);
-Route::get("filterColor",[ProductController::class, 'filterByColor']);
-Route::get("filterSize",[ProductController::class, 'filterBySize']);
-Route::get("filterCategory",[ProductController::class, 'filterByCategory']);
-
+Route::get("filter", [ProductController::class, 'filter']);
 
 
 

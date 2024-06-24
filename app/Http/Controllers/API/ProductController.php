@@ -157,7 +157,7 @@ class ProductController extends Controller
 
   public function filterByPrice(Request $request){
           try{
-               //$price = $request->input('price_promotional');
+
                $products = $this->productService->filterByPrice($request);
 
 //              if ($products->isEmpty()) {
@@ -215,6 +215,30 @@ class ProductController extends Controller
             );
         }
     }
+
+    public function filter(Request $request){
+        try{
+           $products = $this->productService->filter($request);
+
+            if ($products->isEmpty()) {
+                return $this->responseNotFound(
+                    Response::HTTP_NOT_FOUND,
+                    __('khong tim thay san pham!')
+                );
+            } else {
+                return response()->json([
+                    'data' => $products,
+                    'message' => 'Successfully retrieved products with filter',
+                ], Response::HTTP_OK);
+            }
+
+        }catch (\Exception $e){
+            return $this->responseServerError(
+                 __('loi khi lay san pham theo bo loc: '). $e->getMessage()
+            );
+        }
+    }
+
 
 
 
