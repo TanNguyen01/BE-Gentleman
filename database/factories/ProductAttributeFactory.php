@@ -23,7 +23,7 @@ class ProductAttributeFactory extends Factory
     {
         return [
             'product_id' => \App\Models\Product::factory(),
-            'attribute_id' => \App\Models\AttributeName::factory(),
+            'attribute_id' => \App\Models\Attribute::factory(),
         ];
     }
 }

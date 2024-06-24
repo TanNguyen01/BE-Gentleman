@@ -21,8 +21,8 @@ class AttributeValueFactory extends Factory
     public function definition()
     {
         return [
-            'attribute_name_id' => \App\Models\AttributeName::factory(),
-            'value' => $this->faker->word,
+            'attribute_id' => \App\Models\Attribute::factory(),
+            'value' => $this->faker->unique()->word,
         ];
     }
 }
