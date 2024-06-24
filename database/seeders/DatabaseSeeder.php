@@ -42,9 +42,8 @@ class DatabaseSeeder extends Seeder
         \App\Models\BillDetail::factory()->count(40)->create();
         \App\Models\Voucher::factory()->count(10)->create();
         \App\Models\User::factory()->admin()->create();
-        \App\Models\AttributeName::factory()->count(20)->create();
+        \App\Models\Attribute::factory()->count(20)->create();
         \App\Models\AttributeValue::factory()->count(20)->create();
-        \App\Models\ProductAttribute::factory()->count(20)->create();
         \App\Models\VariantAttribute::factory()->count(20)->create();
         \App\Models\BillStory::factory()->count(20)->create();
     }

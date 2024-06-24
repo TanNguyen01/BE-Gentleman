@@ -43,9 +43,8 @@ class OrderDetailService extends AbstractServices
         $data = [];
         foreach ($param['data'] as $key => $value) {
             // L?y thông tin c?a variant cùng v?i các m?i quan h? liên quan
-            $variant = $this->eloquentWithRelations($value['variant_id'], ['attributeValues', 'attributeNames']);
+            $variant = $this->eloquentWithRelations($value['variant_id'], ['attributeValues']);
 
-            // T?o m?ng v?i các trý?ng c?n thi?t
             $data[] = [
                 'id' => $variant->id,
                 'product_id' => $variant->product_id,
