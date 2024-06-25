@@ -19,8 +19,8 @@ class VariantAttribute extends Model
         return $this->belongsTo(Variant::class);
     }
 
-    public function attributeValue()
+    public function attributeNames()
     {
-        return $this->belongsTo(AttributeValue::class);
+        return $this->belongsTo(Attribute::class);
     }
 }

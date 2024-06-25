@@ -22,7 +22,7 @@ class AttributeValueFactory extends Factory
     {
         return [
             'attribute_id' => \App\Models\Attribute::factory(),
-            'value' => $this->faker->unique()->word,
+            'value' => $this->faker->word,
         ];
     }
 }

@@ -191,4 +191,26 @@ class ProductController extends Controller
             );
         }
     }
+
+    public function filter(Request $request)
+    {
+        try {
+            $products = $this->productService->filter($request);
+            if ($products->isEmpty()) {
+                return $this->responseNotFound(
+                    Response::HTTP_NOT_FOUND,
+                    __('Khong tim thay san pham')
+                );
+            } else {
+                return response()->json([
+                    'data' => $products,
+                    'message' => 'Loc san pham thanh cong'
+                ], Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            return $this->responseServerError(
+                __('loi khi loc san pham: ') . $e->getMessage()
+            );
+        }
+    }
 }
