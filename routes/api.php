@@ -91,6 +91,8 @@ Route::get('bills-with-user-paid/{id}', [BillController::class, 'getBillWithUser
 Route::get('bills-with-user-shiping/{id}', [BillController::class, 'getBillWithUserShiping']);
 Route::get('bills-with-user-cancel/{id}', [BillController::class, 'getBillWithUserCancel']);
 Route::get('bills-with-user-confirm/{id}', [BillController::class, 'getBillWithUserConfirm']);
+Route::get('bills-with-phone/{phone}', [BillController::class, 'getBillWithphone']);
+Route::get('bills-with-email/{email}', [BillController::class, 'getBillWithEmail']);
 
 //BillDetail
 Route::apiResource('bill-details', BillDetailController::class);
