@@ -53,7 +53,9 @@ abstract class AbstractServices
     }
 
     public function eloquentWhere($key,$value){
-        $record = $this->model::where($key,$value)->get();
+        $record = $this->model::where($key, $value)
+                     ->orderBy('updated_at', 'desc')
+                     ->get();
         return $record;
     }
 

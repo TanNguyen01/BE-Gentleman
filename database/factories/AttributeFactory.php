@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Attribute;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

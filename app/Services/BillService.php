@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Bill;
+use App\Models\Variant;
 
 class BillService extends AbstractServices {
     public function __construct(Bill $bill)
@@ -132,7 +133,7 @@ public function billWithUsePending($id){
         'user_id' => $id,
         'status' => 'Pending'
     ];
-    $res = $this->eloquentMultiWhere($fill)->toArray();
+    $res = $this->eloquentMultiWhere($fill);
     return $res;
 }
 
@@ -141,7 +142,7 @@ public function billWithUsePaid($id){
         'user_id' => $id,
         'status' => 'Paid'
     ];
-    $res = $this->eloquentMultiWhere($fill)->toArray();
+    $res = $this->eloquentMultiWhere($fill);
     return $res;
 }
 
@@ -150,7 +151,7 @@ public function billWithUseDone($id){
         'user_id' => $id,
         'status' => 'Done'
     ];
-    $res = $this->eloquentMultiWhere($fill)->toArray();
+    $res = $this->eloquentMultiWhere($fill);
     return $res;
 }
 
@@ -159,7 +160,7 @@ public function billWithUseShiping($id){
         'user_id' => $id,
         'status' => 'Shiping'
     ];
-    $res = $this->eloquentMultiWhere($fill)->toArray();
+    $res = $this->eloquentMultiWhere($fill);
     return $res;
 }
 
@@ -168,7 +169,7 @@ public function billWithUseCancel($id){
         'user_id' => $id,
         'status' => 'Cancel'
     ];
-    $res = $this->eloquentMultiWhere($fill)->toArray();
+    $res = $this->eloquentMultiWhere($fill);
     return $res;
 }
 
@@ -177,8 +178,20 @@ public function billWithUseConfirm($id){
         'user_id' => $id,
         'status' => 'Confirm'
     ];
-    $res = $this->eloquentMultiWhere($fill)->toArray();
+    $res = $this->eloquentMultiWhere($fill);
     return $res;
+}
+
+public function billFinterWithPhone($phone){
+        $res = $this->eloquentWhere('recipient_phone',$phone)->toArray();
+        return $this->sortBills($res);
+}
+
+public function billFinterWithEmail($email){
+    $res = Bill::whereHas('user', function($query) use ($email) {
+        $query->where('email', $email);
+    })->get()->toArray();
+    return $this->sortBills($res);
 }
 
 }

@@ -402,4 +402,38 @@ class BillController extends BillService
         }
     }
 
+    public function getBillWithphone($phone)
+    {
+        $data = $this->billService->billFinterWithPhone($phone);
+        if(!$data){
+            return $this->APIError(Response::HTTP_BAD_REQUEST,
+            __('user khong co bill'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
+        }
+    }
+
+    public function getBillWithEmail($email)
+    {
+        $data = $this->billService->billFinterWithEmail($email);
+        if(!$data){
+            return $this->APIError(Response::HTTP_BAD_REQUEST,
+            __('user khong co bill'),
+            );
+        }else{
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
+        }
+    }
+
 }
