@@ -20,11 +20,13 @@ class BillDetailService extends AbstractServices {
         foreach ($data['data'] as $key => $variantData) {
             $result = $this->variantService->updateQuantityWithBill($variantData['variant_id'], $variantData['quantity']);
             unset($data['data'][$key]['variant_id']);
-            if (isset($result['status']) && $result['status'] == 'khong du so luong') {
+            if ($result['code'] == 201) {
                 return $result;
             }
         }
-        return $this->eloquentMutiInsert($data['data']);
+        return [
+            'status' => $this->eloquentMutiInsert($data['data'])
+        ];
     }
 
     public function showBillDetail($id){

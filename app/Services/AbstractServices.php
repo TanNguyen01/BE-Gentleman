@@ -24,11 +24,8 @@ abstract class AbstractServices
 
     public function eloquentFind(int $id): ?Model
     {
-        return $this->model->findOrFail($id);
-                // public function find(int $id): ?User
-                // {
-                //     return $this->find($id);
-                // }
+        $res = $this->model->find($id);
+        return $res;
     }
 
     public function  eloquentPostCreate(array $data): Model
