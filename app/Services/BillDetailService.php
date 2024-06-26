@@ -17,13 +17,14 @@ class BillDetailService extends AbstractServices {
     }
 
     public function storeBillDetail($data){
-        foreach ($data['variants'] as $variantData) {
-            $result = $this->variantService->updateQuantityWithBill($variantData['id'], $variantData['quantity']);
-            if (is_array($result) && $result['status'] === 'khong du so luong') {
+        foreach ($data['data'] as $key => $variantData) {
+            $result = $this->variantService->updateQuantityWithBill($variantData['variant_id'], $variantData['quantity']);
+            unset($data['data'][$key]['variant_id']);
+            if (isset($result['status']) && $result['status'] == 'khong du so luong') {
                 return $result;
             }
         }
-        return $this->eloquentMutiInsert($data);
+        return $this->eloquentMutiInsert($data['data']);
     }
 
     public function showBillDetail($id){
