@@ -94,6 +94,9 @@ Route::get('bills-with-user-cancel/{id}', [BillController::class, 'getBillWithUs
 Route::get('bills-with-user-confirm/{id}', [BillController::class, 'getBillWithUserConfirm']);
 Route::get('bills-with-phone/{phone}', [BillController::class, 'getBillWithphone']);
 Route::get('bills-with-email/{email}', [BillController::class, 'getBillWithEmail']);
+Route::get('bills-get-total-by-day', [BillController::class, 'getTotalByDate']);
+Route::get('bills-get-total-by-week', [BillController::class, 'getTotalByWeek']);
+Route::get('bills-get-total-by-month', [BillController::class, 'getTotalByMonth']);
 
 //BillDetail
 Route::apiResource('bill-details', BillDetailController::class);
