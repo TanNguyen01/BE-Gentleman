@@ -58,17 +58,28 @@ class VariantService extends AbstractServices
         return $this->multiDelete($id);
     }
 
-    public function updateQuantityWithBill($id,$quantity){
+    public function updateQuantityWithBill($id, $quantity) {
         $variant = $this->eloquentFind($id);
-        $quantityVariant = $variant->quantity;
-        $quantityVariant = $quantityVariant - $quantity;
-        if($quantityVariant < 0){
+        if (!$variant) {
             return [
-                'status' => 'khong du so luong',
-                'varian_id' => $id
+                'status' => 'khong tim thay variant',
+                'variant_id' => $id
             ];
         }
+        $quantityVariant = $variant->quantity - $quantity;
+        if ($quantityVariant < 0) {
+            return [
+                'status' => 'khong du so luong',
+                'variant_id' => $id
+            ];
+        }
+        $variant->quantity = $quantityVariant;
         $variant->save();
-        return true;
+
+        return [
+            'status' => 'success',
+            'variant_id' => $id
+        ];
     }
+
 }
