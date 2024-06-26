@@ -35,7 +35,7 @@ class BillDetailController extends BillDetailService
         return $this->responseCreated(__
         ('tao bill detail'),
         [
-            $data
+            'data' => $data
         ]);
     }
 
