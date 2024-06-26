@@ -123,6 +123,28 @@ class ProductController extends Controller
             );
         }
     }
+    public function getBySaleId()
+    {
+        try {
+            $products = $this->productService->getAllProductBySaleBigger1();
+
+            if ($products->isEmpty()) {
+                return $this->responseNotFound(
+                    Response::HTTP_NOT_FOUND,
+                    __('khong tim thay san pham!')
+                );
+            } else {
+                return response()->json([
+                    'data' => $products,
+                    'message' => 'Successfully retrieved products with sale_id',
+                ], Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            return $this->responseServerError(
+                __('loi khi lay danh sach san pham theo sale_id: ') . $e->getMessage()
+            );
+        }
+    }
     public function getProductBySaleId($id)
     {
         try {

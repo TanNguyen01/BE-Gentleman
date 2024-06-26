@@ -248,6 +248,19 @@ class ProductService extends AbstractServices
         }
     }
 
+    public function getAllProductBySaleBigger1()
+    {
+        try {
+            $products = Product::Where('sale_id', '>', 1)
+                ->with('sales', 'category', 'variants.attributeValues')
+                ->get();
+            return $products;
+        } catch (\Exception $e) {
+            Log::error('Error fetching products by sale_id: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
     public function getProductsByName(string $name)
     {
         try {
@@ -327,15 +340,9 @@ class ProductService extends AbstractServices
 
             // Trả vỞ danh sách sản phẩm đã lỞc
             return response()->json($products);
-
         } catch (\Exception $e) {
             Log::error('Error fetching products: ' . $e->getMessage());
             return response()->json(['error' => 'An error occurred while fetching products'], 500);
         }
     }
-
-
-
-
-
 }
