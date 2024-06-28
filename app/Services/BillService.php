@@ -194,4 +194,8 @@ public function billFinterWithEmail($email){
     return $this->sortBills($res);
 }
 
+public function getBillStoryWithBill($bill_id){
+    return $this->eloquentWithRelations($bill_id,['billStory']);
+}
+
 }

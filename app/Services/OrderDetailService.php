@@ -1,10 +1,7 @@
 <?php
 
 namespace App\Services;
-
-use App\Models\OrderDetail;
 use App\Models\Variant;
-use Attribute;
 
 class OrderDetailService extends AbstractServices
 {
