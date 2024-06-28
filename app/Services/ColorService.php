@@ -52,17 +52,16 @@ class ColorService extends AbstractServices
     {
         try {
             // Lấy tất cả các attribute_name có tên là 'size'
-            $attributeName = AttributeName::where('name', 'color')->first();
+            $attributeName = Attribute::where('name', 'color')->first();
             $attributeValue = AttributeValue::where('attribute_name_id', $attributeName->id)
 
                 ->where('value', $color)
                 ->get();
             $Variants = Variant::whereHas('attributeValues', function ($query) use ($attributeValue) {
                 $query->whereIn('id',  $attributeValue->pluck('id'));
-
             })->get();
 
-             return $Variants;
+            return $Variants;
 
 
 

@@ -10,6 +10,7 @@ use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\OrderDetailController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\SaleController;
+use App\Http\Controllers\API\StatisticalController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VariantController;
 use Illuminate\Support\Facades\Route;
@@ -94,9 +95,20 @@ Route::get('bills-with-user-cancel/{id}', [BillController::class, 'getBillWithUs
 Route::get('bills-with-user-confirm/{id}', [BillController::class, 'getBillWithUserConfirm']);
 Route::get('bills-with-phone/{phone}', [BillController::class, 'getBillWithphone']);
 Route::get('bills-with-email/{email}', [BillController::class, 'getBillWithEmail']);
-Route::get('bills-get-total-by-day', [BillController::class, 'getTotalByDate']);
-Route::get('bills-get-total-by-week', [BillController::class, 'getTotalByWeek']);
-Route::get('bills-get-total-by-month', [BillController::class, 'getTotalByMonth']);
+
+//Statistical
+Route::get('revenue-by-day', [StatisticalController::class, 'getTotalByDate']);
+Route::get('revenue-by-week', [StatisticalController::class, 'getTotalByWeek']);
+Route::get('revenue-by-month', [StatisticalController::class, 'getTotalByMonth']);
+Route::get('revenue-by-product', [StatisticalController::class, 'getTotalByProduct']);
+Route::get('quantity-by-day', [StatisticalController::class, 'getTotalQuantitySoldDaily']);
+Route::get('quantity-by-week', [StatisticalController::class, 'getTotalQuantitySoldWeek']);
+Route::get('quantity-by-month', [StatisticalController::class, 'getTotalQuantitySoldMonth']);
+Route::get('product-best-seller', [StatisticalController::class, 'getProductBestSeller']);
+Route::get('new-user-by-day', [StatisticalController::class, 'newRegistrationsToday']);
+Route::get('new-user-by-week', [StatisticalController::class, 'newRegistrationsThisWeek']);
+Route::get('new-user-by-month', [StatisticalController::class, 'newRegistrationsThisMonth']);
+Route::get('order-statistical', [StatisticalController::class, 'getOrderStatistics']);
 
 //BillDetail
 Route::apiResource('bill-details', BillDetailController::class);
