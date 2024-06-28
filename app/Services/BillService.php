@@ -159,6 +159,10 @@ class BillService extends AbstractServices
         return $res;
     }
 
+    public function getBillStoryWithBill($bill_id){
+        return $this->eloquentWithRelations($bill_id,['billStory']);
+    }
+
     public function billWithUsePaid($id)
     {
         $fill = [

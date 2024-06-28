@@ -30,8 +30,8 @@ class Bill extends Model
         return $this->hasMany(BillDetail::class);
     }
 
-    public function voucher()
+    public function billStory()
     {
-        return $this->belongsTo(Voucher::class);
+        return $this->hasMany(BillStory::class);
     }
 }

@@ -13,6 +13,7 @@ use App\Http\Controllers\API\SaleController;
 use App\Http\Controllers\API\StatisticalController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VariantController;
+use App\Http\Controllers\API\VnpayController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -115,6 +116,7 @@ Route::apiResource('bill-details', BillDetailController::class);
 
 // BillStory
 Route::apiResource('bill-stores', BillStoryController::class);
+Route::get('bill-stores-with-bill/{bill_id}', [BillController::class, 'billStoryWithBill']);
 
 //Order
 Route::apiResource('orders', OrderController::class);
@@ -137,10 +139,9 @@ Route::post('login', [\App\Http\Controllers\API\AuthController::class, 'login'])
 
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
-
     // Route::get('/profile', function (Request $request) {
     //     return auth()->users();
     // });
-
     Route::get('logout', [\App\Http\Controllers\API\AuthController::class, 'logout'])->name('logout');
 });
+Route::post('pay',[VnpayController::class,'checkout'])->name('checkout_vnpay');

@@ -458,4 +458,21 @@ class BillController extends BillService
         }
     }
 
+    public function billStoryWithBill($bill_id)
+    {
+        $data = $this->billService->getBillStoryWithBill($bill_id);
+       if (!$data) {
+        return $this->responseNotFound(
+            Response::HTTP_NOT_FOUND,
+            __('khong tim thay danh muc'));
+        }else{
+        return $this->responseSuccess(
+            __('hien thi danh muc thanh cong'),
+          [
+              'data' => $data,
+          ]
+        );
+        }
+    }
+
 }
