@@ -24,11 +24,8 @@ abstract class AbstractServices
 
     public function eloquentFind(int $id): ?Model
     {
-        return $this->model->findOrFail($id);
-                // public function find(int $id): ?User
-                // {
-                //     return $this->find($id);
-                // }
+        $res = $this->model->find($id);
+        return $res;
     }
 
     public function  eloquentPostCreate(array $data): Model
@@ -53,7 +50,9 @@ abstract class AbstractServices
     }
 
     public function eloquentWhere($key,$value){
-        $record = $this->model::where($key,$value)->get();
+        $record = $this->model::where($key, $value)
+                     ->orderBy('updated_at', 'desc')
+                     ->get();
         return $record;
     }
 
@@ -68,11 +67,11 @@ abstract class AbstractServices
             $values[] = $fillValue;
         }
         $conditionString = implode(' AND ', $conditions);
-        $pendingBills = DB::table($table)
+        $res = DB::table($table)
         ->whereRaw($conditionString, $values)
         ->orderByDesc('updated_at')
         ->get();
-        return $pendingBills;
+        return $res;
     }
 // xoa nheu ban ghi
      public function eloquentMultiDelete(array $ids): int
@@ -101,10 +100,8 @@ abstract class AbstractServices
         //          ['name' => 'Alice', 'email' => 'alice@example.com'],
         //      ];
 
-        DB::beginTransaction();
-
         try {
-            foreach ($data['data'] as $value) {
+            foreach ($data as $value) {
                 $this->model->insert($value);
             }
             DB::commit();

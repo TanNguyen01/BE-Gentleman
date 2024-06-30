@@ -62,7 +62,8 @@ class BillController extends BillService
         }
     }
 
-    public function billWithBillDetail($id){
+    public function billWithBillDetail($id)
+    {
         $data = $this->billService->eloquentBillWithBillDetail($id);
         if (!$data) {
             return $this->APIError(
@@ -82,11 +83,12 @@ class BillController extends BillService
     public function confirm(string $id)
     {
         $data = $this->billService->chanceStatusConfirm($id);
-        if(!$data){
-            return $this->APIError(Response::HTTP_NOT_FOUND,
-            __('khong tim thay danh muc'),
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_NOT_FOUND,
+                __('khong tim thay danh muc'),
             );
-        }else{
+        } else {
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
@@ -99,11 +101,12 @@ class BillController extends BillService
     public function shiping(string $id)
     {
         $data = $this->billService->chanceStatusShiping($id);
-        if(!$data){
-            return $this->APIError(Response::HTTP_NOT_FOUND,
-            __('khong tim thay danh muc'),
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_NOT_FOUND,
+                __('khong tim thay danh muc'),
             );
-        }else{
+        } else {
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
@@ -116,11 +119,12 @@ class BillController extends BillService
     public function paid(string $id)
     {
         $data = $this->billService->chanceStatusPaid($id);
-        if(!$data){
-            return $this->APIError(Response::HTTP_NOT_FOUND,
-            __('khong tim thay danh muc'),
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_NOT_FOUND,
+                __('khong tim thay danh muc'),
             );
-        }else{
+        } else {
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
@@ -133,11 +137,12 @@ class BillController extends BillService
     public function pending(string $id)
     {
         $data = $this->billService->chanceStatusPending($id);
-        if(!$data){
-            return $this->APIError(Response::HTTP_NOT_FOUND,
-            __('khong tim thay danh muc'),
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_NOT_FOUND,
+                __('khong tim thay danh muc'),
             );
-        }else{
+        } else {
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
@@ -150,11 +155,12 @@ class BillController extends BillService
     public function done(string $id)
     {
         $data = $this->billService->chanceStatusDone($id);
-        if(!$data){
-            return $this->APIError(Response::HTTP_NOT_FOUND,
-            __('khong tim thay danh muc'),
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_NOT_FOUND,
+                __('khong tim thay danh muc'),
             );
-        }else{
+        } else {
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
@@ -167,11 +173,12 @@ class BillController extends BillService
     public function cancel(string $id)
     {
         $data = $this->billService->chanceStatusCancel($id);
-        if(!$data){
-            return $this->APIError(Response::HTTP_NOT_FOUND,
-            __('khong tim thay danh muc'),
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_NOT_FOUND,
+                __('khong tim thay danh muc'),
             );
-        }else{
+        } else {
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
@@ -184,11 +191,12 @@ class BillController extends BillService
     public function getPaid()
     {
         $data = $this->billService->getStatusPaid();
-        if(!$data){
-            return $this->APIError(Response::HTTP_NOT_FOUND,
-            __('khong tim thay danh muc'),
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_NOT_FOUND,
+                __('khong tim thay danh muc'),
             );
-        }else{
+        } else {
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
@@ -201,11 +209,12 @@ class BillController extends BillService
     public function getCancel()
     {
         $data = $this->billService->getStatusCancel();
-        if(!$data){
-            return $this->APIError(Response::HTTP_NOT_FOUND,
-            __('khong tim thay danh muc'),
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_NOT_FOUND,
+                __('khong tim thay danh muc'),
             );
-        }else{
+        } else {
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
@@ -218,11 +227,12 @@ class BillController extends BillService
     public function getShiping()
     {
         $data = $this->billService->getStatusShiping();
-        if(!$data){
-            return $this->APIError(Response::HTTP_NOT_FOUND,
-            __('khong tim thay danh muc'),
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_NOT_FOUND,
+                __('khong tim thay danh muc'),
             );
-        }else{
+        } else {
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
@@ -235,11 +245,12 @@ class BillController extends BillService
     public function getPending()
     {
         $data = $this->billService->getStatusPending();
-        if(!$data){
-            return $this->APIError(Response::HTTP_NOT_FOUND,
-            __('khong tim thay danh muc'),
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_NOT_FOUND,
+                __('khong tim thay danh muc'),
             );
-        }else{
+        } else {
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
@@ -252,11 +263,12 @@ class BillController extends BillService
     public function getDone()
     {
         $data = $this->billService->getStatusDone();
-        if(!$data){
-            return $this->APIError(Response::HTTP_NOT_FOUND,
-            __('khong tim thay danh muc'),
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_NOT_FOUND,
+                __('khong tim thay danh muc'),
             );
-        }else{
+        } else {
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
@@ -269,11 +281,12 @@ class BillController extends BillService
     public function getConfirm()
     {
         $data = $this->billService->getStatusConfirm();
-        if(!$data){
-            return $this->APIError(Response::HTTP_NOT_FOUND,
-            __('khong tim thay danh muc'),
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_NOT_FOUND,
+                __('khong tim thay danh muc'),
             );
-        }else{
+        } else {
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
@@ -286,11 +299,12 @@ class BillController extends BillService
     public function getBillWithUser($id)
     {
         $data = $this->billService->billWithUser($id);
-        if(!$data){
-            return $this->APIError(Response::HTTP_NOT_FOUND,
-            __('user khong co bill'),
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_NOT_FOUND,
+                __('user khong co bill'),
             );
-        }else{
+        } else {
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
@@ -303,11 +317,12 @@ class BillController extends BillService
     public function getBillWithUserPending($id)
     {
         $data = $this->billService->billWithUsePending($id);
-        if(!$data){
-            return $this->APIError(Response::HTTP_NOT_FOUND,
-            __('user khong co bill'),
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_NOT_FOUND,
+                __('user khong co bill'),
             );
-        }else{
+        } else {
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
@@ -320,11 +335,12 @@ class BillController extends BillService
     public function getBillWithUserCancel($id)
     {
         $data = $this->billService->billWithUseCancel($id);
-        if(!$data){
-            return $this->APIError(Response::HTTP_NOT_FOUND,
-            __('user khong co bill'),
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_NOT_FOUND,
+                __('user khong co bill'),
             );
-        }else{
+        } else {
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
@@ -337,11 +353,12 @@ class BillController extends BillService
     public function getBillWithUserConfirm($id)
     {
         $data = $this->billService->billWithUseConfirm($id);
-        if(!$data){
-            return $this->APIError(Response::HTTP_NOT_FOUND,
-            __('user khong co bill'),
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_NOT_FOUND,
+                __('user khong co bill'),
             );
-        }else{
+        } else {
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
@@ -354,11 +371,12 @@ class BillController extends BillService
     public function getBillWithUserShiping($id)
     {
         $data = $this->billService->billWithUseShiping($id);
-        if(!$data){
-            return $this->APIError(Response::HTTP_NOT_FOUND,
-            __('user khong co bill'),
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_NOT_FOUND,
+                __('user khong co bill'),
             );
-        }else{
+        } else {
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
@@ -371,11 +389,12 @@ class BillController extends BillService
     public function getBillWithUserDone($id)
     {
         $data = $this->billService->billWithUseDone($id);
-        if(!$data){
-            return $this->APIError(Response::HTTP_BAD_REQUEST,
-            __('user khong co bill'),
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('user khong co bill'),
             );
-        }else{
+        } else {
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
@@ -388,17 +407,71 @@ class BillController extends BillService
     public function getBillWithUserPaid($id)
     {
         $data = $this->billService->billWithUsePaid($id);
-        if(!$data){
-            return $this->APIError(Response::HTTP_BAD_REQUEST,
-            __('user khong co bill'),
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('user khong co bill'),
             );
-        }else{
+        } else {
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
                     'data' => $data,
                 ]
             );
+        }
+    }
+
+    public function getBillWithphone($phone)
+    {
+        $data = $this->billService->billFinterWithPhone($phone);
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('user khong co bill'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
+        }
+    }
+
+    public function getBillWithEmail($email)
+    {
+        $data = $this->billService->billFinterWithEmail($email);
+        if (!$data) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('user khong co bill'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('cap nhat danh muc thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
+        }
+    }
+
+    public function billStoryWithBill($bill_id)
+    {
+        $data = $this->billService->getBillStoryWithBill($bill_id);
+       if (!$data) {
+        return $this->responseNotFound(
+            Response::HTTP_NOT_FOUND,
+            __('khong tim thay danh muc'));
+        }else{
+        return $this->responseSuccess(
+            __('hien thi danh muc thanh cong'),
+          [
+              'data' => $data,
+          ]
+        );
         }
     }
 

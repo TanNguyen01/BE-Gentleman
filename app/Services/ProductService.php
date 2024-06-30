@@ -248,6 +248,19 @@ class ProductService extends AbstractServices
         }
     }
 
+    public function getAllProductBySaleBigger1()
+    {
+        try {
+            $products = Product::Where('sale_id', '>', 1)
+                ->with('sales', 'category', 'variants.attributeValues')
+                ->get();
+            return $products;
+        } catch (\Exception $e) {
+            Log::error('Error fetching products by sale_id: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
     public function getProductsByName(string $name)
     {
         try {
@@ -280,7 +293,7 @@ class ProductService extends AbstractServices
         try {
             $query = Product::query();
 
-            // Lọc theo màu sắc
+            // LỞc theo màu sắc
             if ($request->filled('color')) {
                 $color = (string)$request->input('color');
                 $query->whereHas('variants.attributeValues', function ($query) use ($color) {
@@ -290,7 +303,7 @@ class ProductService extends AbstractServices
                 });
             }
 
-            // Lọc theo kích thước
+            // LỞc theo kích thước
             if ($request->filled('size')) {
                 $size = (string)$request->input('size');
                 $query->whereHas('variants.attributeValues', function ($query) use ($size) {
@@ -300,7 +313,7 @@ class ProductService extends AbstractServices
                 });
             }
 
-            // Lọc theo danh mục
+            // LỞc theo danh mục
             if ($request->filled('category_id')) {
                 $categoryIds = (array) $request->input('category_id');
                 $query->whereHas('category', function ($query) use ($categoryIds) {
@@ -308,7 +321,7 @@ class ProductService extends AbstractServices
                 });
             }
 
-            // Lọc theo khoảng giá
+            // LỞc theo khoảng giá
             if ($request->filled('minPrice') || $request->filled('maxPrice')) {
                 $minPrice = (float)$request->input('minPrice', 0);
                 $maxPrice = (float)$request->input('maxPrice', PHP_INT_MAX);
@@ -319,22 +332,17 @@ class ProductService extends AbstractServices
                 });
             }
 
-            // Lấy danh sách sản phẩm đã lọc
+            // Lấy danh sách sản phẩm đã lỞc
             $products = $query->with(['variants.attributeValues.attribute', 'category'])->get();
 
-            // Kiểm tra dữ liệu trả về
+            // Kiểm tra dữ liệu trả vỞ
             // dd($products);
 
-            // Trả về danh sách sản phẩm đã lọc
+            // Trả vỞ danh sách sản phẩm đã lỞc
             return response()->json($products);
-
         } catch (\Exception $e) {
             Log::error('Error fetching products: ' . $e->getMessage());
             return response()->json(['error' => 'An error occurred while fetching products'], 500);
         }
     }
-
-
-
-
 }

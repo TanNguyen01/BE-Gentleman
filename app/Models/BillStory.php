@@ -14,4 +14,9 @@ class BillStory extends Model
         'user_id',
         'description'
     ];
+
+    public function bill()
+    {
+        return $this->belongsTo(Bill::class);
+    }
 }

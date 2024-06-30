@@ -3,14 +3,13 @@
 namespace Database\Seeders;
 
 
-use App\Models\Attribute;
 use Illuminate\Database\Seeder;
-
+use App\Models\Attribute;
 
 class AttributesSeeder extends Seeder
 {
     public function run()
     {
-       Attribute::factory()->count(20)->create();
+        Attribute::factory()->count(20)->create();
     }
 }

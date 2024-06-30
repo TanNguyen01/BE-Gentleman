@@ -33,9 +33,9 @@ class BillDetailController extends BillDetailService
         $request = $request->all();
         $data = $this->billDetailService->storeBillDetail($request);
         return $this->responseCreated(__
-        ('tao danh muc thanh cong'),
+        ('tao bill detail'),
         [
-            'status' => $data,
+            'data' => $data
         ]);
     }
 
