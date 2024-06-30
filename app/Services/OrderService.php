@@ -2,7 +2,18 @@
 
 namespace App\Services;
 
+use App\Http\Requests\OrderRequest;
+use App\Jobs\SendMail;
+use App\Mail\OrderConfirmationMail;
 use App\Models\Order;
+
+use App\Models\OrderDetail;
+use App\Models\User;
+use App\Models\Variant;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class OrderService extends AbstractServices
 {
@@ -20,6 +31,11 @@ class OrderService extends AbstractServices
     {
         return $this->eloquentPostCreate($data);
     }
+
+
+
+
+
 
     public function showOrder($id)
     {
@@ -82,4 +98,7 @@ class OrderService extends AbstractServices
         $res->save();
         return 'confirm';
     }
+
+
+
 }

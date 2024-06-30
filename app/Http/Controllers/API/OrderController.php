@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\OrderRequest;
 use App\Traits\APIResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Services\OrderService;
 
@@ -33,10 +34,10 @@ class OrderController extends OrderService
         $request = $request->all();
         $data = $this->orderService->storeOrder($request);
         return $this->responseCreated(__
-        ('tao danh muc thanh cong'),
-        [
-            'data' => $data,
-        ]);
+        ('dat hang thanh cong'),
+            [
+                'data' => $data,
+            ]);
     }
 
     /**

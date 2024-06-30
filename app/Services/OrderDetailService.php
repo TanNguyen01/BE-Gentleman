@@ -42,7 +42,7 @@ class OrderDetailService extends AbstractServices
     {
         $data = [];
         foreach ($param['data'] as $key => $value) {
-            // L?y thông tin c?a variant cùng v?i các m?i quan h? liên quan
+            // L?y thï¿½ng tin c?a variant cï¿½ng v?i cï¿½c m?i quan h? liï¿½n quan
             $variant = $this->eloquentWithRelations($value['variant_id'], ['attributeValues']);
 
             $data[] = [
@@ -52,7 +52,7 @@ class OrderDetailService extends AbstractServices
                 'price_promotional' => $variant->price_promotional,
                 'quantity' => $variant->quantity,
                 'attribute_values' => $variant->attributeValues->map(function ($attr) use ($variant) {
-                    // T?m tên attribute tıõng ?ng v?i attribute_name_id
+                    // T?m tï¿½n attribute tï¿½ï¿½ng ?ng v?i attribute_name_id
                     $attributeName = $variant->attributeNames->firstWhere('id', $attr->attribute_name_id);
 
                     return [
@@ -74,22 +74,22 @@ class OrderDetailService extends AbstractServices
 
         $data = [];
         foreach ($param['data'] as $key => $value) {
-            // T?m variant tıõng ?ng v?i variant_id
+            // T?m variant tï¿½ï¿½ng ?ng v?i variant_id
             $currentVariant = collect($variant)->firstWhere('id', $value['variant_id']);
 
-            // N?u không t?m th?y variant, b? qua
+            // N?u khï¿½ng t?m th?y variant, b? qua
             if (!$currentVariant) {
                 continue;
             }
 
-            // Kh?i t?o m?ng ğ? ch?a các attribute ğ? chuy?n ğ?i
+            // Kh?i t?o m?ng ï¿½? ch?a cï¿½c attribute ï¿½? chuy?n ï¿½?i
             $attributes = [];
 
             foreach ($value['attributes'] as $attr) {
                 $attributeNameId = $attr['attribute_name'];
                 $attributeValueId = $attr['attribute_value'];
 
-                // T?m giá tr? attribute tıõng ?ng trong attribute_values
+                // T?m giï¿½ tr? attribute tï¿½ï¿½ng ?ng trong attribute_values
                 $attributeValue = collect($currentVariant['attribute_values'])->firstWhere('id', $attributeValueId);
 
                 if ($attributeValue) {
@@ -98,7 +98,7 @@ class OrderDetailService extends AbstractServices
                         'attribute_value' => $attributeValue['value']
                     ];
                 } else {
-                    // X? l? trı?ng h?p không t?m th?y giá tr? attribute tıõng ?ng
+                    // X? l? trï¿½?ng h?p khï¿½ng t?m th?y giï¿½ tr? attribute tï¿½ï¿½ng ?ng
                     $attributes[] = [
                         'attribute_name' => null,
                         'attribute_value' => null
@@ -106,7 +106,7 @@ class OrderDetailService extends AbstractServices
                 }
             }
 
-            // Thêm d? li?u ğ? chuy?n ğ?i vào m?ng data
+            // Thï¿½m d? li?u ï¿½? chuy?n ï¿½?i vï¿½o m?ng data
             $data[] = [
                 'id' => $currentVariant['id'],
                 'product_id' => $currentVariant['product_id'],
@@ -117,6 +117,8 @@ class OrderDetailService extends AbstractServices
                 'attributes' => $attributes
             ];
         }
+
+
 
         return $data;
     }
