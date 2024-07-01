@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Http\Requests\OrderRequest;
 use App\Jobs\SendMail;
-use App\Mail\OrderConfirmationMail;
+use App\Mail\BillConfirmationMail;
 use App\Models\Order;
 
 use App\Models\OrderDetail;

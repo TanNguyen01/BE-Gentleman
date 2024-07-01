@@ -9,17 +9,19 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class OrderConfirmationMail extends Mailable
+class BillConfirmationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $order;
+    public $billDetails;
+    public $user;
     /**
      * Create a new message instance.
      */
-    public function __construct($order)
+    public function __construct($billDetails, $user)
     {
-        $this->order = $order;
+        $this->billDetails = $billDetails;
+        $this->user = $user;
     }
 
     /**
@@ -28,19 +30,21 @@ class OrderConfirmationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Order Shipped',
+            subject: 'CHi tiet don hang',
         );
     }
+
+
 
     /**
      * Get the message content definition.
      */
     public function build(){
-        return $this->view('emails.order_confirmation')
-                    ->with([
-                          'order'=>$this->order,
-
-        ]);
+        return $this->view('emails.bill_confirmation')
+            ->with([
+                'billDetails' => $this->billDetails,
+                'user'=> $this->user,
+            ]);
     }
 
 
@@ -48,7 +52,7 @@ class OrderConfirmationMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.bill_confirmation',
         );
     }
 
