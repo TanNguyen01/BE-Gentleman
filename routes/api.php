@@ -118,12 +118,7 @@ Route::get('order-statistical', [StatisticalController::class, 'getOrderStatisti
 Route::apiResource('bill-stores', BillStoryController::class);
 Route::get('bill-stores-with-bill/{bill_id}', [BillController::class, 'billStoryWithBill']);
 
-//Order
-Route::apiResource('orders', OrderController::class);
-Route::get('order-with-orderDetail/{id}', [OrderController::class, 'orderWithOrderDetail']);
-
-//OrderDetail------------cart-------------------
-Route::apiResource('order-details', OrderDetailController::class);
+//Cart
 Route::post('cart', [OrderDetailController::class, 'orderDetailWithVariant']);
 
 //Voucher
@@ -144,4 +139,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     // });
     Route::get('logout', [\App\Http\Controllers\API\AuthController::class, 'logout'])->name('logout');
 });
+// vnpay
 Route::post('pay',[VnpayController::class,'checkout'])->name('checkout_vnpay');
