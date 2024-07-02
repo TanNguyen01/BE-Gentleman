@@ -140,4 +140,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('logout', [\App\Http\Controllers\API\AuthController::class, 'logout'])->name('logout');
 });
 // vnpay
-Route::post('pay',[VnpayController::class,'checkout'])->name('checkout_vnpay');
+Route::get('pay/{bill_id}/{amount}/{bank_code}',[VnpayController::class,'checkout'])->name('checkout_vnpay');
+Route::get('pay-bankcode',[VnpayController::class,'bankCode'])->name('bank-code');

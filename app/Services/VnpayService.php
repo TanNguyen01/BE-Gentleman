@@ -5,16 +5,16 @@ class VnpayService
 {
     public function pay($request){
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        $vnp_Returnurl = $request['data'][0]['returnurl'];
+        $vnp_Returnurl = "http://127.0.0.1:8000/";
         $vnp_TmnCode = "2OQ5EPNA";//M? website t?i VNPAY
         $vnp_HashSecret = "FSV3D439FAU1EBZ4Y89ZDN9241AMCJL0"; //Chu?i bí m?t
 
-        $vnp_TxnRef =  $request['data'][0]['bill_id'];
+        $vnp_TxnRef =  $request['bill_id'];
         $vnp_OrderInfo = 'Thanh toan online';
         $vnp_OrderType = 'billpayment';
-        $vnp_Amount = (float)$request['data'][0]['amount'] * 100;
+        $vnp_Amount = (float)$request['amount'] * 100;
         $vnp_Locale = 'vn';
-        $vnp_BankCode = $request['data'][0]['bank_code'];
+        $vnp_BankCode = $request['bank_code'];
         $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
         //Add Params
         $inputData = array(
@@ -60,7 +60,6 @@ class VnpayService
             $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
         }
         header('Location: ' . $vnp_Url);
-        die();
-
+        die;
     }
 }
