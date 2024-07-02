@@ -54,10 +54,10 @@ class UserService extends AbstractServices
         //  return $user;
     }
 
-    protected function uploadImageIfExists(&$data, $user = null)
+    protected function uploadImageIfExists($data, $user = null)
     {
         if (isset($data['avatar']) && $data['avatar']->isValid()) {
-            $avatarName = Str::random(12) . "." . $data['avatar']->getCilentOriginalExtension();
+            $avatarName = Str::random(12) . "." . $data['avatar']->getClientOriginalExtension();
             $data['avatar']->storeAs('', $avatarName, 'avatar_user');
 
             if ($user && $user->image) {
@@ -67,4 +67,6 @@ class UserService extends AbstractServices
             $data['avatar'] = $avatarName;
         }
     }
+
+
 }

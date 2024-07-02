@@ -42,7 +42,7 @@ class UserRequest extends FormRequest
             ];
         } else {
             return [
-                'email' => 'nullable|email|unique:users,email',
+                
                 'name' => 'nullable|string',
                 'password' => 'nullable|string',
                 'role_id' => 'nullable|integer|in:0,1',
