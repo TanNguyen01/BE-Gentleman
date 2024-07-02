@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Bill;
 use App\Models\BillDetail;
-use App\Models\Order;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +18,7 @@ class StatisticalService
                 DB::raw('DATE(created_at) as date'),
                 DB::raw('SUM(total_amount) as total_revenue')
             )
+                ->where('status', 'Done', 'Paid')
                 ->groupBy('date')
                 ->orderBy('date', 'asc')
                 ->get();
@@ -35,6 +35,7 @@ class StatisticalService
                 DB::raw('YEARWEEK(created_at) as week'),
                 DB::raw('SUM(total_amount) as total_revenue')
             )
+                ->where('status', 'Done', 'Paid')
                 ->groupBy('week')
                 ->orderBy('week', 'asc')
                 ->get();
@@ -52,6 +53,7 @@ class StatisticalService
                 DB::raw('DATE_FORMAT(created_at, "%y-%m") as month'),
                 DB::raw('SUM(total_amount) as total_revenue')
             )
+                ->where('status', 'Done', 'Paid')
                 ->groupBy('month')
                 ->orderBy('month', 'asc')
                 ->get();
@@ -69,6 +71,7 @@ class StatisticalService
                 'product_name',
                 DB::raw('SUM(price * quantity) as total_revenue')
             )
+                ->where('status', 'Done', 'Paid')
                 ->groupBy('product_name')
                 ->orderBy('total_revenue', 'asc')
                 ->get();
@@ -203,7 +206,7 @@ class StatisticalService
                 'average_order_value' => $averageOrderValue
             ]);
         } catch (\Exception $e) {
-            Log::error('loi khi lay user moi' . $e->getMessage());
+            Log::error('loi khi lay order moi' . $e->getMessage());
             throw $e;
         }
     }
