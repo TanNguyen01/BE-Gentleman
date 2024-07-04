@@ -34,7 +34,7 @@ class VouchersRequest extends FormRequest
                 'expiration_date' => 'required|date|after:today',
                 'minimum_purchase' => 'required|numeric|min:0',
                 'usage_limit' => 'required|integer|min:0',
-                'status' => 'required|in:active,inactive',
+                'status' => 'required',
                 'description' => 'nullable|string',
             ];
     }
@@ -57,7 +57,6 @@ class VouchersRequest extends FormRequest
             'usage_limit.integer' => 'Usage limit must be an integer.',
             'usage_limit.min' => 'Usage limit must be at least :min.',
             'status.required' => 'Status is required.',
-            'status.in' => 'Status must be either active or inactive.',
         ];
     }
 
