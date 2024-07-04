@@ -17,10 +17,10 @@ class Voucher extends Model
         'expiration_date',
         'minimum_purchase',
         'usage_limit',
-        'created_at',
-        'updated_at',
         'status',
         'description',
+        'created_at',
+        'updated_at',
     ];
     public function orders()
     {

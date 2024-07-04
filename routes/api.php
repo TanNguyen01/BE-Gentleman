@@ -14,6 +14,7 @@ use App\Http\Controllers\API\StatisticalController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VariantController;
 use App\Http\Controllers\API\VnpayController;
+use App\Http\Controllers\API\VoucherController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -122,7 +123,7 @@ Route::get('bill-stores-with-bill/{bill_id}', [BillController::class, 'billStory
 Route::post('cart', [OrderDetailController::class, 'orderDetailWithVariant']);
 
 //Voucher
-// Route::apiResource('voucher', VoucherController::class);
+Route::apiResource('voucher', VoucherController::class);
 
 //Sale
 Route::apiResource('sales', SaleController::class);
@@ -140,5 +141,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('logout', [\App\Http\Controllers\API\AuthController::class, 'logout'])->name('logout');
 });
 // vnpay
-Route::get('pay/{bill_id}/{amount}/{bank_code}',[VnpayController::class,'checkout'])->name('checkout_vnpay');
-Route::get('pay-bankcode',[VnpayController::class,'bankCode'])->name('bank-code');
+Route::get('pay/{bill_id}/{amount}/{bank_code}', [VnpayController::class, 'checkout'])->name('checkout_vnpay');
+Route::get('pay-bankcode', [VnpayController::class, 'bankCode'])->name('bank-code');
