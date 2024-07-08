@@ -19,6 +19,7 @@ return new class extends Migration
             $table->decimal('total_amount', 10, 2);
             $table->string('status');
             $table->string('pay')->nullable();
+            $table->string('voucher');
             $table->timestamps();
         });
 
