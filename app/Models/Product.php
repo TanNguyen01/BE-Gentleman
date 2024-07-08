@@ -27,4 +27,8 @@ class Product extends Model
     {
         return $this->belongsTo(Sale::class);
     }
+
+    public function posts(){
+        return $this->hasMany(Variant::class);
+    }
 }

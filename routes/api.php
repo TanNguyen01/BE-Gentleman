@@ -6,7 +6,6 @@ use App\Http\Controllers\API\BillController;
 use App\Http\Controllers\API\BillDetailController;
 use App\Http\Controllers\API\BillStoryController;
 use App\Http\Controllers\API\CategoryController;
-use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\OrderDetailController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\SaleController;
@@ -27,14 +26,15 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
+// ======================= ADMIN ========================
 Route::middleware(['auth:sanctum', 'checkAdmin'])->group(function () {
-
+    Route::prefix('admin/')->group(function () {
     // //Categories
     // Route::apiResource("categories", \App\Http\Controllers\API\CategoryController::class);
     // Route::get('categories/{id}/total-products', [\App\Http\Controllers\API\CategoryController::class, 'totalProducts']);
 
-    // //Product
+// Product
+    Route::apiResource("products", ProductController::class);
     // Route::apiResource("products", \App\Http\Controllers\API\ProductController::class);
     // Route::apiResource("variants", \App\Http\Controllers\API\VariantController::class);
     // Route::apiResource("attributes", \App\Http\Controllers\API\AttributeController::class);
@@ -43,14 +43,15 @@ Route::middleware(['auth:sanctum', 'checkAdmin'])->group(function () {
 
     // //User
 
-    // Route::apiResource('users', UserController::class);
+    });   // Route::apiResource('users', UserController::class);
 });
-
+// ======================= USER ========================
 //Categories
 Route::apiResource("categories", CategoryController::class);
 Route::get("get-category-by-name", [CategoryController::class, 'getCategoryByName']);
 
 //Product
+Route::get('user/product', [ProductController::class, 'index']);
 Route::apiResource("products", ProductController::class);
 Route::apiResource("variants", VariantController::class);
 Route::get("get-by-sale", [ProductController::class, 'getBySale']);
@@ -70,7 +71,6 @@ Route::apiResource("attribute-values", AttributeValueController::class);
 //User
 
 Route::apiResource('users', UserController::class);
-
 
 //Bill
 Route::apiResource('bills', BillController::class);
@@ -130,6 +130,9 @@ Route::apiResource('sales', SaleController::class);
 Route::get('sale-onlayout', [SaleController::class, 'getOnlayout']);
 Route::get('sale-product/{id}', [SaleController::class, 'saleWithProduct']);
 
+// vnpay
+Route::get('pay/{bill_id}/{amount}/{bank_code}',[VnpayController::class,'checkout'])->name('checkout_vnpay');
+
 Route::post('register', [\App\Http\Controllers\API\AuthController::class, 'register'])->name('register');
 Route::post('login', [\App\Http\Controllers\API\AuthController::class, 'login'])->name('login');
 
@@ -141,5 +144,4 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('logout', [\App\Http\Controllers\API\AuthController::class, 'logout'])->name('logout');
 });
 // vnpay
-Route::get('pay/{bill_id}/{amount}/{bank_code}', [VnpayController::class, 'checkout'])->name('checkout_vnpay');
-Route::get('pay-bankcode', [VnpayController::class, 'bankCode'])->name('bank-code');
+Route::get('pay/{bill_id}/{amount}/{bank_code}',[VnpayController::class,'checkout'])->name('checkout_vnpay');

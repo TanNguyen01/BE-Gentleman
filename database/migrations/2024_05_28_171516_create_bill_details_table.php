@@ -18,7 +18,8 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->integer('quantity');
             $table->integer('bill_id');
-            $table->string('voucher');
+            $table->string('sale');
+            $table->decimal('price_origin', 10, 2);
             $table->string('image');
             $table->timestamps();
         });

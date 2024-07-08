@@ -34,7 +34,8 @@ class BillDetailRequest extends FormRequest
             'data.*.price' => 'required|numeric|min:0',
             'data.*.quantity' => 'required|integer|min:1',
             'data.*.bill_id' => 'required|integer|exists:bills,id',
-            'data.*.voucher' => 'nullable|string|max:50'
+            'data.*.sale' => 'nullable|integer|max:50',
+            'data.*.price_origin' => 'nullable|numeric|max:50'
         ];
     }
 
