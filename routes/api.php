@@ -13,6 +13,7 @@ use App\Http\Controllers\API\StatisticalController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VariantController;
 use App\Http\Controllers\API\VnpayController;
+use App\Http\Controllers\API\VoucherController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,7 +39,7 @@ Route::middleware(['auth:sanctum', 'checkAdmin'])->group(function () {
     // Route::apiResource("variants", \App\Http\Controllers\API\VariantController::class);
     // Route::apiResource("attributes", \App\Http\Controllers\API\AttributeController::class);
 
-
+    Route::apiResource('bill-details', BillDetailController::class);
 
     // //User
 
@@ -112,7 +113,7 @@ Route::get('new-user-by-month', [StatisticalController::class, 'newRegistrations
 Route::get('order-statistical', [StatisticalController::class, 'getOrderStatistics']);
 
 //BillDetail
-Route::apiResource('bill-details', BillDetailController::class);
+
 
 // BillStory
 Route::apiResource('bill-stores', BillStoryController::class);
@@ -122,7 +123,7 @@ Route::get('bill-stores-with-bill/{bill_id}', [BillController::class, 'billStory
 Route::post('cart', [OrderDetailController::class, 'orderDetailWithVariant']);
 
 //Voucher
-// Route::apiResource('voucher', VoucherController::class);
+Route::apiResource('voucher', VoucherController::class);
 
 //Sale
 Route::apiResource('sales', SaleController::class);
@@ -142,3 +143,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     // });
     Route::get('logout', [\App\Http\Controllers\API\AuthController::class, 'logout'])->name('logout');
 });
+// vnpay
+Route::get('pay/{bill_id}/{amount}/{bank_code}',[VnpayController::class,'checkout'])->name('checkout_vnpay');

@@ -24,7 +24,9 @@ class BillDetailRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules()
+
     {
+
         return [
             'data' => 'required|array',
             'data.*.product_name' => 'required|string|max:255',
