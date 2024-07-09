@@ -204,16 +204,22 @@ class ProductService extends AbstractServices
         }
     }
 
-    // public function uploadImage($image)
-    // {
-    //     try {
-    //         $path = $image->store('images', 's3', 'public');
-    //         return Storage::disk('s3')->url($path);
-    //     } catch (\Exception $e) {
-    //         Log::error('Error uploading image to S3: ' . $e->getMessage());
-    //         throw $e;
-    //     }
-    // }
+    public function updateSaleInProduct($productId, $productData)
+    {
+        try {
+            if (!isset($productData['sale_id'])) {
+                return response()->json(['error' => 'Sale ID is required'], 400);
+            }
+            $product = Product::findOrFail($productId);
+            $product->update([
+                'sale_id' => $productData['sale_id']
+            ]);
+            return $product;
+        } catch (\Exception $e) {
+            Log::error('Error uploading image to S3: ' . $e->getMessage());
+            throw $e;
+        }
+    }
 
     public function destroyProduct($id)
     {
