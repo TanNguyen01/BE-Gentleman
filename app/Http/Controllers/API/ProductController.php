@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductsRequest;
 use App\Services\ProductService;
 use App\Traits\APIResponse;
+use Illuminate\Http\Client\Request as ClientRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -86,6 +87,29 @@ class ProductController extends Controller
                 ]
             );
         }
+    }
+
+    public function updateSaleInProduct(Request $request, $id)
+    {
+        $data = $request->validate([
+            'sale_id' => 'required',
+        ]);
+        $product = $this->productService->updateSaleInProduct($id, $data);
+        if (!$product) {
+            return $this->responseNotFound(
+                Response::HTTP_NOT_FOUND,
+                __('khong tim thay san pham !')
+            );
+        }
+        // else {
+        //     $product->update($data);
+        //     return $this->responseSuccess(
+        //         __('sua thanh cong'),
+        //         [
+        //             'product' => $product
+        //         ]
+        //     );
+        // }
     }
 
     public function destroy(string $id)
