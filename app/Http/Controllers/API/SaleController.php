@@ -36,10 +36,7 @@ class SaleController extends Controller
     public function store(Request $request)
     {
         try {
-            $data = $request->validate([
-                'name' => 'required|string|unique:categories',
-            ]);
-
+            $data = $request->all();
             $sale = $this->saleService->eloquentPostCreate($data);
             return $this->successResponse(new SaleResource($sale), 201);
         } catch (\Exception $e) {
@@ -93,7 +90,8 @@ class SaleController extends Controller
         }
     }
 
-    public function saleWithProduct($id){
+    public function saleWithProduct($id)
+    {
         try {
             $sale = $this->saleService->EloquentSaleWithProduct($id);
             return $this->successResponse([

@@ -66,11 +66,11 @@ class ProductService extends AbstractServices
                 'sale_id' => $productData['sale_id'] ?? null,
             ]);
 
-            if (isset($productData['image'])) {
-                $imageUrl = $this->uploadImage($productData['image'], $product->name);
-                $product->image = $imageUrl;
-                $product->save();
-            }
+            // if (isset($productData['image'])) {
+            //     $imageUrl = $this->uploadImage($productData['image'], $product->name);
+            //     $product->image = $imageUrl;
+            //     $product->save();
+            // }
 
             if (isset($productData['variants']) && is_array($productData['variants'])) {
                 foreach ($productData['variants'] as $variantData) {

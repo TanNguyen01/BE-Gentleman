@@ -40,18 +40,20 @@ class SaleService extends AbstractServices
         return $this->eloquentDelete($id);
     }
 
-    public function onLayoutSale(){
+    public function onLayoutSale()
+    {
         $res = $this->eloquentGetAll();
         $data = [];
         foreach ($res as $key => $value) {
-            if($value->onLayout == 1 && $value->status == 1){
+            if($value->onLayout == 1 && $value->status == 1) {
                 $data[] = $res[$key];
             }
         }
         return $data;
     }
 
-    public function EloquentSaleWithProduct($id){
-        return $this->eloquentWithRelations($id,['product']);
+    public function EloquentSaleWithProduct($id)
+    {
+        return $this->eloquentWithRelations($id, ['product']);
     }
 }
