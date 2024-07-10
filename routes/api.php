@@ -40,14 +40,20 @@ Route::middleware(['auth:sanctum', 'checkAdmin'])->group(function () {
 
     Route::apiResource('bill-details', BillDetailController::class);
 
-    // //User
+    //Categories
+    Route::apiResource("categories", CategoryController::class);
+    Route::get("get-category-by-name", [CategoryController::class, 'getCategoryByName']);
 
-    // Route::apiResource('users', UserController::class);
+    //Product
+
+
+    //Attribute_name
+    Route::apiResource("attributes", AttributeController::class);
+
+
 });
 
-//Categories
-Route::apiResource("categories", CategoryController::class);
-Route::get("get-category-by-name", [CategoryController::class, 'getCategoryByName']);
+
 
 //Product
 Route::apiResource("products", ProductController::class);
@@ -58,8 +64,7 @@ Route::get("get-by-sale-id", [ProductController::class, 'getBySaleId']);
 Route::get("get-by-name", [ProductController::class, 'getProductByName']);
 Route::get("get-by-category", [ProductController::class, 'getProductByCategory']);
 Route::get("filter", [ProductController::class, 'filter']);
-//Attribute_name
-Route::apiResource("attributes", AttributeController::class);
+
 
 
 //Attribute_value

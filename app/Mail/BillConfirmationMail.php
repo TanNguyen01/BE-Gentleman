@@ -15,13 +15,16 @@ class BillConfirmationMail extends Mailable
 
     public $billDetails;
     public $user;
+    public $bill;
     /**
      * Create a new message instance.
      */
-    public function __construct($billDetails, $user)
+    public function __construct($billDetails, $user, $bill)
     {
         $this->billDetails = $billDetails;
         $this->user = $user;
+        $this->bill = $bill;
+
     }
 
     /**
@@ -44,6 +47,8 @@ class BillConfirmationMail extends Mailable
             ->with([
                 'billDetails' => $this->billDetails,
                 'user'=> $this->user,
+                'bill' => $this->bill,
+
             ]);
     }
 

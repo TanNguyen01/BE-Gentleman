@@ -18,17 +18,22 @@ class SendMail implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
 
+
     protected $billDetails;
     protected $user;
+    protected $bill;
+
+
 
     /**
      * Create a new job instance.
      */
-    public function __construct($billDetails,$user)
+    public function __construct($billDetails,$user,$bill)
     {
 
         $this->billDetails = $billDetails;
         $this->user = $user;
+        $this->bill = $bill;
 
     }
 
@@ -37,7 +42,7 @@ class SendMail implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::to($this->user->email)->send(new BillConfirmationMail($this->billDetails, $this->user));
+        Mail::to($this->user->email)->send(new BillConfirmationMail($this->billDetails,$this->user,$this->bill));
         //dd($this->user->email);
     }
 }

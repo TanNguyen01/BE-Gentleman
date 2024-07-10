@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\Requests\BillDetailRequest;
 use App\Jobs\SendMail;
 use App\Mail\BillConfirmationMail;
+use App\Models\Bill;
 use App\Models\BillDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,31 +30,63 @@ class BillDetailService extends AbstractServices
 
     public function storeBillDetail($data)
     {
-        try {
-            // Lấy thông tin người dùng hiện tại
-            $user = Auth::user();// hoặc Auth::guard('user')->user(); nếu bạn sử dụng guard 'user'
 
-            foreach ($data['data'] as $key => $variantData) {
+        try {
+            // Kiểm tra người dùng có đăng nhập hay không
+            if (!Auth::check()) {
+                return [
+                    'status' => 'error',
+                    'message' => 'Người dùng chưa đăng nhập!'
+                ];
+            }
+
+            // Ghi log dữ liệu đầu vào để kiểm tra
+            Log::info('Dữ liệu đầu vào: ' . json_encode($data));
+
+            // Kiểm tra và ghi log bill_id
+            if (!isset($data['bill_id'])) {
+                throw new \Exception('bill_id không tồn tại trong dữ liệu đầu vào');
+            }
+
+            Log::info('bill_id: ' . $data['bill_id']);
+
+            // Lấy hóa đơn
+            $bill = Bill::with('billDetails')->findOrFail($data['bill_id']);
+            Log::info('Hóa đơn tìm thấy: ' . json_encode($bill));
+
+            // Lấy thông tin người dùng hiện tại
+            $user = Auth::user();
+
+            $billDetailsData = [];
+
+            // Cập nhật số lượng và chuẩn bị dữ liệu chi tiết hóa đơn
+            foreach ($data['data'] as  $variantData) {
                 $result = $this->variantService->updateQuantityWithBill($variantData['variant_id'], $variantData['quantity']);
-                unset($data['data'][$key]['variant_id']);
                 if ($result['code'] == 201) {
                     return $result;
                 }
+
+                $billDetailsData[] = [
+                    'product_name' => $variantData['product_name'],
+                    'attribute' => $variantData['attribute'],
+                    'price' => $variantData['price'],
+                    'quantity' => $variantData['quantity'],
+                    'bill_id'=> $bill->id,
+                    'voucher' => $variantData['voucher'],
+                    'image' => $variantData['image'],
+                    // Các trường khác nếu có
+                ];
             }
 
             // Lưu chi tiết hóa đơn
-            $status = $this->eloquentMutiInsert($data['data']);
-
-            // Chuẩn bị dữ liệu cho email
-            $billDetails = $data['data'];
+            $status = $this->eloquentMutiInsert($billDetailsData);
 
             // Gửi email xác nhận hóa đơn
-           // Mail::to($data['email'])->send(new BillConfirmationMail($billDetails, $user));
-
-            SendMail::dispatch( $billDetails, $user)->delay(now()->addSeconds(2));
+            SendMail::dispatch($billDetailsData, $user, $bill)->delay(now()->addSeconds(2));
 
             return [
-                'status' => $status
+                'status' => $status,
+                'message' => 'Chi tiết hóa đơn đã được lưu thành công và email đã được gửi.'
             ];
 
         } catch (\Exception $e) {
@@ -61,10 +94,15 @@ class BillDetailService extends AbstractServices
             Log::error('Lỗi lưu chi tiết hóa đơn: ' . $e->getMessage());
             return [
                 'status' => 'error',
+
                 'message' => 'Lỗi trong quá trình lưu chi tiết hóa đơn!'
             ];
         }
     }
+
+
+
+
 
 
     public function showBillDetail($id)

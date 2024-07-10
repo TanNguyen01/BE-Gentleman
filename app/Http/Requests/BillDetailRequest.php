@@ -33,7 +33,7 @@ class BillDetailRequest extends FormRequest
             'data.*.attribute' => 'required|string|max:255',
             'data.*.price' => 'required|numeric|min:0',
             'data.*.quantity' => 'required|integer|min:1',
-            'data.*.bill_id' => 'required|integer|exists:bills,id',
+            'data.*.bill_id' => 'integer|exists:bills,id',
             'data.*.voucher' => 'nullable|string|max:50'
         ];
     }
@@ -55,7 +55,7 @@ class BillDetailRequest extends FormRequest
             'data.*.quantity.required' => 'So luong la bat buoc.',
             'data.*.quantity.integer' => 'So luong phai la so nguyen.',
             'data.*.quantity.min' => 'So luong khong duoc nho hon 1.',
-            'data.*.bill_id.required' => 'ID hoa don la bat buoc.',
+           // 'data.*.bill_id.required' => 'ID hoa don la bat buoc.',
             'data.*.bill_id.integer' => 'ID hoa don phai la so nguyen.',
             'data.*.bill_id.exists' => 'ID hoa don khong ton tai.',
             'data.*.voucher.string' => 'Ma giam gia phai la chuoi ky tu.',
