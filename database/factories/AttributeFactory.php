@@ -20,7 +20,7 @@ class AttributeFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->word,
+            'name' => $this->faker->unique($maxRetries = 20000)->word . '_' . $this->faker->unique()->randomNumber(),
         ];
     }
 }

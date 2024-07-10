@@ -16,9 +16,13 @@ class VnpayController extends Controller
     {
         $this->vnpay = new VnpayService;
     }
-    public function checkout(Request $request)
+    public function checkout($bill_id,$amount,$bank_code)
     {
-        $response = $this->vnpay->pay($request);
+        $data = [];
+        $data['bill_id'] = $bill_id;
+        $data['amount'] = $amount;
+        $data['bank_code'] = $bank_code;
+        $response = $this->vnpay->pay($data);
         return $this->responseSuccess(
             __('thanh toan thanh cong'),
             [

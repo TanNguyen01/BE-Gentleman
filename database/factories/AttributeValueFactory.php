@@ -22,7 +22,7 @@ class AttributeValueFactory extends Factory
     {
         return [
             'attribute_id' => \App\Models\Attribute::factory(),
-            'value' => $this->faker->word,
+            'value' =>$this->faker->unique($maxRetries = 20000)->word . '_' . $this->faker->unique()->randomNumber(),
         ];
     }
 }

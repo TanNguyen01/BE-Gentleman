@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Services\StatisticalService;
 use App\Traits\APIResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class StatisticalController extends Controller
@@ -23,11 +24,81 @@ class StatisticalController extends Controller
         if (!$revenues) {
             return $this->APIError(
                 Response::HTTP_BAD_REQUEST,
-                __('khong co doanh thu hom nay'),
+                __('chua co doanh thu hom nay'),
             );
         } else {
             return $this->responseSuccess(
                 __('doanh thu hom nay'),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
+
+    public function getStatusByDate()
+    {
+        $revenues = $this->statisticalService->getBillCountsByStatus();
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('xay ra loi'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('trang thai don hang hom nay'),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
+
+    public function getBillPay()
+    {
+        $revenues = $this->statisticalService->getBillCountPay();
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('xay ra loi'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('trang thai don hang hom nay'),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
+
+    public function getRevenuesWeekDay(){
+        $revenues = $this->statisticalService->getRevenuesWeekByDay();
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('xay ra loi'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('trang thai don hang hom nay'),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
+
+    public function revenuesLast7Days(){
+        $revenues = $this->statisticalService->getRevenuesLast7Days();
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('xay ra loi'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('trang thai don hang hom nay'),
                 [
                     'data' => $revenues,
                 ]
@@ -53,9 +124,99 @@ class StatisticalController extends Controller
         }
     }
 
+    public function getTotalByMonthWithWeek()
+    {
+        $revenues = $this->statisticalService->getRevenuesCurrentMonthByWeek();
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('khong co doanh thu thang nay'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('doanh thu thang nay'),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
+
+    public function revenueMonthly(Request $request)
+    {
+        $revenues = $this->statisticalService->getMonthlyRevenue($request);
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('khong co doanh thu thang nay'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('doanh thu thang nay'),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
+
+    public function revenuesBetweenDates(Request $request)
+    {
+        $revenues = $this->statisticalService->getRevenuesBetweenDates($request);
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('khong co doanh thu thang nay'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('doanh thu thang nay'),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
+
+    public function revenueForSpecificDate(Request $request)
+    {
+        $revenues = $this->statisticalService->getRevenueForSpecificDate($request);
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('khong co doanh thu thang nay'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('doanh thu thang nay'),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
+
     public function getTotalByMonth()
     {
         $revenues = $this->statisticalService->getTotalRevenueByMonth();
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('khong co doanh thu thang nay'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('doanh thu thang nay'),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
+
+    public function revenueAnnualRevenue()
+    {
+        $revenues = $this->statisticalService->getAnnualRevenue();
         if (!$revenues) {
             return $this->APIError(
                 Response::HTTP_BAD_REQUEST,

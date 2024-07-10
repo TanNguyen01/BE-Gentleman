@@ -24,7 +24,8 @@ class BillRequest extends FormRequest
         'recipient_address' => 'required|string|max:255',
         'total_amount' => 'numeric|min:0',
         'status' => 'required',
-        'pay' => 'string'
+        'pay' => 'string',
+        'voucher' => 'string'
     ];
 }
 

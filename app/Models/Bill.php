@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Bill extends Model
 {
     use HasFactory;
+    public $timestamps = true;
 
     protected $fillable = [
         'user_id',
@@ -15,7 +16,8 @@ class Bill extends Model
         'recipient_address',
         'total_amount',
         'status',
-        'pay'
+        'pay',
+        'voucher'
     ];
 
     protected $table = 'bills';

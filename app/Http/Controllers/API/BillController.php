@@ -31,14 +31,24 @@ class BillController extends BillService
 
     public function store(BillRequest $request)
     {
-        $request = $request->validated();
+        $request = $request->all();
         $data = $this->billService->storeBill($request);
-        return $this->responseCreated(
-            __('tao danh muc thanh cong'),
-            [
-                'data' => $data,
-            ]
-        );
+        if($data == true){
+            return $this->responseCreated(
+                __('tao danh muc thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
+        }
+        else{
+            return $this->responseCreated(
+                __('tao danh muc khong thanh cong'),
+                [
+                    'data' => $data,
+                ]
+            );
+        }
     }
 
     /**

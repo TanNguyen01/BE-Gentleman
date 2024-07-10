@@ -99,7 +99,7 @@ abstract class AbstractServices
         //          ['name' => 'Jane', 'email' => 'jane@example.com'],
         //          ['name' => 'Alice', 'email' => 'alice@example.com'],
         //      ];
-
+        DB::beginTransaction();
         try {
             foreach ($data as $value) {
                 $this->model->insert($value);

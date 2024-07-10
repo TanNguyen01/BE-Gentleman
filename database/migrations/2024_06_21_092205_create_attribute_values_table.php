@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('value')->unique();
             $table->unsignedBigInteger('attribute_id');
             $table->timestamps();
-
             $table->foreign('attribute_id')->references('id')->on('attributes')->onDelete('cascade');
         });
     }
