@@ -17,7 +17,7 @@ class Bill extends Model
         'total_amount',
         'status',
         'pay',
-        'vocher'
+        'voucher'
     ];
 
     protected $table = 'bills';
