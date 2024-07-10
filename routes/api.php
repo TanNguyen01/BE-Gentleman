@@ -103,8 +103,17 @@ Route::get('bills-with-phone/{phone}', [BillController::class, 'getBillWithphone
 Route::get('bills-with-email/{email}', [BillController::class, 'getBillWithEmail']);
 
 //Statistical
-Route::get('revenue-by-day', [StatisticalController::class, 'getTotalByDate']);
+Route::get('revenue-by-day', [StatisticalController::class, 'getTotalByDate']);//doanh thu ngay
+Route::get('status-by-day', [StatisticalController::class, 'getStatusByDate']);//trang thai ngay
+Route::get('count-pay', [StatisticalController::class, 'getBillPay']);//dem phuong thuc mua hang bill.pay
+Route::get('revenue-week-by-day', [StatisticalController::class, 'getRevenuesWeekDay']);//doanh thu cac don hang trong tuan nay
+Route::get('revenue-sevent-last-day', [StatisticalController::class, 'revenuesLast7Days']);// doanh thu trong 7 ngay qua
 Route::get('revenue-by-week', [StatisticalController::class, 'getTotalByWeek']);
+Route::get('revenue-by-month-with-week', [StatisticalController::class, 'getTotalByMonthWithWeek']);//thong ke doanh thu thang nay theo cac tuan
+Route::post('revenue-by-month', [StatisticalController::class, 'revenueMonthly']);//thong ke doanh thu cua 1 thang cu the function(month,year)
+Route::post('revenue-by-between-date', [StatisticalController::class, 'revenuesBetweenDates']);//thong ke doanh thu theo ngay tu begin den end function(start_date,end_date)
+Route::post('revenue-by-date', [StatisticalController::class, 'revenueForSpecificDate']);//thong ke doanh thu theo ngay cu the function(date)
+Route::get('revenue-by-year-now', [StatisticalController::class, 'revenueAnnualRevenue']);//thong ke daonh thu cua nam hien tai
 Route::get('revenue-by-month', [StatisticalController::class, 'getTotalByMonth']);
 Route::get('revenue-by-product', [StatisticalController::class, 'getTotalByProduct']);
 Route::get('quantity-by-day', [StatisticalController::class, 'getTotalQuantitySoldDaily']);
