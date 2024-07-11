@@ -109,7 +109,10 @@ Route::get('revenue-by-month-with-week', [StatisticalController::class, 'getTota
 Route::post('revenue-by-month', [StatisticalController::class, 'revenueMonthly']);//thong ke doanh thu cua 1 thang cu the function(month,year)
 Route::post('revenue-by-between-date', [StatisticalController::class, 'revenuesBetweenDates']);//thong ke doanh thu theo ngay tu begin den end function(start_date,end_date)
 Route::post('revenue-by-date', [StatisticalController::class, 'revenueForSpecificDate']);//thong ke doanh thu theo ngay cu the function(date)
-Route::get('revenue-by-year-now', [StatisticalController::class, 'revenueAnnualRevenue']);//thong ke daonh thu cua nam hien tai
+Route::get('revenue-by-year-now', [StatisticalController::class, 'revenueAnnualRevenue']);//thong ke doanh thu cua nam hien tai
+Route::get('revenue-by-year-any/{year}', [StatisticalController::class, 'getAnnualRevenueAnyYear']);//thong ke daonh thu cau 1 nam bat ki
+Route::get('top-user/{top}', [StatisticalController::class, 'getTopUser']);//thong ke top user theo tham so top function(top)
+Route::get('top-product/{top}', [StatisticalController::class, 'getBestSellingProducts']);//thong ke top product theo tham so function(top)
 Route::get('revenue-by-month', [StatisticalController::class, 'getTotalByMonth']);
 Route::get('revenue-by-product', [StatisticalController::class, 'getTotalByProduct']);
 Route::get('quantity-by-day', [StatisticalController::class, 'getTotalQuantitySoldDaily']);

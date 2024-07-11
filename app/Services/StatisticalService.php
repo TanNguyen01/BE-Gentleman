@@ -500,4 +500,52 @@ class StatisticalService
         }
     }
 
+    public function topUsers($request)
+    {
+        $top = $request;
+        return DB::table('bill_details')
+            ->join('bills', 'bill_details.bill_id', '=', 'bills.id')
+            ->join('users', 'bills.user_id', '=', 'users.id')
+            ->select(
+                'users.id',
+                'users.name',
+                'users.email',
+                DB::raw('SUM(bill_details.quantity) as total_products_bought'),
+                DB::raw('COUNT(bills.id) as total_orders')
+            )
+            ->groupBy('users.id', 'users.name', 'users.email')
+            ->orderBy('total_products_bought', 'DESC')
+            ->take($top)
+            ->get();
+    }
+
+    public function bestSellingProducts($request)
+    {
+        $top = $request;
+        return DB::table('bill_details')
+            ->join('bills', 'bill_details.bill_id', '=', 'bills.id')
+            ->select(
+                'bill_details.product_name',
+                DB::raw('SUM(bill_details.quantity) as total_quantity_sold'),
+                DB::raw('COUNT(bill_details.id) as sold_count')
+            )
+            ->whereIn('bills.status', ['Done', 'Paid'])
+            ->groupBy('bill_details.product_name')
+            ->orderBy('total_quantity_sold', 'DESC')
+            ->take($top)
+            ->get();
+    }
+
+    public function  annualRevenueAnyYear($year){
+        return DB::table('bills')
+        ->select(
+            DB::raw('MONTH(created_at) as month'),
+            DB::raw('SUM(total_amount) as total_revenue')
+        )
+        ->whereYear('created_at', '=', $year)
+        ->whereIn('status', ['Done', 'Paid'])
+        ->groupBy(DB::raw('MONTH(created_at)'))
+        ->orderBy(DB::raw('MONTH(created_at)'))
+        ->get();
+    }
 }
