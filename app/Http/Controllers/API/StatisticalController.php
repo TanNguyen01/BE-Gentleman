@@ -390,4 +390,58 @@ class StatisticalController extends Controller
             );
         }
     }
+
+    public function getTopUser($top)
+    {
+        $revenues = $this->statisticalService->topUsers($top);
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('khong thay top user'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('top user'),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
+
+    public function getBestSellingProducts($top)
+    {
+        $revenues = $this->statisticalService->bestSellingProducts($top);
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('khong thay top product'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('top product'),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
+
+    public function getAnnualRevenueAnyYear($year)
+    {
+        $revenues = $this->statisticalService->annualRevenueAnyYear($year);
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('khong thay du lieu cua nam'.$year),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('daonh thu cua nam'.$year),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
 }
