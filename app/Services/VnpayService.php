@@ -5,9 +5,9 @@ class VnpayService
 {
     public function pay($request){
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        $vnp_Returnurl = "http://127.0.0.1:8000/";
+        $vnp_Returnurl = "http://localhost:5173/checkout";
         $vnp_TmnCode = "2OQ5EPNA";//M? website t?i VNPAY
-        $vnp_HashSecret = "FSV3D439FAU1EBZ4Y89ZDN9241AMCJL0"; //Chu?i bí m?t
+        $vnp_HashSecret = "FSV3D439FAU1EBZ4Y89ZDN9241AMCJL0"; //Chu?i bï¿½ m?t
 
         $vnp_TxnRef =  $request['bill_id'];
         $vnp_OrderInfo = 'Thanh toan online';
@@ -18,7 +18,7 @@ class VnpayService
         $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
         //Add Params
         $inputData = array(
-            "vnp_Version" => "2.1.0", //Phiên b?n c? là 2.0.0, 2.0.1 thay ð?i sang 2.1.0
+            "vnp_Version" => "2.1.0", //Phiï¿½n b?n c? lï¿½ 2.0.0, 2.0.1 thay ï¿½?i sang 2.1.0
             "vnp_TmnCode" => $vnp_TmnCode,
             "vnp_Amount" => $vnp_Amount,
             "vnp_Command" => "pay",
@@ -42,7 +42,7 @@ class VnpayService
         $i = 0;
         $hashdata = "";
 
-    //Build querystring phiên b?n m?i 2.1.0
+    //Build querystring phiï¿½n b?n m?i 2.1.0
 
         foreach ($inputData as $key => $value) {
             if ($i == 1) {
