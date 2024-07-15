@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Services\StatisticalService;
 use App\Traits\APIResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class StatisticalController extends Controller
@@ -98,7 +97,7 @@ class StatisticalController extends Controller
             );
         } else {
             return $this->responseSuccess(
-                __('trang thai don hang hom nay'),
+                __('trang thai don hang 7 ngay qua'),
                 [
                     'data' => $revenues,
                 ]
@@ -401,7 +400,7 @@ class StatisticalController extends Controller
             );
         } else {
             return $this->responseSuccess(
-                __('top user'),
+                __('top'.$top.'user'),
                 [
                     'data' => $revenues,
                 ]
@@ -419,7 +418,7 @@ class StatisticalController extends Controller
             );
         } else {
             return $this->responseSuccess(
-                __('top product'),
+                __('top '.$top.' product'),
                 [
                     'data' => $revenues,
                 ]
@@ -437,7 +436,25 @@ class StatisticalController extends Controller
             );
         } else {
             return $this->responseSuccess(
-                __('daonh thu cua nam'.$year),
+                __('doanh thu cua nam'.$year),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
+
+    public function revenueCategory()
+    {
+        $revenues = $this->statisticalService->getProductCounts();
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('loi category'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('doanh thu thang nay'),
                 [
                     'data' => $revenues,
                 ]

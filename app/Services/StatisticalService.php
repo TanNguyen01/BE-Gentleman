@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Bill;
 use App\Models\BillDetail;
+use App\Models\Category;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -15,21 +16,24 @@ class StatisticalService
     {
         $today = date('Y-m-d');
         try {
-            $revenues = Bill::select(
-                DB::raw('DATE(created_at) as date'),
-                DB::raw('SUM(total_amount) as total_revenue')
-            )
-                ->whereDate('created_at', $today)
-                ->whereIn('status', ['Done', 'Paid'])
-                ->groupBy('date')
+            $revenues = Bill::join('bill_details', 'bills.id', '=', 'bill_details.bill_id')
+                ->select(
+                    DB::raw('DATE(bills.created_at) as date'),
+                    DB::raw('SUM(bills.total_amount) as total_revenue'),
+                    DB::raw('SUM(bill_details.quantity) as total_quantity_sold')
+                )
+                ->whereDate('bills.created_at', $today)
+                ->whereIn('bills.status', ['Done', 'Paid'])
+                ->groupBy(DB::raw('DATE(bills.created_at)'))
                 ->orderBy('date', 'asc')
                 ->first();
+
             return $revenues;
         } catch (\Exception $e) {
-            Log::error('loi khi tinh tong doanh thu theo ngay: ') . $e->getMessage();
             throw $e;
         }
     }
+
 
     public function getBillCountsByStatus(){
         $today = date('Y-m-d');
@@ -44,7 +48,6 @@ class StatisticalService
 
             return $orderCounts;
         } catch (\Exception $e) {
-            Log::error('L?i khi ð?m s? ðõn hàng theo tr?ng thái: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -60,73 +63,73 @@ class StatisticalService
 
             return $orderCounts;
         } catch (\Exception $e) {
-            Log::error('L?i khi ð?m s? ðõn hàng theo tr?ng thái: ' . $e->getMessage());
             throw $e;
         }
     }
 
     public function getRevenuesWeekByDay(){
         try {
-            $startOfWeek = Carbon::now()->startOfWeek();
-            $endOfWeek = Carbon::now()->endOfWeek();
+            $startOfWeek = Carbon::now()->startOfWeek()->format('Y-m-d');
+            $endOfWeek = Carbon::now()->endOfWeek()->format('Y-m-d');
 
             $revenues = DB::table('bills')
+                ->join('bill_details', 'bills.id', '=', 'bill_details.bill_id')
                 ->select(
-                    DB::raw('DATE(created_at) as date'),
-                    DB::raw('SUM(total_amount) as total_revenue')
+                    DB::raw('DATE(bills.created_at) as date'),
+                    DB::raw('SUM(bills.total_amount) as total_revenue'),
+                    DB::raw('SUM(bill_details.quantity) as total_quantity_sold')
                 )
-                ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
-                ->whereIn('status', ['Done', 'Paid'])
-                ->groupBy('date')
+                ->whereBetween(DB::raw('DATE(bills.created_at)'), [$startOfWeek, $endOfWeek])
+                ->whereIn('bills.status', ['Done', 'Paid'])
+                ->groupBy(DB::raw('DATE(bills.created_at)'))
                 ->orderBy('date', 'asc')
                 ->get();
 
-            // Tính t?ng doanh thu c?a c? tu?n
             $totalRevenue = $revenues->sum('total_revenue');
+            $totalQuantitySold = $revenues->sum('total_quantity_sold');
 
-            // Chu?n b? d? li?u ð? tr? v?
+
             $result = [
                 'daily_revenues' => $revenues,
                 'total_revenue' => $totalRevenue,
+                'total_quantity_sold' => $totalQuantitySold,
             ];
 
             return response()->json($result);
         } catch (\Exception $e) {
-            Log::error('L?i khi th?ng kê doanh thu theo t?ng ngày trong tu?n hi?n t?i: ' . $e->getMessage());
-            return response()->json(['error' => 'Không th? th?ng kê doanh thu'], 500);
+            return response()->json(['error' => 'khong the thong ke doanh thu'], 500);
         }
     }
 
-    public function getRevenuesLast7Days(){
+
+    public function getRevenuesLast7Days()
+    {
         try {
-            // L?y th?i gian hi?n t?i và th?i gian 7 ngày trý?c
-            $now = Carbon::now();
-            $sevenDaysAgo = $now->copy()->subDays(7);
-
-            $revenues = DB::table('bills')
+            $now = Carbon::now()->format('Y-m-d');
+            $sevenDaysAgo = Carbon::now()->subDays(7)->format('Y-m-d');
+            $query = DB::table('bills')
+                ->join('bill_details', 'bills.id', '=', 'bill_details.bill_id')
                 ->select(
-                    DB::raw('DATE(created_at) as date'),
-                    DB::raw('SUM(total_amount) as total_revenue')
+                    DB::raw('DATE(bills.created_at) as date'),
+                    DB::raw('SUM(bills.total_amount) as total_revenue'),
+                    DB::raw('SUM(bill_details.quantity) as total_quantity_sold')
                 )
-                ->whereBetween('created_at', [$sevenDaysAgo, $now])
-                ->whereIn('status', ['Done', 'Paid'])
-                ->groupBy('date')
-                ->orderBy('date', 'asc')
-                ->get();
-
-            // Tính t?ng doanh thu c?a 7 ngày qua
+                ->whereBetween('bills.created_at', [$sevenDaysAgo, $now])
+                ->whereIn('bills.status', ['Done', 'Paid'])
+                ->groupBy(DB::raw('DATE(bills.created_at)'))
+                ->orderBy(DB::raw('DATE(bills.created_at)'), 'asc');
+            $revenues = $query->get();
             $totalRevenue = $revenues->sum('total_revenue');
-
-            // Chu?n b? d? li?u ð? tr? v?
+            $totalQuantitySold = $revenues->sum('total_quantity_sold');
             $result = [
                 'daily_revenues' => $revenues,
                 'total_revenue' => $totalRevenue,
+                'total_quantity_sold' => $totalQuantitySold,
             ];
 
             return response()->json($result);
         } catch (\Exception $e) {
-            Log::error('L?i khi th?ng kê doanh thu theo t?ng ngày trong 7 ngày qua: ' . $e->getMessage());
-            return response()->json(['error' => 'Không th? th?ng kê doanh thu'], 500);
+            return response()->json(['error' => 'khong the thong ke doanh thu'], 500);
         }
     }
 
@@ -154,49 +157,54 @@ class StatisticalService
             $endOfMonth = Carbon::now()->endOfMonth();
             $weeklyRevenues = [];
             $startOfWeek = $startOfMonth->copy();
+
             while ($startOfWeek->lte($endOfMonth)) {
                 $endOfWeek = $startOfWeek->copy()->endOfWeek();
 
                 if ($endOfWeek->gt($endOfMonth)) {
                     $endOfWeek = $endOfMonth;
                 }
+
                 $revenues = DB::table('bills')
+                    ->join('bill_details', 'bills.id', '=', 'bill_details.bill_id')
                     ->select(
-                        DB::raw('SUM(total_amount) as total_revenue')
+                        DB::raw('SUM(bills.total_amount) as total_revenue'),
+                        DB::raw('SUM(bill_details.quantity) as total_quantity_sold')
                     )
-                    ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
-                    ->whereIn('status', ['Done', 'Paid'])
+                    ->whereBetween('bills.created_at', [$startOfWeek, $endOfWeek])
+                    ->whereIn('bills.status', ['Done', 'Paid'])
                     ->first();
 
                 $weeklyRevenues[] = [
                     'start_of_week' => $startOfWeek->toDateString(),
                     'end_of_week' => $endOfWeek->toDateString(),
                     'total_revenue' => $revenues->total_revenue ?? 0,
+                    'total_quantity_sold' => $revenues->total_quantity_sold ?? 0,
                 ];
 
                 $startOfWeek->addWeek();
             }
 
             $totalRevenue = array_sum(array_column($weeklyRevenues, 'total_revenue'));
+            $totalQuantitySold = array_sum(array_column($weeklyRevenues, 'total_quantity_sold'));
             $result = [
                 'weekly_revenues' => $weeklyRevenues,
                 'total_revenue' => $totalRevenue,
+                'total_quantity_sold' => $totalQuantitySold,
             ];
 
             return response()->json($result);
         } catch (\Exception $e) {
-            Log::error('L?i khi th?ng kê doanh thu theo t?ng tu?n trong tháng hi?n t?i: ' . $e->getMessage());
-            return response()->json(['error' => 'Không th? th?ng kê doanh thu'], 500);
+            return response()->json(['error' => 'Khï¿½ng th? th?ng kï¿½ doanh thu'], 500);
         }
     }
 
+
     public function getRevenuesBetweenDates($request) {
         try {
-            // Nh?n tham s? t? yêu c?u ngý?i dùng
             $startDate = Carbon::parse($request->input('start_date'));
             $endDate = Carbon::parse($request->input('end_date'))->endOfDay();
 
-            // L?y doanh thu c?a các ngày trong kho?ng th?i gian
             $revenues = DB::table('bills')
                 ->select(
                     DB::raw('DATE(created_at) as date'),
@@ -208,10 +216,8 @@ class StatisticalService
                 ->orderBy('date', 'asc')
                 ->get();
 
-            // Tính t?ng doanh thu c?a kho?ng th?i gian
             $totalRevenue = $revenues->sum('total_revenue');
 
-            // Chu?n b? d? li?u ð? tr? v?
             $result = [
                 'daily_revenues' => $revenues,
                 'total_revenue' => $totalRevenue,
@@ -219,18 +225,14 @@ class StatisticalService
 
             return response()->json($result);
         } catch (\Exception $e) {
-            Log::error('L?i khi th?ng kê doanh thu gi?a các ngày: ' . $e->getMessage());
-            return response()->json(['error' => 'Không th? th?ng kê doanh thu'], 500);
+            return response()->json(['error' => 'khong thong ke duoc doanh thu'], 500);
         }
     }
 
     public function getRevenueForSpecificDate($request) {
         try {
-            // Nh?n tham s? t? yêu c?u ngý?i dùng
             $specificDate = Carbon::parse($request->input('date'))->startOfDay();
             $endOfSpecificDate = $specificDate->copy()->endOfDay();
-
-            // L?y doanh thu c?a ngày c? th?
             $revenue = DB::table('bills')
                 ->select(
                     DB::raw('SUM(total_amount) as total_revenue')
@@ -246,8 +248,7 @@ class StatisticalService
 
             return response()->json($result);
         } catch (\Exception $e) {
-            Log::error('L?i khi th?ng kê doanh thu cho ngày c? th?: ' . $e->getMessage());
-            return response()->json(['error' => 'Không th? th?ng kê doanh thu'], 500);
+            return response()->json(['error' => 'khong thong ke duoc doanh thu'], 500);
         }
     }
 
@@ -422,11 +423,8 @@ class StatisticalService
 
     public function getAnnualRevenue() {
         try {
-            // L?y th?i gian b?t ð?u và k?t thúc c?a nãm hi?n t?i
             $startOfYear = Carbon::now()->startOfYear();
             $endOfYear = Carbon::now()->endOfYear();
-
-            // L?y doanh thu c?a các tháng trong nãm hi?n t?i
             $revenues = DB::table('bills')
                 ->select(
                     DB::raw('MONTH(created_at) as month'),
@@ -437,8 +435,6 @@ class StatisticalService
                 ->groupBy(DB::raw('MONTH(created_at)'))
                 ->orderBy('month', 'asc')
                 ->get();
-
-            // Chu?n b? d? li?u ð? tr? v?
             $monthlyRevenues = [];
             foreach ($revenues as $revenue) {
                 $monthlyRevenues[] = [
@@ -446,8 +442,6 @@ class StatisticalService
                     'total_revenue' => $revenue->total_revenue,
                 ];
             }
-
-            // Tính t?ng doanh thu c?a c? nãm
             $totalRevenue = array_sum(array_column($monthlyRevenues, 'total_revenue'));
 
             $result = [
@@ -457,22 +451,16 @@ class StatisticalService
 
             return response()->json($result);
         } catch (\Exception $e) {
-            Log::error('L?i khi th?ng kê doanh thu c? nãm: ' . $e->getMessage());
-            return response()->json(['error' => 'Không th? th?ng kê doanh thu'], 500);
+            return response()->json(['error' => 'khong thong ke duoc doanh thu'], 500);
         }
     }
 
     public function getMonthlyRevenue($request) {
         try {
-            // Nh?n tham s? t? yêu c?u ngý?i dùng
             $month = $request->input('month');
             $year = $request->input('year');
-
-            // Tính th?i gian b?t ð?u và k?t thúc c?a tháng c? th?
             $startOfMonth = Carbon::createFromDate($year, $month, 1)->startOfMonth();
             $endOfMonth = Carbon::createFromDate($year, $month, 1)->endOfMonth();
-
-            // L?y doanh thu c?a các ngày trong tháng c? th?
             $revenues = DB::table('bills')
                 ->select(
                     DB::raw('DATE(created_at) as date'),
@@ -483,11 +471,7 @@ class StatisticalService
                 ->groupBy(DB::raw('DATE(created_at)'))
                 ->orderBy('date', 'asc')
                 ->get();
-
-            // Tính t?ng doanh thu c?a c? tháng
             $totalRevenue = $revenues->sum('total_revenue');
-
-            // Chu?n b? d? li?u ð? tr? v?
             $result = [
                 'daily_revenues' => $revenues,
                 'total_revenue' => $totalRevenue,
@@ -495,8 +479,8 @@ class StatisticalService
 
             return response()->json($result);
         } catch (\Exception $e) {
-            Log::error('L?i khi th?ng kê doanh thu c?a tháng: ' . $e->getMessage());
-            return response()->json(['error' => 'Không th? th?ng kê doanh thu'], 500);
+            Log::error('loi thong ke thang: ' . $e->getMessage());
+            return response()->json(['error' => 'khongt thong ke duoc daonh thu'], 500);
         }
     }
 
@@ -547,5 +531,13 @@ class StatisticalService
         ->groupBy(DB::raw('MONTH(created_at)'))
         ->orderBy(DB::raw('MONTH(created_at)'))
         ->get();
+    }
+
+    public function getProductCounts()
+    {
+        $categories = Category::withCount('products')->get();
+        return response()->json([
+            'categories' => $categories,
+        ], 200);
     }
 }

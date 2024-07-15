@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CategoryResource;
 use App\Http\Resources\SaleResource;
-use App\Services\CategoryService;
 use App\Services\SaleService;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponseTrait;
