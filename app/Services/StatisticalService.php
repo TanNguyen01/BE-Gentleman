@@ -115,7 +115,6 @@ class StatisticalService
                     DB::raw('SUM(bill_details.quantity) as total_quantity_sold')
                 )
                 ->whereBetween('bills.created_at', [$sevenDaysAgo, $now])
-                ->whereIn('bills.status', ['Done', 'Paid'])
                 ->groupBy(DB::raw('DATE(bills.created_at)'))
                 ->orderBy(DB::raw('DATE(bills.created_at)'), 'asc');
             $revenues = $query->get();
