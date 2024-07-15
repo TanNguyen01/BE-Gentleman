@@ -71,9 +71,10 @@ class BillDetailService extends AbstractServices
                     'attribute' => $variantData['attribute'],
                     'price' => $variantData['price'],
                     'quantity' => $variantData['quantity'],
-                    'bill_id'=> $bill->id,
-                    'voucher' => $variantData['voucher'],
+                    'bill_id' => $bill->id,
+                    'sale' => $variantData['sale'],
                     'image' => $variantData['image'],
+                    'price_origin'=> $variantData['price_origin'],
                     // Các trường khác nếu có
                 ];
             }
@@ -89,6 +90,12 @@ class BillDetailService extends AbstractServices
             //   gui mail
                 SendMail::dispatch($billDetailsData, $user, $bill)->delay(now()->addSeconds(2));
             }
+
+            // dd($status);
+
+            // Gửi email xác nhận hóa đơn
+            SendMail::dispatch($billDetailsData, $user, $bill)->delay(now()->addSeconds(2));
+
             return [
                 'status' => $status,
                 'message' => 'Chi tiết hóa đơn đã được lưu thành công và email đã được gửi.'
