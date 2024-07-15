@@ -39,7 +39,7 @@ Route::middleware(['auth:sanctum', 'checkAdmin'])->group(function () {
         // Route::apiResource("variants", \App\Http\Controllers\API\VariantController::class);
         // Route::apiResource("attributes", \App\Http\Controllers\API\AttributeController::class);
 
-       
+
 
         // //User
 
@@ -127,6 +127,7 @@ Route::get('new-user-by-day', [StatisticalController::class, 'newRegistrationsTo
 Route::get('new-user-by-week', [StatisticalController::class, 'newRegistrationsThisWeek']);
 Route::get('new-user-by-month', [StatisticalController::class, 'newRegistrationsThisMonth']);
 Route::get('order-statistical', [StatisticalController::class, 'getOrderStatistics']);
+Route::get('revenue-category', [StatisticalController::class, 'revenueCategory']);
 
 //BillDetail
  Route::apiResource('bill-details', BillDetailController::class);
