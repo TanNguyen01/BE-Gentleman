@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\StatisticalService;
 use App\Traits\APIResponse;
 use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 
 class StatisticalController extends Controller
 {

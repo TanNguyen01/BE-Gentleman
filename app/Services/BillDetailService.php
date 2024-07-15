@@ -80,10 +80,15 @@ class BillDetailService extends AbstractServices
 
             // Lưu chi tiết hóa đơn
             $status = $this->eloquentMutiInsert($billDetailsData);
-
-            // Gửi email xác nhận hóa đơn
-            SendMail::dispatch($billDetailsData, $user, $bill)->delay(now()->addSeconds(2));
-
+            if ($status == false){
+                foreach ($data['data'] as  $variantData) {
+                    $this->variantService->rollbackQuantityWithBill($variantData['variant_id'],$variantData['quantity']);
+                }
+            }
+            else{
+            //   gui mail
+                SendMail::dispatch($billDetailsData, $user, $bill)->delay(now()->addSeconds(2));
+            }
             return [
                 'status' => $status,
                 'message' => 'Chi tiết hóa đơn đã được lưu thành công và email đã được gửi.'
