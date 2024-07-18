@@ -7,6 +7,7 @@ use App\Http\Controllers\API\BillDetailController;
 use App\Http\Controllers\API\BillStoryController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\OrderDetailController;
+use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\SaleController;
 use App\Http\Controllers\API\StatisticalController;
@@ -42,8 +43,14 @@ Route::middleware(['auth:sanctum', 'checkAdmin'])->group(function () {
 
 
         // //User
+        // Route::apiResource('users', UserController::class);
 
-    });   // Route::apiResource('users', UserController::class);
+        // post
+            Route::get('posts/{id}', [PostController::class, 'show']);
+            Route::put('posts/{id}', [PostController::class, 'update']);
+            Route::delete('posts/{id}', [PostController::class, 'destroy']);
+            Route::post('posts', [PostController::class, 'store']);
+    });
 });
 // ======================= USER ========================
 //Categories
@@ -149,7 +156,7 @@ Route::get('sale-product/{id}', [SaleController::class, 'saleWithProduct']);
 
 // vnpay
 Route::get('pay/{bill_id}/{amount}/{bank_code}', [VnpayController::class, 'checkout'])->name('checkout_vnpay');
-
+//login
 Route::post('register', [\App\Http\Controllers\API\AuthController::class, 'register'])->name('register');
 Route::post('login', [\App\Http\Controllers\API\AuthController::class, 'login'])->name('login');
 
@@ -158,7 +165,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     // Route::get('/profile', function (Request $request) {
     //     return auth()->users();
     // });
+    Route::get('posts/{id}', [PostController::class, 'show']);
+    Route::put('posts/{id}', [PostController::class, 'update']);
+    Route::delete('posts/{id}', [PostController::class, 'destroy']);
+    Route::post('posts', [PostController::class, 'store']);
+
     Route::get('logout', [\App\Http\Controllers\API\AuthController::class, 'logout'])->name('logout');
 });
 // vnpay
 Route::get('pay/{bill_id}/{amount}/{bank_code}', [VnpayController::class, 'checkout'])->name('checkout_vnpay');
+//post
+Route::get('posts', [PostController::class, 'index']);

@@ -105,8 +105,9 @@ class StatisticalService
     public function getRevenuesLast7Days()
     {
         try {
-            $now = Carbon::now()->format('Y-m-d');
+            $now = Carbon::now()->addDay()->format('Y-m-d');
             $sevenDaysAgo = Carbon::now()->subDays(7)->format('Y-m-d');
+            Log::info($sevenDaysAgo.'-'.$now);
             $query = DB::table('bills')
                 ->join('bill_details', 'bills.id', '=', 'bill_details.bill_id')
                 ->select(
