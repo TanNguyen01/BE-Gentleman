@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Post;
+use Illuminate\Support\Facades\Auth;
 
 class PostService extends AbstractServices
 {
@@ -28,11 +29,19 @@ class PostService extends AbstractServices
 
     public function updatePost($id, $data)
     {
+        $comment = $this->showPost($id);
+        if (Auth::id() !== $comment->user_id && Auth::user()->role_id == 1 ) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
         return $this->eloquentUpdate($id, $data);
     }
 
     public function destroyPost($id)
     {
+        $comment = $this->showPost($id);
+        if (Auth::id() !== $comment->user_id && Auth::user()->role_id == 1 ) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
         return $this->eloquentDelete($id);
     }
 }
