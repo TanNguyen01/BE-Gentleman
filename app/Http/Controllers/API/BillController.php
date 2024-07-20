@@ -110,7 +110,7 @@ class BillController extends BillService
 
     public function shiping(string $id)
     {
-        $data = $this->billService->chanceStatusShiping($id);
+        $data = $this->billService->chanceStatusShipping($id);
         if (!$data) {
             return $this->APIError(
                 Response::HTTP_NOT_FOUND,
@@ -234,9 +234,9 @@ class BillController extends BillService
         }
     }
 
-    public function getShiping()
+    public function getShipping()
     {
-        $data = $this->billService->getStatusShiping();
+        $data = $this->billService->getStatusShipping();
         if (!$data) {
             return $this->APIError(
                 Response::HTTP_NOT_FOUND,
@@ -378,9 +378,9 @@ class BillController extends BillService
         }
     }
 
-    public function getBillWithUserShiping($id)
+    public function getBillWithUserShipping($id)
     {
-        $data = $this->billService->billWithUseShiping($id);
+        $data = $this->billService->billWithUseShipping($id);
         if (!$data) {
             return $this->APIError(
                 Response::HTTP_NOT_FOUND,
