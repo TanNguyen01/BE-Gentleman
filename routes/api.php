@@ -40,7 +40,7 @@ Route::middleware(['auth:sanctum', 'checkAdmin'])->group(function () {
         // Route::apiResource("variants", \App\Http\Controllers\API\VariantController::class);
         // Route::apiResource("attributes", \App\Http\Controllers\API\AttributeController::class);
 
- Route::apiResource('bill-details', BillDetailController::class);
+        Route::apiResource('bill-details', BillDetailController::class);
 
         // //User
         // Route::apiResource('users', UserController::class);

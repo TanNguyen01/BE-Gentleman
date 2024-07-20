@@ -44,12 +44,12 @@ class BillService extends AbstractServices
         return 'confirm';
     }
 
-    public function chanceStatusShiping($id)
+    public function chanceStatusShipping($id)
     {
         $res = $this->eloquentFind($id);
-        $res->status = 'Shiping';
+        $res->status = 'Shipping';
         $res->save();
-        return 'Shiping';
+        return 'Shipping';
     }
 
     public function chanceStatusPaid($id)
@@ -102,9 +102,9 @@ class BillService extends AbstractServices
         return $res;
     }
 
-    public function getStatusShiping()
+    public function getStatusShipping()
     {
-        $res = $this->eloquentWhere('status', 'Shiping');
+        $res = $this->eloquentWhere('status', 'Shipping');
         return $res;
     }
 
@@ -120,9 +120,9 @@ class BillService extends AbstractServices
         return $res;
     }
 
-    public function getStatusPaidShiping()
+    public function getStatusPaidShipping()
     {
-        $res = $this->eloquentWhere('status', 'PaidShiping');
+        $res = $this->eloquentWhere('status', 'PaidShipping');
         return $res;
     }
 
@@ -183,11 +183,11 @@ class BillService extends AbstractServices
         return $res;
     }
 
-    public function billWithUseShiping($id)
+    public function billWithUseShipping($id)
     {
         $fill = [
             'user_id' => $id,
-            'status' => 'Shiping'
+            'status' => 'Shipping'
         ];
         $res = $this->eloquentMultiWhere($fill);
         return $res;
