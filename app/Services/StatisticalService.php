@@ -34,6 +34,28 @@ class StatisticalService
         }
     }
 
+    public function getTotalRevenuePaidByDay()
+    {
+        $today = date('Y-m-d');
+        try {
+            $revenues = Bill::join('bill_details', 'bills.id', '=', 'bill_details.bill_id')
+                ->select(
+                    DB::raw('DATE(bills.created_at) as date'),
+                    DB::raw('SUM(bills.total_amount) as total_revenue'),
+                    DB::raw('SUM(bill_details.quantity) as total_quantity_sold')
+                )
+                ->whereDate('bills.created_at', $today)
+                ->whereIn('bills.status', ['Paid'])
+                ->groupBy(DB::raw('DATE(bills.created_at)'))
+                ->orderBy('date', 'asc')
+                ->first();
+
+            return $revenues;
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
 
     public function getBillCountsByStatus(){
         $today = date('Y-m-d');

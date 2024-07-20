@@ -111,6 +111,7 @@ Route::get('bills-with-email/{email}', [BillController::class, 'getBillWithEmail
 
 //Statistical
 Route::get('revenue-by-day', [StatisticalController::class, 'getTotalByDate']);//doanh thu ngay
+Route::get('revenue-paid-by-day', [StatisticalController::class, 'getTotalPaidByDate']);//doang thu da thanh toan online hom nay
 Route::get('status-by-day', [StatisticalController::class, 'getStatusByDate']);//trang thai ngay
 Route::get('count-pay', [StatisticalController::class, 'getBillPay']);//dem phuong thuc mua hang bill.pay
 Route::get('revenue-week-by-day', [StatisticalController::class, 'getRevenuesWeekDay']);//doanh thu cac don hang trong tuan nay
