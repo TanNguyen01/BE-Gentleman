@@ -90,10 +90,10 @@ class BillDetailService extends AbstractServices
             else{
             //   gui mail
                 Log::info("begin-sent-email");
-                SendMail::dispatch($billDetailsData, $user, $bill)->delay(now()->addSeconds(2));
+                SendMail::dispatch($billDetailsData, $user, $bill);
             }
 
-                Log::info("end-sent-email");
+            Log::info("end-sent-email");
             return [
                 'status' => $status,
                 'message' => 'Chi tiết hóa đơn đã được lưu thành công và email đã được gửi.'
