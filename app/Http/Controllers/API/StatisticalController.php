@@ -36,6 +36,24 @@ class StatisticalController extends Controller
         }
     }
 
+    public function getTotalPaidByDate()
+    {
+        $revenues = $this->statisticalService->getTotalRevenuePaidByDay();
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('chua co doanh thu hom nay'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('doanh thu hom nay'),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
+
     public function getStatusByDate()
     {
         $revenues = $this->statisticalService->getBillCountsByStatus();
