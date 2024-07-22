@@ -39,9 +39,9 @@ class BillService extends AbstractServices
     public function chanceStatusConfirm($id)
     {
         $res = $this->eloquentFind($id);
-        $res->status = 'confirm';
+        $res->status = 'Confirm';
         $res->save();
-        return 'confirm';
+        return 'Confirm';
     }
 
     public function chanceStatusShipping($id)
@@ -129,15 +129,7 @@ class BillService extends AbstractServices
     public function sortBills(array $bills)
     {
         usort($bills, function ($a, $b) {
-            $statusOrder = ['Pending', 'Paid', 'Confirm', 'Shipping', 'Done', 'Cancel'];
-            $statusA = array_search($a['status'], $statusOrder);
-            $statusB = array_search($b['status'], $statusOrder);
-
-            if ($statusA === $statusB) {
-                return strtotime($b['updated_at']) - strtotime($a['updated_at']);
-            }
-
-            return $statusA - $statusB;
+            return strtotime($b['updated_at']) - strtotime($a['updated_at']);
         });
 
         return $bills;
