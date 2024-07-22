@@ -54,10 +54,14 @@ class BillDetailService extends AbstractServices
             $bill = Bill::with('billDetails')->findOrFail($data['bill_id']);
             Log::info('Hóa đơn tìm thấy: ' . json_encode($bill));
 
+
+
             // Lấy thông tin người dùng hiện tại
             $user = Auth::user();
 
             $billDetailsData = [];
+
+
 
             // Cập nhật số lượng và chuẩn bị dữ liệu chi tiết hóa đơn
             foreach ($data['data'] as  $variantData) {

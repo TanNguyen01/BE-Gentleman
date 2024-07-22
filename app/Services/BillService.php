@@ -45,6 +45,8 @@ class BillService extends AbstractServices
     }
 
     public function chanceStatusShiping($id)
+
+
     {
         $res = $this->eloquentFind($id);
         $res->status = 'Shiping';
