@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CategoryResource;
 use App\Http\Resources\SaleResource;
-use App\Services\CategoryService;
 use App\Services\SaleService;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponseTrait;
@@ -38,8 +36,10 @@ class SaleController extends Controller
         try {
             $data = $request->validate([
                 'name' => 'required|string|unique:categories',
+                'status'=>'required',
+                "onLayout"=>'required'
             ]);
-
+            // dd($data);
             $sale = $this->saleService->eloquentPostCreate($data);
             return $this->successResponse(new SaleResource($sale), 201);
         } catch (\Exception $e) {

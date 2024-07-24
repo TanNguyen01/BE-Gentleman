@@ -84,4 +84,9 @@ class VariantService extends AbstractServices
         ];
     }
 
+    public function rollbackQuantityWithBill($id, $quantity){
+        $variant = $this->eloquentFind($id);
+        $variant->quantity = $variant->quantity + $quantity;
+        $variant->save();
+    }
 }

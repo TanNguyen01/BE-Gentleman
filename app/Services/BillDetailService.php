@@ -32,11 +32,11 @@ class BillDetailService extends AbstractServices
     {
 
         try {
-            // Kiểm tra người dùng có đăng nhập hay không
+            // Kiểm tra ngưỞi dùng có đăng nhập hay không
             if (!Auth::check()) {
                 return [
                     'status' => 'error',
-                    'message' => 'Người dùng chưa đăng nhập!'
+                    'message' => 'NgưỞi dùng chưa đăng nhập!'
                 ];
             }
 
@@ -54,14 +54,10 @@ class BillDetailService extends AbstractServices
             $bill = Bill::with('billDetails')->findOrFail($data['bill_id']);
             Log::info('Hóa đơn tìm thấy: ' . json_encode($bill));
 
-
-
-            // Lấy thông tin người dùng hiện tại
+            // Lấy thông tin ngưỞi dùng hiện tại
             $user = Auth::user();
 
             $billDetailsData = [];
-
-
 
             // Cập nhật số lượng và chuẩn bị dữ liệu chi tiết hóa đơn
             foreach ($data['data'] as  $variantData) {
@@ -75,26 +71,36 @@ class BillDetailService extends AbstractServices
                     'attribute' => $variantData['attribute'],
                     'price' => $variantData['price'],
                     'quantity' => $variantData['quantity'],
-                    'bill_id'=> $bill->id,
-                    'voucher' => $variantData['voucher'],
+                    'bill_id' => $bill->id,
+                    'sale' => $variantData['sale'],
                     'image' => $variantData['image'],
-                    // Các trường khác nếu có
+                    'price_origin'=> $variantData['price_origin'],
+                    // Các trưỞng khác nếu có
                 ];
             }
 
             // Lưu chi tiết hóa đơn
             $status = $this->eloquentMutiInsert($billDetailsData);
+            if ($status == false){
+                Log::info("add-billDeatil-done");
+                foreach ($data['data'] as  $variantData) {
+                    $this->variantService->rollbackQuantityWithBill($variantData['variant_id'],$variantData['quantity']);
+                }
+            }
+            else{
+            //   gui mail
+                Log::info("begin-sent-email");
+                SendMail::dispatch($billDetailsData, $user, $bill);
+            }
 
-            // Gửi email xác nhận hóa đơn
-            SendMail::dispatch($billDetailsData, $user, $bill)->delay(now()->addSeconds(2));
-
+            Log::info("end-sent-email");
             return [
                 'status' => $status,
                 'message' => 'Chi tiết hóa đơn đã được lưu thành công và email đã được gửi.'
             ];
 
         } catch (\Exception $e) {
-            // Ghi nhật ký lỗi và trả về phản hồi lỗi
+            // Ghi nhật ký lỗi và trả vỞ phản hồi lỗi
             Log::error('Lỗi lưu chi tiết hóa đơn: ' . $e->getMessage());
             return [
                 'status' => 'error',

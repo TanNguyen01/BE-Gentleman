@@ -21,10 +21,6 @@ class Variant extends Model
     {
         return $this->belongsToMany(AttributeValue::class, 'variant_attributes', 'variant_id', 'attribute_value_id');
     }
-    public function orderDetails()
-    {
-        return $this->hasMany(OrderDetail::class);
-    }
     public function product()
     {
         return $this->belongsTo(Product::class);

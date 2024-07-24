@@ -5,8 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Services\StatisticalService;
 use App\Traits\APIResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 
 class StatisticalController extends Controller
 {
@@ -21,6 +21,24 @@ class StatisticalController extends Controller
     public function getTotalByDate()
     {
         $revenues = $this->statisticalService->getTotalRevenueByDay();
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('chua co doanh thu hom nay'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('doanh thu hom nay'),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
+
+    public function getTotalPaidByDate()
+    {
+        $revenues = $this->statisticalService->getTotalRevenuePaidByDay();
         if (!$revenues) {
             return $this->APIError(
                 Response::HTTP_BAD_REQUEST,
@@ -98,7 +116,7 @@ class StatisticalController extends Controller
             );
         } else {
             return $this->responseSuccess(
-                __('trang thai don hang hom nay'),
+                __('trang thai don hang 7 ngay qua'),
                 [
                     'data' => $revenues,
                 ]
@@ -386,6 +404,78 @@ class StatisticalController extends Controller
                 __('tong so don hang va gia tri trung binh moi don'),
                 [
                     'data' => $totalOrder,
+                ]
+            );
+        }
+    }
+
+    public function getTopUser($top)
+    {
+        $revenues = $this->statisticalService->topUsers($top);
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('khong thay top user'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('top'.$top.'user'),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
+
+    public function getBestSellingProducts($top)
+    {
+        $revenues = $this->statisticalService->bestSellingProducts($top);
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('khong thay top product'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('top '.$top.' product'),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
+
+    public function getAnnualRevenueAnyYear($year)
+    {
+        $revenues = $this->statisticalService->annualRevenueAnyYear($year);
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('khong thay du lieu cua nam'.$year),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('doanh thu cua nam'.$year),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
+
+    public function revenueCategory()
+    {
+        $revenues = $this->statisticalService->getProductCounts();
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('loi category'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('doanh thu thang nay'),
+                [
+                    'data' => $revenues,
                 ]
             );
         }
