@@ -102,7 +102,7 @@ class BillController extends BillService
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
-                    'data' => 'confirm',
+                    'data' => 'Confirm',
                 ]
             );
         }
@@ -120,7 +120,7 @@ class BillController extends BillService
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
-                    'data' => 'shiping',
+                    'data' => 'Shipping',
                 ]
             );
         }
@@ -138,7 +138,7 @@ class BillController extends BillService
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
-                    'data' => 'paid',
+                    'data' => 'Paid',
                 ]
             );
         }
@@ -156,7 +156,7 @@ class BillController extends BillService
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
-                    'data' => 'pending',
+                    'data' => 'Pending',
                 ]
             );
         }
@@ -174,7 +174,7 @@ class BillController extends BillService
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
-                    'data' => 'done',
+                    'data' => 'Done',
                 ]
             );
         }
@@ -192,7 +192,7 @@ class BillController extends BillService
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
-                    'data' => 'cancel',
+                    'data' => 'Cancel',
                 ]
             );
         }
