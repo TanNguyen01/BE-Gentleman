@@ -32,7 +32,7 @@ class SaleService extends AbstractServices
     public function updateSale($id, $sale)
     {
         $sale = (array)$sale;
-        return $this->eloquentUpdate($id, $sale);
+        return $this->eloquentUpdate($id, $sale); 
     }
 
     public function destroySale($id)
