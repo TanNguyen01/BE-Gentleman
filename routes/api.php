@@ -14,6 +14,9 @@ use App\Http\Controllers\API\StatisticalController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VariantController;
 use App\Http\Controllers\API\VnpayController;
+
+use App\Http\Controllers\API\VnpayNowController;
+
 use App\Http\Controllers\API\VoucherController;
 use Illuminate\Support\Facades\Route;
 
@@ -157,6 +160,9 @@ Route::get('sale-product/{id}', [SaleController::class, 'saleWithProduct']);
 
 // vnpay
 Route::get('pay/{bill_id}/{amount}/{bank_code}', [VnpayController::class, 'checkout'])->name('checkout_vnpay');
+
+Route::get('paynow/{bill_id}/{amount}/{bank_code}', [VnpayNowController::class, 'checkout'])->name('checkout_vnpay');
+
 //login
 Route::post('register', [\App\Http\Controllers\API\AuthController::class, 'register'])->name('register');
 Route::post('login', [\App\Http\Controllers\API\AuthController::class, 'login'])->name('login');
