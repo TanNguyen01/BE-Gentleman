@@ -55,6 +55,9 @@ Route::middleware(['auth:sanctum', 'checkAdmin'])->group(function () {
             Route::post('posts', [PostController::class, 'store']);
     });
 });
+
+Route::get('/billdetails/by-bill-id/{bill_id}', [BillDetailController::class, 'showByBillId']);
+
 // ======================= USER ========================
 //Categories
 Route::apiResource("categories", CategoryController::class);
