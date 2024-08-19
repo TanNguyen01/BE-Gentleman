@@ -36,8 +36,10 @@ class SaleController extends Controller
         try {
             $data = $request->validate([
                 'name' => 'required|string|unique:categories',
+                'status'=>'required',
+                "onLayout"=>'required'
             ]);
-
+            // dd($data);
             $sale = $this->saleService->eloquentPostCreate($data);
             return $this->successResponse(new SaleResource($sale), 201);
         } catch (\Exception $e) {

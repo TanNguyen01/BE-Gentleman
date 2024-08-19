@@ -58,13 +58,13 @@ class StatisticalService
 
 
     public function getBillCountsByStatus(){
-        $today = date('Y-m-d');
+        // $today = date('Y-m-d');
         try {
             $orderCounts = Bill::select(
                     'status',
                     DB::raw('COUNT(*) as total_bill')
                 )
-                ->whereDate('created_at', $today)
+                // ->whereDate('created_at', $today)
                 ->groupBy('status')
                 ->get();
 

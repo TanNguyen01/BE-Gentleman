@@ -112,7 +112,17 @@ class BillDetailService extends AbstractServices
 
 
 
-
+ public function showBillDetail1($bill_id)
+    {
+        // Assuming 'bill_id' is a column in the 'bill_details' table
+        $billDetails = BillDetail::where('bill_id', $bill_id)->get();
+        
+        if ($billDetails->isEmpty()) {
+            return response()->json(['message' => 'Bill details not found'], 404);
+        }
+        
+        return response()->json($billDetails);
+    }
 
 
     public function showBillDetail($id)

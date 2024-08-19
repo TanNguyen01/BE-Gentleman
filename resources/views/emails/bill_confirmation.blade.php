@@ -37,13 +37,13 @@
         </tbody>
     </table>
     <p style="font-size: 16px;">Địa chỉ giao hàng:
-    <h3>{{ $bill->Recipient_address }}</h3>
+        <span style="font-weight:bold;font-size: 20px">{{ $bill->Recipient_address }}</span>
     </p>
     <p style="font-size: 16px;">Thông tin liên hệ:
-    <h3>{{ $bill->Recipient_phone }}</h3>
+        <span style="font-weight:bold;font-size: 20px">{{ $bill->Recipient_phone }}</span>
     </p>
     <p style="font-size: 16px;">Tổng tiền:
-    <h3> {{ $bill->total_amount }}VND</h3>
+        <span style="font-weight:bold;font-size: 20px"> {{ $bill->total_amount }}VND</span>
     </p>
 </body>
 

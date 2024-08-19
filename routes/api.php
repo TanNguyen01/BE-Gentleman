@@ -14,6 +14,9 @@ use App\Http\Controllers\API\StatisticalController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VariantController;
 use App\Http\Controllers\API\VnpayController;
+
+use App\Http\Controllers\API\VnpayNowController;
+
 use App\Http\Controllers\API\VoucherController;
 use Illuminate\Support\Facades\Route;
 
@@ -52,6 +55,9 @@ Route::middleware(['auth:sanctum', 'checkAdmin'])->group(function () {
             Route::post('posts', [PostController::class, 'store']);
     });
 });
+
+Route::get('/billdetails/by-bill-id/{bill_id}', [BillDetailController::class, 'showByBillId']);
+
 // ======================= USER ========================
 //Categories
 Route::apiResource("categories", CategoryController::class);
@@ -103,7 +109,7 @@ Route::get('bills-with-user/{id}', [BillController::class, 'getBillWithUser']);
 Route::get('bills-with-user-pending/{id}', [BillController::class, 'getBillWithUserPending']);
 Route::get('bills-with-user-done/{id}', [BillController::class, 'getBillWithUserDone']);
 Route::get('bills-with-user-paid/{id}', [BillController::class, 'getBillWithUserPaid']);
-Route::get('bills-with-user-shiping/{id}', [BillController::class, 'getBillWithUserShiping']);
+Route::get('bills-with-user-shiping/{id}', [BillController::class, 'getBillWithUserShipping']);
 Route::get('bills-with-user-cancel/{id}', [BillController::class, 'getBillWithUserCancel']);
 Route::get('bills-with-user-confirm/{id}', [BillController::class, 'getBillWithUserConfirm']);
 Route::get('bills-with-phone/{phone}', [BillController::class, 'getBillWithphone']);
@@ -161,6 +167,9 @@ Route::get('sale-product/{id}', [SaleController::class, 'saleWithProduct']);
 
 // vnpay
 Route::get('pay/{bill_id}/{amount}/{bank_code}', [VnpayController::class, 'checkout'])->name('checkout_vnpay');
+
+Route::get('paynow/{bill_id}/{amount}/{bank_code}', [VnpayNowController::class, 'checkout'])->name('checkout_vnpay');
+
 //login
 Route::post('register', [\App\Http\Controllers\API\AuthController::class, 'register'])->name('register');
 Route::post('login', [\App\Http\Controllers\API\AuthController::class, 'login'])->name('login');

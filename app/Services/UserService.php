@@ -25,16 +25,14 @@ class UserService extends AbstractServices
 
     public function createUser($data)
     {
-        $this->uploadImageIfExists($data);
         return User::create($data);
     }
 
     public function updateUser($id, $data)
     {
         $user = User::find($id);
-
+// dd($user);
         if ($user) {
-            $this->uploadImageIfExists($data, $user);
             $user->update($data);
         }
         return $user;
@@ -54,19 +52,7 @@ class UserService extends AbstractServices
         //  return $user;
     }
 
-    protected function uploadImageIfExists($data, $user = null)
-    {
-        if (isset($data['avatar']) && $data['avatar']->isValid()) {
-            $avatarName = Str::random(12) . "." . $data['avatar']->getClientOriginalExtension();
-            $data['avatar']->storeAs('', $avatarName, 'avatar_user');
 
-            if ($user && $user->image) {
-                Storage::disk('avatar_user')->delete($user->image);
-            }
-
-            $data['avatar'] = $avatarName;
-        }
-    }
 
 
 }
