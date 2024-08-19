@@ -142,6 +142,10 @@ Route::get('new-user-by-week', [StatisticalController::class, 'newRegistrationsT
 Route::get('new-user-by-month', [StatisticalController::class, 'newRegistrationsThisMonth']);
 Route::get('order-statistical', [StatisticalController::class, 'getOrderStatistics']);
 Route::get('revenue-category', [StatisticalController::class, 'revenueCategory']);
+Route::get('revenue-today',[StatisticalController::class, 'revenueToday']);
+Route::get('revenue-week',[StatisticalController::class, 'revenueWeek']);
+Route::get('revenue-month',[StatisticalController::class, 'revenueMonth']);
+
 
 //BillDetail
 
