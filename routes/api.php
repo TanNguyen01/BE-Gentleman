@@ -97,7 +97,7 @@ Route::get('bills-confirm', [BillController::class, 'getConfirm']);
 Route::get('bills-pending', [BillController::class, 'getPending']);
 Route::get('bills-done', [BillController::class, 'getDone']);
 Route::get('bills-paid', [BillController::class, 'getPaid']);
-Route::get('bills-shiping', [BillController::class, 'getShiping']);
+Route::get('bills-shiping', [BillController::class, 'getShipping']);
 Route::get('bills-cancel', [BillController::class, 'getCancel']);
 Route::get('bills-with-user/{id}', [BillController::class, 'getBillWithUser']);
 Route::get('bills-with-user-pending/{id}', [BillController::class, 'getBillWithUserPending']);
@@ -136,6 +136,10 @@ Route::get('new-user-by-week', [StatisticalController::class, 'newRegistrationsT
 Route::get('new-user-by-month', [StatisticalController::class, 'newRegistrationsThisMonth']);
 Route::get('order-statistical', [StatisticalController::class, 'getOrderStatistics']);
 Route::get('revenue-category', [StatisticalController::class, 'revenueCategory']);
+Route::get('revenue-today',[StatisticalController::class, 'revenueToday']);
+Route::get('revenue-week',[StatisticalController::class, 'revenueWeek']);
+Route::get('revenue-month',[StatisticalController::class, 'revenueMonth']);
+
 
 //BillDetail
 

@@ -480,4 +480,58 @@ class StatisticalController extends Controller
             );
         }
     }
+
+    public function revenueToday()
+    {
+        $revenues = $this->statisticalService->getTodayStatistics();
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('loi TodayStatistics'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('TodayStatistics'),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
+
+    public function revenueWeek()
+    {
+        $revenues = $this->statisticalService->getWeekStatistics();
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('loi Week Statistics'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('Week Statistics'),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
+
+    public function revenueMonth()
+    {
+        $revenues = $this->statisticalService->getMonthStatistics();
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('loi Month Statistics'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('Month Statistics'),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
 }
