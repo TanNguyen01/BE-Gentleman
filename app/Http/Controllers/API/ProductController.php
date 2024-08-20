@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductsRequest;
 use App\Services\ProductService;
 use App\Traits\APIResponse;
-use Illuminate\Http\Client\Request as ClientRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -37,7 +36,7 @@ class ProductController extends Controller
     {
         $productData = $request->all();
         $variantsData = $request->input('variants', []);
-        // Gọi phương thức lưu trữ sản phẩm và biến thể
+        // GỞi phương thức lưu trữ sản phẩm và biến thể
         $product = $this->productService->createProductWithVariantsAndAttributes($productData, $variantsData);
 
         return $this->responseCreated(

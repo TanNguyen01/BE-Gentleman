@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\DashboardEvent;
 use App\Http\Controllers\API\AttributeController;
 use App\Http\Controllers\API\AttributeValueController;
 use App\Http\Controllers\API\BillController;
@@ -145,6 +146,7 @@ Route::get('revenue-category', [StatisticalController::class, 'revenueCategory']
 Route::get('revenue-today',[StatisticalController::class, 'revenueToday']);
 Route::get('revenue-week',[StatisticalController::class, 'revenueWeek']);
 Route::get('revenue-month',[StatisticalController::class, 'revenueMonth']);
+Route::post('revenue-month',[StatisticalController::class, 'revenueDayBetween']);//function(start,end)
 
 
 //BillDetail

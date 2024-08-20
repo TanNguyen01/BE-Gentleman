@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\PostRequest;
 use App\Traits\APIResponse;
 use Illuminate\Http\Response;
 use App\Services\PostService;

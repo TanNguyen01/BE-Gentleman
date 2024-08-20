@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Attribute;
-use App\Models\AttributeName;
 use App\Models\AttributeValue;
 use App\Models\Variant;
 use Illuminate\Support\Facades\Log;
@@ -22,7 +21,7 @@ class ColorService extends AbstractServices
             $attributeName = Attribute::where('name', 'color')->first();
 
             if (!$attributeName) {
-                return []; // Nếu không tìm thấy, trả về mảng rỗng hoặc null tùy theo nhu cầu của bạn
+                return []; // Nếu không tìm thấy, trả vỞ mảng rỗng hoặc null tùy theo nhu cầu của bạn
             }
 
             // Lấy tất cả các attribute_values của attribute_name 'size'

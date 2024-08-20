@@ -2,9 +2,8 @@
 
 namespace App\Services;
 
+use App\Events\DashboardEvent;
 use App\Models\Bill;
-use App\Models\Variant;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class BillService extends AbstractServices
