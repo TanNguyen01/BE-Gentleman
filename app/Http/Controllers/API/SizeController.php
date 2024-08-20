@@ -4,7 +4,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Services\ProductService;
 use App\Services\SizeService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -22,7 +21,7 @@ class SizeController extends Controller
     {
         $sizes = $this->sizeService->getAllSizesWithValues();
 
-        // Xử lý dữ liệu và trả về view hoặc JSON response
+        // Xử lý dữ liệu và trả vỞ view hoặc JSON response
         return response()->json($sizes);
     }
     public function store(Request $request)

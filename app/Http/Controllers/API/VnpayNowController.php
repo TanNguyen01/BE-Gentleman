@@ -4,9 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Services\VnpayServiceNow;
-use Illuminate\Http\Request;
 use App\Traits\APIResponse;
-use Illuminate\Http\Response;
 
 class VnpayNowController extends Controller
 {

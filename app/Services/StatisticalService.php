@@ -665,4 +665,36 @@ class StatisticalService
             'online_paid_orders_week' => $onlinePaidOrdersWeek,
         ];
     }
+
+    function getDaybBtweenStatistics($start,$end) {
+        $totalSalesWeek = DB::table('bills')
+            ->whereBetween('created_at', [$start, $end])
+            ->whereIn('status', ['Done', 'Paid'])
+            ->sum('total_amount');
+
+        $orderCountWeek = DB::table('bills')
+            ->whereBetween('created_at', [$start, $end])
+            ->count();
+
+        $newCustomersWeek = DB::table('users')
+            ->whereBetween('created_at', [$start, $end])
+            ->count();
+
+        $totalCustomersUntilEndOfWeek = DB::table('users')
+            ->whereDate('created_at', '<=', $end)
+            ->count();
+
+        $onlinePaidOrdersWeek = DB::table('bills')
+            ->whereBetween('created_at', [$start, $end])
+            ->where('status', 'Paid')
+            ->count();
+
+        return [
+            'total_sales_dayBetween' => $totalSalesWeek,
+            'order_count_dayBetween' => $orderCountWeek,
+            'new_customers_dayBetween' => $newCustomersWeek,
+            'total_customers_until_end_of_dayBetween' => $totalCustomersUntilEndOfWeek,
+            'online_paid_orders_dayBetween' => $onlinePaidOrdersWeek,
+        ];
+    }
 }

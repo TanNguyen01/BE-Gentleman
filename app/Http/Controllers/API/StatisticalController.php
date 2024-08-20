@@ -534,4 +534,22 @@ class StatisticalController extends Controller
             );
         }
     }
+
+    public function revenueDayBetween($start,$end)
+    {
+        $revenues = $this->statisticalService->getDaybBtweenStatistics($start,$end);
+        if (!$revenues) {
+            return $this->APIError(
+                Response::HTTP_BAD_REQUEST,
+                __('loi DayBetween'),
+            );
+        } else {
+            return $this->responseSuccess(
+                __('DayBetween Statistics'),
+                [
+                    'data' => $revenues,
+                ]
+            );
+        }
+    }
 }
