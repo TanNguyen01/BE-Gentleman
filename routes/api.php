@@ -29,7 +29,7 @@ use Illuminate\Support\Facades\Route;
 */
 // ======================= ADMIN ========================
 Route::middleware(['auth:sanctum', 'checkAdmin'])->group(function () {
-    Route::prefix('admin/')->group(function () {
+    Route::prefix('user/')->group(function () {
         // //Categories
         // Route::apiResource("categories", \App\Http\Controllers\API\CategoryController::class);
         // Route::get('categories/{id}/total-products', [\App\Http\Controllers\API\CategoryController::class, 'totalProducts']);
@@ -46,10 +46,14 @@ Route::middleware(['auth:sanctum', 'checkAdmin'])->group(function () {
         // Route::apiResource('users', UserController::class);
 
         // post
-            Route::get('posts/{id}', [PostController::class, 'show']);
+            Route::get('posts/{id}',
+
+                [PostController::class, 'show']);
             Route::put('posts/{id}', [PostController::class, 'update']);
             Route::delete('posts/{id}', [PostController::class, 'destroy']);
             Route::post('posts', [PostController::class, 'store']);
+
+       // Route::apiResource("categories", CategoryController::class);
     });
 });
 // ======================= USER ========================

@@ -22,7 +22,9 @@ class checkAdmin
             return $this->responseUnAuthenticated();
         }
 
-        if(Auth::user()->role_id !== 0){
+
+
+        if(Auth::user()->role_id !== 1){
             return $this->responseUnAuthenticated();
         }
 
