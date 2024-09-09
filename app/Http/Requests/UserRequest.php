@@ -2,12 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Models\User;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 
@@ -34,7 +32,7 @@ class UserRequest extends FormRequest
                 'name' => 'nullable|string',
                 'password' => 'nullable|string',
                 'role_id' => 'nullable|integer',
-                'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
+                'avatar' => 'required',
                 'address' => 'nullable|string',
                 'number' => 'nullable|string',
                 'status' => "nullable|integer",
@@ -42,11 +40,11 @@ class UserRequest extends FormRequest
             ];
         } else {
             return [
-                
+
                 'name' => 'nullable|string',
                 'password' => 'nullable|string',
                 'role_id' => 'nullable|integer|in:0,1',
-                'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
+                'avatar' => 'nullable|string',
                 'address' => 'nullable|string',
                 'number' => 'nullable|string',
                 'status' => "nullable|integer",

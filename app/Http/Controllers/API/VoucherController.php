@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\VouchersRequest;
 use App\Services\VoucherService;
 use App\Traits\APIResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class VoucherController extends Controller

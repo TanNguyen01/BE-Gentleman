@@ -3,18 +3,18 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Services\VnpayService;
+use App\Services\VnpayServiceNow;
 use App\Traits\APIResponse;
 
-class VnpayController extends Controller
+class VnpayNowController extends Controller
 {
     use APIResponse;
     protected $vnpay;
-    function __construct()
+    public function __construct()
     {
-        $this->vnpay = new VnpayService;
+        $this->vnpay = new VnpayServiceNow();
     }
-    public function checkout($bill_id,$amount,$bank_code)
+    public function checkout($bill_id, $amount, $bank_code)
     {
         $data = [];
         $data['bill_id'] = $bill_id;
@@ -26,6 +26,7 @@ class VnpayController extends Controller
             [
                 'data' => $response,
             ]
-        );;
+        );
+        ;
     }
 }

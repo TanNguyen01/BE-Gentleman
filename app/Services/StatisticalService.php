@@ -562,4 +562,139 @@ class StatisticalService
             'categories' => $categories,
         ], 200);
     }
+
+    function getTodayStatistics() {
+        $today = Carbon::today();
+        $totalSalesToday = DB::table('bills')
+            ->whereDate('created_at', $today)
+            ->whereIn('status', ['Done', 'Paid'])
+            ->sum('total_amount');
+
+        $orderCountToday = DB::table('bills')
+            ->whereDate('created_at', $today)
+            ->count();
+
+        $newCustomersToday = DB::table('users')
+            ->whereDate('created_at', $today)
+            ->count();
+
+        $totalCustomersUntilToday = DB::table('users')
+            ->whereDate('created_at', '<=', $today)
+            ->count();
+
+        $onlinePaidOrdersToday = DB::table('bills')
+            ->whereDate('created_at', $today)
+            ->where('status', 'Paid')
+            ->count();
+
+        return [
+            'total_sales_today' => $totalSalesToday,
+            'order_count_today' => $orderCountToday,
+            'new_customers_today' => $newCustomersToday,
+            'total_customers_until_today' => $totalCustomersUntilToday,
+            'online_paid_orders_today' => $onlinePaidOrdersToday,
+        ];
+    }
+
+    function getWeekStatistics() {
+        $startOfWeek = Carbon::now()->startOfWeek();
+        $endOfWeek = Carbon::now()->endOfWeek();
+
+        $totalSalesWeek = DB::table('bills')
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->whereIn('status', ['Done', 'Paid'])
+            ->sum('total_amount');
+
+        $orderCountWeek = DB::table('bills')
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->count();
+
+        $newCustomersWeek = DB::table('users')
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->count();
+
+        $totalCustomersUntilEndOfWeek = DB::table('users')
+            ->whereDate('created_at', '<=', $endOfWeek)
+            ->count();
+
+        $onlinePaidOrdersWeek = DB::table('bills')
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->where('status', 'Paid')
+            ->count();
+
+        return [
+            'total_sales_week' => $totalSalesWeek,
+            'order_count_week' => $orderCountWeek,
+            'new_customers_week' => $newCustomersWeek,
+            'total_customers_until_end_of_week' => $totalCustomersUntilEndOfWeek,
+            'online_paid_orders_week' => $onlinePaidOrdersWeek,
+        ];
+    }
+
+    function getMonthStatistics() {
+        $startOfWeek = Carbon::now()->startOfMonth();
+        $endOfWeek = Carbon::now()->endOfMonth();
+
+        $totalSalesWeek = DB::table('bills')
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->whereIn('status', ['Done', 'Paid'])
+            ->sum('total_amount');
+
+        $orderCountWeek = DB::table('bills')
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->count();
+
+        $newCustomersWeek = DB::table('users')
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->count();
+
+        $totalCustomersUntilEndOfWeek = DB::table('users')
+            ->whereDate('created_at', '<=', $endOfWeek)
+            ->count();
+
+        $onlinePaidOrdersWeek = DB::table('bills')
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->where('status', 'Paid')
+            ->count();
+
+        return [
+            'total_sales_week' => $totalSalesWeek,
+            'order_count_week' => $orderCountWeek,
+            'new_customers_week' => $newCustomersWeek,
+            'total_customers_until_end_of_week' => $totalCustomersUntilEndOfWeek,
+            'online_paid_orders_week' => $onlinePaidOrdersWeek,
+        ];
+    }
+
+    function getDaybBtweenStatistics($start,$end) {
+        $totalSalesWeek = DB::table('bills')
+            ->whereBetween('created_at', [$start, $end])
+            ->whereIn('status', ['Done', 'Paid'])
+            ->sum('total_amount');
+
+        $orderCountWeek = DB::table('bills')
+            ->whereBetween('created_at', [$start, $end])
+            ->count();
+
+        $newCustomersWeek = DB::table('users')
+            ->whereBetween('created_at', [$start, $end])
+            ->count();
+
+        $totalCustomersUntilEndOfWeek = DB::table('users')
+            ->whereDate('created_at', '<=', $end)
+            ->count();
+
+        $onlinePaidOrdersWeek = DB::table('bills')
+            ->whereBetween('created_at', [$start, $end])
+            ->where('status', 'Paid')
+            ->count();
+
+        return [
+            'total_sales_dayBetween' => $totalSalesWeek,
+            'order_count_dayBetween' => $orderCountWeek,
+            'new_customers_dayBetween' => $newCustomersWeek,
+            'total_customers_until_end_of_dayBetween' => $totalCustomersUntilEndOfWeek,
+            'online_paid_orders_dayBetween' => $onlinePaidOrdersWeek,
+        ];
+    }
 }

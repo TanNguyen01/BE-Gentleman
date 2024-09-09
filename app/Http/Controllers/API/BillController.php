@@ -6,6 +6,7 @@ use App\Http\Requests\BillRequest;
 use App\Traits\APIResponse;
 use Illuminate\Http\Response;
 use App\Services\BillService;
+use Illuminate\Support\Facades\Log;
 
 class BillController extends BillService
 {
@@ -31,6 +32,7 @@ class BillController extends BillService
 
     public function store(BillRequest $request)
     {
+        Log::info('oke');
         $request = $request->all();
         $data = $this->billService->storeBill($request);
         if($data == true){

@@ -64,7 +64,7 @@ class VariantService extends AbstractServices
             return [
                 'status' => 'khong tim thay variant',
                 'variant_id' => $id,
-                'code' => 201
+                'code' => 500
             ];
         }
         $quantityVariant = $variant->quantity - $quantity;
@@ -72,7 +72,7 @@ class VariantService extends AbstractServices
             return [
                 'status' => 'khong du so luong',
                 'variant_id' => $id,
-                'code' => 201
+                'code' => 500
             ];
         }
         $variant->quantity = $quantityVariant;

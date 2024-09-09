@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\DashboardEvent;
 use App\Http\Controllers\API\AttributeController;
 use App\Http\Controllers\API\AttributeValueController;
 use App\Http\Controllers\API\BillController;
@@ -14,6 +15,9 @@ use App\Http\Controllers\API\StatisticalController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VariantController;
 use App\Http\Controllers\API\VnpayController;
+
+use App\Http\Controllers\API\VnpayNowController;
+
 use App\Http\Controllers\API\VoucherController;
 use Illuminate\Support\Facades\Route;
 
@@ -56,6 +60,9 @@ Route::middleware(['auth:sanctum', 'checkAdmin'])->group(function () {
        // Route::apiResource("categories", CategoryController::class);
     });
 });
+
+Route::get('/billdetails/by-bill-id/{bill_id}', [BillDetailController::class, 'showByBillId']);
+
 // ======================= USER ========================
 //Categories
 Route::apiResource("categories", CategoryController::class);
@@ -140,6 +147,11 @@ Route::get('new-user-by-week', [StatisticalController::class, 'newRegistrationsT
 Route::get('new-user-by-month', [StatisticalController::class, 'newRegistrationsThisMonth']);
 Route::get('order-statistical', [StatisticalController::class, 'getOrderStatistics']);
 Route::get('revenue-category', [StatisticalController::class, 'revenueCategory']);
+Route::get('revenue-today',[StatisticalController::class, 'revenueToday']);
+Route::get('revenue-week',[StatisticalController::class, 'revenueWeek']);
+Route::get('revenue-month',[StatisticalController::class, 'revenueMonth']);
+Route::post('revenue-month',[StatisticalController::class, 'revenueDayBetween']);//function(start,end)
+
 
 //BillDetail
 
@@ -161,6 +173,9 @@ Route::get('sale-product/{id}', [SaleController::class, 'saleWithProduct']);
 
 // vnpay
 Route::get('pay/{bill_id}/{amount}/{bank_code}', [VnpayController::class, 'checkout'])->name('checkout_vnpay');
+
+Route::get('paynow/{bill_id}/{amount}/{bank_code}', [VnpayNowController::class, 'checkout'])->name('checkout_vnpay');
+
 //login
 
 
