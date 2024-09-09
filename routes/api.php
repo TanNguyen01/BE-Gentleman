@@ -33,7 +33,7 @@ use Illuminate\Support\Facades\Route;
 */
 // ======================= ADMIN ========================
 Route::middleware(['auth:sanctum', 'checkAdmin'])->group(function () {
-    Route::prefix('admin/')->group(function () {
+    Route::prefix('user/')->group(function () {
         // //Categories
         // Route::apiResource("categories", \App\Http\Controllers\API\CategoryController::class);
         // Route::get('categories/{id}/total-products', [\App\Http\Controllers\API\CategoryController::class, 'totalProducts']);
@@ -173,6 +173,8 @@ Route::get('pay/{bill_id}/{amount}/{bank_code}', [VnpayController::class, 'check
 Route::get('paynow/{bill_id}/{amount}/{bank_code}', [VnpayNowController::class, 'checkout']);
 
 //login
+
+
 Route::post('register', [\App\Http\Controllers\API\AuthController::class, 'register'])->name('register');
 Route::post('login', [\App\Http\Controllers\API\AuthController::class, 'login'])->name('login');
 

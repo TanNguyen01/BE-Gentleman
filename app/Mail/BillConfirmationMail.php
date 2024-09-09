@@ -13,17 +13,20 @@ class BillConfirmationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $billDetails;
+
     public $user;
     public $bill;
+    public $billDetails;
     /**
      * Create a new message instance.
      */
-    public function __construct($billDetails, $user, $bill)
+    public function __construct( $user, $bill,$billDetails)
     {
-        $this->billDetails = $billDetails;
+
         $this->user = $user;
         $this->bill = $bill;
+        $this->billDetails = $billDetails;
+
 
     }
 
@@ -45,9 +48,10 @@ class BillConfirmationMail extends Mailable
     public function build(){
         return $this->view('emails.bill_confirmation')
             ->with([
-                'billDetails' => $this->billDetails,
+
                 'user'=> $this->user,
                 'bill' => $this->bill,
+                'billDetails' => $this->billDetails,
 
             ]);
     }
