@@ -52,40 +52,40 @@ class AuthController extends Controller
     public function login(AuthRequest $request)
     {
 
-         if(!$token=auth()->attempt($request->validated())){
-             return $this->responseBadRequest(null,'Sai email hoac mat khau');
-         }
-         $user = Auth::user();
-         $token = $user->createToken('auth_token')->plainTextToken;
-         return $this->responseSuccess('Dang nhap thanh cong', [
-             'token' => $token,
-             'data'=> $user,
-         ]);
+        if (!$token = auth()->attempt($request->validated())) {
+            return $this->responseBadRequest(null, 'Sai email hoac mat khau');
+        }
+        $user = Auth::user();
+        $token = $user->createToken('auth_token')->plainTextToken;
+        return $this->responseSuccess('Dang nhap thanh cong', [
+            'token' => $token,
+            'data' => $user,
+        ]);
 
-//        $credentials = $request->only('email', 'password');
-//
-//        if (!Auth::attempt($credentials)) {
-//            return response()->json([
-//                'message' => 'Nhập sai tên hoặc mật khẩu',
-//                'status_code' => 401,
-//            ], 401);
-//        }
-//
-//        $user = User::where('email', $request['email'])->firstOrFail();
-//        $token = $user->createToken('auth_token')->plainTextToken;
-//
-//        return response()->json([
-//            'message' => 'Đăng nhập thành công',
-//            'data'=> $user,
-//            'access_token' => $token,
-//            'token_type' => 'Bearer',
-//
-//        ], 200);
+        //        $credentials = $request->only('email', 'password');
+        //
+        //        if (!Auth::attempt($credentials)) {
+        //            return response()->json([
+        //                'message' => 'Nhập sai tên hoặc mật khẩu',
+        //                'status_code' => 401,
+        //            ], 401);
+        //        }
+        //
+        //        $user = User::where('email', $request['email'])->firstOrFail();
+        //        $token = $user->createToken('auth_token')->plainTextToken;
+        //
+        //        return response()->json([
+        //            'message' => 'Đăng nhập thành công',
+        //            'data'=> $user,
+        //            'access_token' => $token,
+        //            'token_type' => 'Bearer',
+        //
+        //        ], 200);
     }
 
     public function logout(Request $request)
     {
-        if($request->user()){
+        if ($request->user()) {
             $request->user()->currentAccessToken()->delete();
         }
         Session::flush();
@@ -93,11 +93,11 @@ class AuthController extends Controller
             'Dang xuat thanh cong',
         );
 
-//        auth()->user()->tokens()->delete();
-//
-//        return response()->json([
-//            'message' => 'Đã đăng xuất thành công',
-//            'status_code' => 200,
-//        ], 200);
+        //        auth()->user()->tokens()->delete();
+        //
+        //        return response()->json([
+        //            'message' => 'Đã đăng xuất thành công',
+        //            'status_code' => 200,
+        //        ], 200);
     }
 }

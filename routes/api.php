@@ -50,10 +50,10 @@ Route::middleware(['auth:sanctum', 'checkAdmin'])->group(function () {
         // Route::apiResource('users', UserController::class);
 
         // post
-            Route::get('posts/{id}', [PostController::class, 'show']);
-            Route::put('posts/{id}', [PostController::class, 'update']);
-            Route::delete('posts/{id}', [PostController::class, 'destroy']);
-            Route::post('posts', [PostController::class, 'store']);
+        Route::get('posts/{id}', [PostController::class, 'show']);
+        Route::put('posts/{id}', [PostController::class, 'update']);
+        Route::delete('posts/{id}', [PostController::class, 'destroy']);
+        Route::post('posts', [PostController::class, 'store']);
     });
 });
 
@@ -117,21 +117,21 @@ Route::get('bills-with-phone/{phone}', [BillController::class, 'getBillWithphone
 Route::get('bills-with-email/{email}', [BillController::class, 'getBillWithEmail']);
 
 //Statistical
-Route::get('revenue-by-day', [StatisticalController::class, 'getTotalByDate']);//doanh thu ngay
-Route::get('revenue-paid-by-day', [StatisticalController::class, 'getTotalPaidByDate']);//doang thu da thanh toan online hom nay
-Route::get('status-by-day', [StatisticalController::class, 'getStatusByDate']);//trang thai ngay
-Route::get('count-pay', [StatisticalController::class, 'getBillPay']);//dem phuong thuc mua hang bill.pay
-Route::get('revenue-week-by-day', [StatisticalController::class, 'getRevenuesWeekDay']);//doanh thu cac don hang trong tuan nay
-Route::get('revenue-sevent-last-day', [StatisticalController::class, 'revenuesLast7Days']);// doanh thu trong 7 ngay qua
+Route::get('revenue-by-day', [StatisticalController::class, 'getTotalByDate']); //doanh thu ngay
+Route::get('revenue-paid-by-day', [StatisticalController::class, 'getTotalPaidByDate']); //doang thu da thanh toan online hom nay
+Route::get('status-by-day', [StatisticalController::class, 'getStatusByDate']); //trang thai ngay
+Route::get('count-pay', [StatisticalController::class, 'getBillPay']); //dem phuong thuc mua hang bill.pay
+Route::get('revenue-week-by-day', [StatisticalController::class, 'getRevenuesWeekDay']); //doanh thu cac don hang trong tuan nay
+Route::get('revenue-sevent-last-day', [StatisticalController::class, 'revenuesLast7Days']); // doanh thu trong 7 ngay qua
 Route::get('revenue-by-week', [StatisticalController::class, 'getTotalByWeek']);
-Route::get('revenue-by-month-with-week', [StatisticalController::class, 'getTotalByMonthWithWeek']);//thong ke doanh thu thang nay theo cac tuan
-Route::post('revenue-by-month', [StatisticalController::class, 'revenueMonthly']);//thong ke doanh thu cua 1 thang cu the function(month,year)
-Route::post('revenue-by-between-date', [StatisticalController::class, 'revenuesBetweenDates']);//thong ke doanh thu theo ngay tu begin den end function(start_date,end_date)
-Route::post('revenue-by-date', [StatisticalController::class, 'revenueForSpecificDate']);//thong ke doanh thu theo ngay cu the function(date)
-Route::get('revenue-by-year-now', [StatisticalController::class, 'revenueAnnualRevenue']);//thong ke doanh thu cua nam hien tai
-Route::get('revenue-by-year-any/{year}', [StatisticalController::class, 'getAnnualRevenueAnyYear']);//thong ke daonh thu cau 1 nam bat ki
-Route::get('top-user/{top}', [StatisticalController::class, 'getTopUser']);//thong ke top user theo tham so top function(top)
-Route::get('top-product/{top}', [StatisticalController::class, 'getBestSellingProducts']);//thong ke top product theo tham so function(top)
+Route::get('revenue-by-month-with-week', [StatisticalController::class, 'getTotalByMonthWithWeek']); //thong ke doanh thu thang nay theo cac tuan
+Route::post('revenue-by-month', [StatisticalController::class, 'revenueMonthly']); //thong ke doanh thu cua 1 thang cu the function(month,year)
+Route::post('revenue-by-between-date', [StatisticalController::class, 'revenuesBetweenDates']); //thong ke doanh thu theo ngay tu begin den end function(start_date,end_date)
+Route::post('revenue-by-date', [StatisticalController::class, 'revenueForSpecificDate']); //thong ke doanh thu theo ngay cu the function(date)
+Route::get('revenue-by-year-now', [StatisticalController::class, 'revenueAnnualRevenue']); //thong ke doanh thu cua nam hien tai
+Route::get('revenue-by-year-any/{year}', [StatisticalController::class, 'getAnnualRevenueAnyYear']); //thong ke daonh thu cau 1 nam bat ki
+Route::get('top-user/{top}', [StatisticalController::class, 'getTopUser']); //thong ke top user theo tham so top function(top)
+Route::get('top-product/{top}', [StatisticalController::class, 'getBestSellingProducts']); //thong ke top product theo tham so function(top)
 Route::get('revenue-by-month', [StatisticalController::class, 'getTotalByMonth']);
 Route::get('revenue-by-product', [StatisticalController::class, 'getTotalByProduct']);
 Route::get('quantity-by-day', [StatisticalController::class, 'getTotalQuantitySoldDaily']);
@@ -143,10 +143,10 @@ Route::get('new-user-by-week', [StatisticalController::class, 'newRegistrationsT
 Route::get('new-user-by-month', [StatisticalController::class, 'newRegistrationsThisMonth']);
 Route::get('order-statistical', [StatisticalController::class, 'getOrderStatistics']);
 Route::get('revenue-category', [StatisticalController::class, 'revenueCategory']);
-Route::get('revenue-today',[StatisticalController::class, 'revenueToday']);
-Route::get('revenue-week',[StatisticalController::class, 'revenueWeek']);
-Route::get('revenue-month',[StatisticalController::class, 'revenueMonth']);
-Route::post('revenue-month',[StatisticalController::class, 'revenueDayBetween']);//function(start,end)
+Route::get('revenue-today', [StatisticalController::class, 'revenueToday']);
+Route::get('revenue-week', [StatisticalController::class, 'revenueWeek']);
+Route::get('revenue-month', [StatisticalController::class, 'revenueMonth']);
+Route::post('revenue-month', [StatisticalController::class, 'revenueDayBetween']); //function(start,end)
 
 
 //BillDetail
@@ -168,9 +168,9 @@ Route::get('sale-onlayout', [SaleController::class, 'getOnlayout']);
 Route::get('sale-product/{id}', [SaleController::class, 'saleWithProduct']);
 
 // vnpay
-Route::get('pay/{bill_id}/{amount}/{bank_code}', [VnpayController::class, 'checkout'])->name('checkout_vnpay');
+Route::get('pay/{bill_id}/{amount}/{bank_code}', [VnpayController::class, 'checkout']);
 
-Route::get('paynow/{bill_id}/{amount}/{bank_code}', [VnpayNowController::class, 'checkout'])->name('checkout_vnpay');
+Route::get('paynow/{bill_id}/{amount}/{bank_code}', [VnpayNowController::class, 'checkout']);
 
 //login
 Route::post('register', [\App\Http\Controllers\API\AuthController::class, 'register'])->name('register');
@@ -189,6 +189,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('logout', [\App\Http\Controllers\API\AuthController::class, 'logout'])->name('logout');
 });
 // vnpay
-Route::get('pay/{bill_id}/{amount}/{bank_code}', [VnpayController::class, 'checkout'])->name('checkout_vnpay');
+//Route::get('pay/{bill_id}/{amount}/{bank_code}', [VnpayController::class, 'checkout'])->name('checkout_vnpay');
 //post
 Route::get('posts', [PostController::class, 'index']);
