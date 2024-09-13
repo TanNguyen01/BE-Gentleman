@@ -67,7 +67,7 @@ class VariantService extends AbstractServices
                 'code' => 500
             ];
         }
-        $quantityVariant = $variant->quantity - $quantity;
+        $quantityVariant = $variant->quantity - $quantity; 
         if ($quantityVariant < 0) {
             return [
                 'status' => 'khong du so luong',
