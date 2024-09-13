@@ -43,7 +43,8 @@ class BillDetailService extends AbstractServices
             $billDetailsData = [];
             foreach ($data['data'] as  $variantData) {
                 $result = $this->variantService->updateQuantityWithBill($variantData['variant_id'], $variantData['quantity']);
-                if ($result['code'] == 201) {
+                if ($result['code'] != 200) {
+                    $bill->delete();
                     return $result;
                 }
 
@@ -59,13 +60,14 @@ class BillDetailService extends AbstractServices
                 ];
             }
             $status = $this->eloquentMutiInsert($billDetailsData);
-            if ($status == false){
+            if ($status == false || !$status){
                 foreach ($data['data'] as  $variantData) {
                     $this->variantService->rollbackQuantityWithBill($variantData['variant_id'],$variantData['quantity']);
                 }
+                $bill->delete();
             }
             else{
-                
+                event(new DashboardEvent());
             //   gui mail
                 SendMail::dispatch($billDetailsData, $user, $bill);
             }
