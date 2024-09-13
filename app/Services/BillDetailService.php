@@ -63,6 +63,7 @@ class BillDetailService extends AbstractServices
                     ];
                 }
 
+
                 $billDetail = new BillDetail();
                 $billDetail->product_name = $variantData['product_name'];
                 $billDetail->attribute = $variantData['attribute'];
