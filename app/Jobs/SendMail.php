@@ -42,6 +42,6 @@ class SendMail implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::to($this->user->email)->send(new BillConfirmationMail($this->billDetails,$this->user,$this->bill));
+       // Mail::to($this->user->email)->send(new BillConfirmationMail($this->billDetails,$this->user,$this->bill));
     }
 }

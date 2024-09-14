@@ -28,6 +28,6 @@ class SendBillDetailsEmail
         $billDetails = $event->billDetails;
 
 
-        Mail::to($user->email)->send(new BillConfirmationMail($bill, $user,$billDetails));
+        Mail::to($user->email)->queue(new BillConfirmationMail($bill, $user, $billDetails));
     }
 }
