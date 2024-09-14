@@ -67,7 +67,6 @@ class BillDetailService extends AbstractServices
                 $bill->delete();
             }
             else{
-                event(new DashboardEvent());
             //   gui mail
                 SendMail::dispatch($billDetailsData, $user, $bill);
             }
