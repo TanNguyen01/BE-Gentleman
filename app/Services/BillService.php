@@ -62,9 +62,14 @@ class BillService extends AbstractServices
     public function chanceStatusCancel($id)
     {
         $res = $this->eloquentFind($id);
-        $res->status = 'Cancel';
-        $res->save();
-        return 'Cancel';
+        if( $res->status != 'Pending'){
+            return 'bill confirmed';
+        }
+        else{
+            $res->status = 'Cancel';
+            $res->save();
+            return 'Cancel';
+        }
     }
 
     public function chanceStatusPending($id)
