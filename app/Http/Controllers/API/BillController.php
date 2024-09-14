@@ -190,7 +190,14 @@ class BillController extends BillService
                 Response::HTTP_NOT_FOUND,
                 __('khong tim thay danh muc'),
             );
-        } else {
+        }
+        else if($data == 'bill confirmed'){
+            return $this->APIError(
+                Response::HTTP_NOT_FOUND,
+                __('bill da xac nhan'),
+            );
+        }
+        else {
             return $this->responseSuccess(
                 __('cap nhat danh muc thanh cong'),
                 [
