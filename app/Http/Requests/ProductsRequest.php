@@ -25,13 +25,13 @@ class ProductsRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            "name" => "required|string",
-            "category_id" => "required|integer",
-            'description' => 'nullable|string',
-            'brand' => 'nullable|string',
-        ];
-    }
+    return [
+        "name" =>"required",
+        "category_id" => "required|integer",
+        'description' => 'nullable|string',
+        'brand' => 'nullable|string',
+    ];
+}
 
     public function messages(): array
     {
@@ -39,7 +39,7 @@ class ProductsRequest extends FormRequest
         return [
             "name.required" => "Nhap ten san pham",
             "category_id.required" => "Nhap id category",
-
+            "name.unique" => "Tên s?n ph?m ð? b? trùng l?p",
         ];
     }
 

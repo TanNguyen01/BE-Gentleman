@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Attribute;
 use App\Models\AttributeValue;
 use App\Models\Product;
+use App\Models\Variant;
+use App\Models\VariantAttribute;
 use App\Traits\APIResponse;
 use Exception;
 use Illuminate\Http\Request;
@@ -82,7 +84,7 @@ class ProductService extends AbstractServices
 
                             if (isset($attr['value']) && !empty($attr['value'])) {
                                 $attributeValue = AttributeValue::firstOrCreate([
-                                    'attribute_id' => $attribute->id,
+'attribute_id' => $attribute->id,
                                     'value' => $attr['value'],
                                 ]);
 
@@ -128,73 +130,83 @@ class ProductService extends AbstractServices
         }
     }
 
+    public function getVariantIdsByProduct($productId)
+    {
+        // Tìm sản phẩm dựa vào productId
+        $product = Product::find($productId);
+
+        // Kiểm tra xem sản phẩm có tồn tại không
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        // Lấy tất cả id của variants thuộc product này
+        $variantIds = $product->variants()->pluck('id')->toArray();
+
+        return $variantIds;
+    }
+
     public function updateProductWithVariantsAndAttributes($productId, array $productData)
     {
+        $variantIds = $this-> getVariantIdsByProduct($productId);
+        $variantInForm = [];
         DB::beginTransaction();
         try {
             $product = Product::findOrFail($productId);
 
-            $product->update([
-                'name' => $productData['name'],
-                'brand' => $productData['brand'],
-                'description' => $productData['description'],
-                'image' => $productData['image'] ?? $product->image,
-                'category_id' => $productData['category_id'],
-                'sale_id' => $productData['sale_id'] ?? null,
-            ]);
+            $product->name = $productData['name'];
+            $product->brand = $productData['brand'];
+            $product->description = $productData['description'];
+$product->image = $productData['image'] ?? $product->image;
+            $product->category_id = $productData['category_id'];
+            $product->sale_id = $productData['sale_id'] ?? null;
 
-            $product->variants()->delete();
+            $product->save();
 
             if (isset($productData['variants']) && is_array($productData['variants'])) {
                 foreach ($productData['variants'] as $variantData) {
-                    $attributeValues = collect();
-
-                    if (isset($variantData['attributes']) && is_array($variantData['attributes'])) {
-                        foreach ($variantData['attributes'] as $attr) {
-                            $attribute = Attribute::firstOrCreate(['name' => $attr['name']]);
-
-                            if (isset($attr['value']) && !empty($attr['value'])) {
-                                $attributeValue = AttributeValue::firstOrCreate([
-                                    'attribute_id' => $attribute->id,
-                                    'value' => $attr['value'],
-                                ]);
-
-                                $attributeValues->push($attributeValue->id);
-                            } else {
-                                throw new Exception('Attribute value cannot be null or empty');
-                            }
-                        }
+                    $variantId = $variantData['variant_id'];
+                    if($variantId == null){
+                        $variant = new Variant();
+                        $variant->price = $variantData['price'] ?? 0;
+                        $variant->price_promotional = $variantData['price_promotional'] ?? 0;
+                        $variant->quantity = $variantData['quantity'] ?? 0;
+                        $variant->product_id = $product->id;
+                        $variant->save();
                     }
+                    else{
+                        $variantInForm[] = $variantId;
+                        $variant = Variant::findOrFail($variantData['variant_id']);
+                        $variant->price = $variantData['price'] ?? 0;
+                        $variant->price_promotional = $variantData['price_promotional'] ?? 0;
+                        $variant->quantity = $variantData['quantity'] ?? 0;
+                        $variant->product_id = $product->id;
+                        $variant->save();
+                    }
+                foreach ($variantData['attributes'] as $key => $value) {
+                    $id_attribute_value = AttributeValue::where('value',$value['value'])->first()->id;
+                    $newAttributeValueId = $id_attribute_value;
+                    $oldAttributeValueId = $value['atribute_value_id_old'];
+                    if($variantId == null){
+                        $variant->attributeValues()->attach($newAttributeValueId);
+                    }
+                    else{
+                        $variant = Variant::find(id: $variantId);
 
-                    // Kiểm tra sự tồn tại của biến thể dựa trên giá trị thuộc tính
-                    $existingVariant = $product->variants()
-                        ->where('price', $variantData['price'] ?? 0)
-                        ->where('price_promotional', $variantData['price_promotional'] ?? 0)
-                        ->whereHas('attributeValues', function ($query) use ($attributeValues) {
-                            $query->whereIn('attribute_value_id', $attributeValues);
-                        })->first();
+                        // Xóa liên kết cũ
+                        $variant->attributeValues()->detach($oldAttributeValueId);
 
-                    if ($existingVariant) {
-                        // Cộng dồn số lượng nếu biến thể đã tồn tại
-                        $existingVariant->quantity += $variantData['quantity'] ?? 0;
-                        $existingVariant->save();
-                        $variant = $existingVariant;
-                    } else {
-                        // Tạo biến thể mới nếu không tồn tại
-                        $variant = $product->variants()->create([
-                            'price' => $variantData['price'] ?? 0,
-                            'price_promotional' => $variantData['price_promotional'] ?? 0,
-                            'quantity' => $variantData['quantity'] ?? 0,
-                        ]);
-
-                        // Kết nối biến thể với giá trị thuộc tính thông qua bảng pivot (variant_attributes)
-                        if ($attributeValues->isNotEmpty()) {
-                            $variant->attributeValues()->attach($attributeValues);
-                        }
+                        // Thêm liên kết mới
+                        $variant->attributeValues()->attach($newAttributeValueId);
                     }
                 }
+                }
             }
-
+            $variantDelete = array_diff( $variantIds, $variantInForm);
+            foreach ($variantDelete as $key => $value) {
+                Variant::find($value)->delete();
+                VariantAttribute::where('variant_id', $value);
+            }
             DB::commit();
             return $product;
         } catch (\Exception $e) {
@@ -207,7 +219,7 @@ class ProductService extends AbstractServices
     public function updateSaleInProduct($productId, $productData)
     {
         try {
-            if (!isset($productData['sale_id'])) {
+if (!isset($productData['sale_id'])) {
                 return response()->json(['error' => 'Sale ID is required'], 400);
             }
             $product = Product::findOrFail($productId);
@@ -300,7 +312,7 @@ class ProductService extends AbstractServices
             $query = Product::query();
 
             // LỞc theo màu sắc
-            if ($request->filled('color')) {
+if ($request->filled('color')) {
                 $color = (string)$request->input('color');
                 $query->whereHas('variants.attributeValues', function ($query) use ($color) {
                     $query->whereHas('attribute', function ($query) use ($color) {

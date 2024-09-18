@@ -98,4 +98,31 @@ class AttributeValueController extends Controller
             return $this->responseDeleted(null, Response::HTTP_NO_CONTENT);
         }
     }
+
+    public function newGetVariantAttribute(){
+        $attributeValues = $this->attributeValueService->getAllAttributeValue();
+        $result = [];
+        foreach ($attributeValues as $attributeValue) {
+            $attributeName = $attributeValue['attribute']['name'];
+            $attributeId = $attributeValue['attribute_id'];
+
+            if (!isset($result[$attributeId])) {
+                $result[$attributeId] = [
+                    'attribute_id' => $attributeId,
+                    'attribute_name' => $attributeName,
+                    'values' => []
+                ];
+            }
+            $result[$attributeId]['values'][] = [
+                'id' => $attributeValue['id'],
+                'value' => $attributeValue['value']
+            ];
+        }
+
+        $response = [
+            'message' => 'Lấy attribute thành công!',
+            'data' => array_values($result)
+        ];
+        return response()->json($response);
+    }
 }

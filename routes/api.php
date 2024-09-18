@@ -84,6 +84,7 @@ Route::apiResource("attributes", AttributeController::class);
 
 //Attribute_value
 Route::apiResource("attribute-values", AttributeValueController::class);
+Route::get('attribute-values-new', [AttributeValueController::class, 'newGetVariantAttribute']);
 
 
 //User
