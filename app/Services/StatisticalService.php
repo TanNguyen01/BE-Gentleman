@@ -530,17 +530,20 @@ class StatisticalService
         $top = $request;
         return DB::table('bill_details')
             ->join('bills', 'bill_details.bill_id', '=', 'bills.id')
+            ->leftJoin('products', 'bill_details.product_name', '=', 'products.name') // S? d?ng leftJoin ð? tránh vi?c không có k?t qu? n?u không match
             ->select(
                 'bill_details.product_name',
+                'products.image', // L?y thêm trý?ng image t? b?ng products
                 DB::raw('SUM(bill_details.quantity) as total_quantity_sold'),
                 DB::raw('COUNT(bill_details.id) as sold_count')
             )
             ->whereIn('bills.status', ['Done', 'Paid'])
-            ->groupBy('bill_details.product_name')
+            ->groupBy('bill_details.product_name', 'products.image') // Group by c? product_name và image
             ->orderBy('total_quantity_sold', 'DESC')
             ->take($top)
             ->get();
     }
+
 
     public function  annualRevenueAnyYear($year){
         return DB::table('bills')

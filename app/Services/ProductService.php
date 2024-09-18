@@ -84,7 +84,7 @@ class ProductService extends AbstractServices
 
                             if (isset($attr['value']) && !empty($attr['value'])) {
                                 $attributeValue = AttributeValue::firstOrCreate([
-'attribute_id' => $attribute->id,
+                                    'attribute_id' => $attribute->id,
                                     'value' => $attr['value'],
                                 ]);
 
@@ -148,7 +148,7 @@ class ProductService extends AbstractServices
 
     public function updateProductWithVariantsAndAttributes($productId, array $productData)
     {
-        $variantIds = $this-> getVariantIdsByProduct($productId);
+        $variantIds = $this->getVariantIdsByProduct($productId);
         $variantInForm = [];
         DB::beginTransaction();
         try {
@@ -157,7 +157,7 @@ class ProductService extends AbstractServices
             $product->name = $productData['name'];
             $product->brand = $productData['brand'];
             $product->description = $productData['description'];
-$product->image = $productData['image'] ?? $product->image;
+            $product->image = $productData['image'] ?? $product->image;
             $product->category_id = $productData['category_id'];
             $product->sale_id = $productData['sale_id'] ?? null;
 
@@ -166,15 +166,14 @@ $product->image = $productData['image'] ?? $product->image;
             if (isset($productData['variants']) && is_array($productData['variants'])) {
                 foreach ($productData['variants'] as $variantData) {
                     $variantId = $variantData['variant_id'];
-                    if($variantId == null){
+                    if ($variantId == null) {
                         $variant = new Variant();
                         $variant->price = $variantData['price'] ?? 0;
                         $variant->price_promotional = $variantData['price_promotional'] ?? 0;
                         $variant->quantity = $variantData['quantity'] ?? 0;
                         $variant->product_id = $product->id;
                         $variant->save();
-                    }
-                    else{
+                    } else {
                         $variantInForm[] = $variantId;
                         $variant = Variant::findOrFail($variantData['variant_id']);
                         $variant->price = $variantData['price'] ?? 0;
@@ -183,26 +182,25 @@ $product->image = $productData['image'] ?? $product->image;
                         $variant->product_id = $product->id;
                         $variant->save();
                     }
-                foreach ($variantData['attributes'] as $key => $value) {
-                    $id_attribute_value = AttributeValue::where('value',$value['value'])->first()->id;
-                    $newAttributeValueId = $id_attribute_value;
-                    $oldAttributeValueId = $value['atribute_value_id_old'];
-                    if($variantId == null){
-                        $variant->attributeValues()->attach($newAttributeValueId);
-                    }
-                    else{
-                        $variant = Variant::find(id: $variantId);
+                    foreach ($variantData['attributes'] as $key => $value) {
+                        $id_attribute_value = AttributeValue::where('value', $value['value'])->first()->id;
+                        $newAttributeValueId = $id_attribute_value;
+                        $oldAttributeValueId = $value['atribute_value_id_old'];
+                        if ($variantId == null) {
+                            $variant->attributeValues()->attach($newAttributeValueId);
+                        } else {
+                            $variant = Variant::find(id: $variantId);
 
-                        // Xóa liên kết cũ
-                        $variant->attributeValues()->detach($oldAttributeValueId);
+                            // Xóa liên kết cũ
+                            $variant->attributeValues()->detach($oldAttributeValueId);
 
-                        // Thêm liên kết mới
-                        $variant->attributeValues()->attach($newAttributeValueId);
+                            // Thêm liên kết mới
+                            $variant->attributeValues()->attach($newAttributeValueId);
+                        }
                     }
-                }
                 }
             }
-            $variantDelete = array_diff( $variantIds, $variantInForm);
+            $variantDelete = array_diff($variantIds, $variantInForm);
             foreach ($variantDelete as $key => $value) {
                 Variant::find($value)->delete();
                 VariantAttribute::where('variant_id', $value);
@@ -219,7 +217,7 @@ $product->image = $productData['image'] ?? $product->image;
     public function updateSaleInProduct($productId, $productData)
     {
         try {
-if (!isset($productData['sale_id'])) {
+            if (!isset($productData['sale_id'])) {
                 return response()->json(['error' => 'Sale ID is required'], 400);
             }
             $product = Product::findOrFail($productId);
@@ -312,7 +310,7 @@ if (!isset($productData['sale_id'])) {
             $query = Product::query();
 
             // LỞc theo màu sắc
-if ($request->filled('color')) {
+            if ($request->filled('color')) {
                 $color = (string)$request->input('color');
                 $query->whereHas('variants.attributeValues', function ($query) use ($color) {
                     $query->whereHas('attribute', function ($query) use ($color) {
